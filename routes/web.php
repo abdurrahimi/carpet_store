@@ -5,6 +5,8 @@ use App\Http\Controllers\StoreController;
 use App\Http\Controllers\UsersController;
 use Illuminate\Foundation\Application;
 use Illuminate\Support\Facades\Route;
+use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Log;
 use Inertia\Inertia;
 
 /*
@@ -18,13 +20,46 @@ use Inertia\Inertia;
 |
 */
 
+Route::post('/deploy', function (Request $request) {
+    $secret = 'YOUR_GITHUB_WEBHOOK_SECRET'; // Ganti dengan secret webhook GitHub Anda
+    $payload = $request->getContent();
+    $signature = $request->header('X-Hub-Signature');
+
+    // Verifikasi signature
+    $hash = 'sha1=' . hash_hmac('sha1', $payload, $secret);
+    if (hash_equals($hash, $signature)) {
+        // Parse payload
+        $data = json_decode($payload, true);
+        if ($data['ref'] === 'refs/heads/feat/revamp') { // Ganti dengan branch yang diinginkan
+            // Menjalankan deploy
+            $output = [];
+            $returnVar = 0;
+            exec('cd /home/tops1919/public_html/admin-panel && git pull origin main 2>&1', $output, $returnVar);
+
+            // Log output untuk debugging
+            Log::info('Deploy output: ' . implode("\n", $output));
+
+            if ($returnVar === 0) {
+                return response('Deploy successful', 200);
+            } else {
+                Log::error('Deploy failed with return code: ' . $returnVar);
+                return response('Deploy failed', 500);
+            }
+        }
+    }
+
+    Log::error('Deployment failed. Invalid signature or branch.');
+    return response('Deploy failed', 400);
+});
+
 Route::get('/', function () {
-    return Inertia::render('Welcome', [
+    return redirect('/dashboard');
+    /* return Inertia::render('Welcome', [
         'canLogin' => Route::has('login'),
         'canRegister' => Route::has('register'),
         'laravelVersion' => Application::VERSION,
         'phpVersion' => PHP_VERSION,
-    ]);
+    ]); */
 });
 
 Route::get('/dashboard', function () {
