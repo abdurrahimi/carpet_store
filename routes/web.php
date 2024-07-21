@@ -80,6 +80,10 @@ Route::middleware('auth')->group(function () {
 
     //store
     Route::get('/store/data', [StoreController::class, 'getDataStore'])->name('store.get');
+
+    Route::get('/temp', function(){
+        echo 'Coming Soon';
+    })->name('temp');
 });
 
 require __DIR__.'/auth.php';

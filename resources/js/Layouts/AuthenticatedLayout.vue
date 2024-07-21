@@ -47,19 +47,19 @@ import { Link } from '@inertiajs/vue3';
                             </a>
                             <div :id="`menuItem${key}`" class="collapse" aria-labelledby="headingTwo" data-parent="#accordionSidebar">
                                 <div class="bg-white py-2 collapse-inner rounded">
-                                    <a v-for="(children, keys) in item.children " :key="keys" class="collapse-item" href="buttons.html">
+                                    <Link :href="route(children.routes ?? 'temp')" :active="route().current(children.routes ?? 'temp')" v-for="(children, keys) in item.children " :key="keys" class="collapse-item">
                                         <span class="material-symbols-outlined">
                                             adjust
                                         </span>
                                         {{children.title}}
-                                    </a>
+                                    </Link>
                                 </div>
                             </div>
                         </li>
                     </template>
                     <template v-else>
                         <li class="nav-item" v-if="item.title !== 'Dashboard'">
-                            <Link :href="route('dashboard')" :active="route().current('dashboard')" class="nav-link">
+                            <Link :href="route(item.routes ?? 'temp')" :active="route().current(item.routes ?? 'temp')" class="nav-link">
                                 <span class="icon" :class="item.icon_class"></span>
                                 <span>{{item.title}}</span></Link>
                         </li>
