@@ -1,6 +1,6 @@
 {
-  "_AuthenticatedLayout-C54rPOWm.js": {
-    "file": "assets/AuthenticatedLayout-C54rPOWm.js",
+  "_AuthenticatedLayout-D1qlI_kU.js": {
+    "file": "assets/AuthenticatedLayout-D1qlI_kU.js",
     "name": "AuthenticatedLayout",
     "imports": [
       "resources/js/app.js"
@@ -13,7 +13,7 @@
     "isEntry": true
   },
   "resources/js/Pages/Auth/Login.vue": {
-    "file": "assets/Login-BSip2kbn.js",
+    "file": "assets/Login-DuIT8otB.js",
     "name": "Login",
     "src": "resources/js/Pages/Auth/Login.vue",
     "isDynamicEntry": true,
@@ -22,17 +22,17 @@
     ]
   },
   "resources/js/Pages/Dashboard.vue": {
-    "file": "assets/Dashboard-CIAi_wxk.js",
+    "file": "assets/Dashboard-BN_sEm6w.js",
     "name": "Dashboard",
     "src": "resources/js/Pages/Dashboard.vue",
     "isDynamicEntry": true,
     "imports": [
-      "_AuthenticatedLayout-C54rPOWm.js",
+      "_AuthenticatedLayout-D1qlI_kU.js",
       "resources/js/app.js"
     ]
   },
   "resources/js/Pages/DashboardOld.vue": {
-    "file": "assets/DashboardOld-C33JbPv3.js",
+    "file": "assets/DashboardOld-_ir6S8za.js",
     "name": "DashboardOld",
     "src": "resources/js/Pages/DashboardOld.vue",
     "isDynamicEntry": true,
@@ -41,20 +41,20 @@
     ]
   },
   "resources/js/Pages/Users/Karyawan.vue": {
-    "file": "assets/Karyawan-BJGtGfBk.js",
+    "file": "assets/Karyawan-DmhX-cIl.js",
     "name": "Karyawan",
     "src": "resources/js/Pages/Users/Karyawan.vue",
     "isDynamicEntry": true,
     "imports": [
-      "_AuthenticatedLayout-C54rPOWm.js",
+      "_AuthenticatedLayout-D1qlI_kU.js",
       "resources/js/app.js"
     ],
     "css": [
-      "assets/Karyawan-HlAz04pp.css"
+      "assets/Karyawan-BertnAcA.css"
     ]
   },
   "resources/js/Pages/Welcome.vue": {
-    "file": "assets/Welcome-BOFzjvNs.js",
+    "file": "assets/Welcome-CgoblJKa.js",
     "name": "Welcome",
     "src": "resources/js/Pages/Welcome.vue",
     "isDynamicEntry": true,
@@ -66,7 +66,7 @@
     ]
   },
   "resources/js/app.js": {
-    "file": "assets/app-DxH3S27I.js",
+    "file": "assets/app-Bvmh4HIQ.js",
     "name": "app",
     "src": "resources/js/app.js",
     "isEntry": true,
