@@ -427,7 +427,7 @@ export default {
 
         this.form.submit = true;
         if (this.form.id == "" || this.form.id == null) {
-          return router.post(this.route('user.store'), this.form, {
+          return router.post(this.route('users.store'), this.form, {
             preserveScroll: true,
             onSuccess: () => {
               this.form.submit = false;
@@ -443,7 +443,7 @@ export default {
             },
           });
         } else {
-          return router.put(this.route('user.update', this.form.id), this.form, {
+          return router.put(this.route('users.update', this.form.id), this.form, {
             preserveScroll: true,
             onSuccess: () => {
               this.form.submit = false;
