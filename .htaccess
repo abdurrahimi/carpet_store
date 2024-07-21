@@ -1,7 +1,15 @@
-<IfModule mod_rewrite.c>
-    RewriteEngine On
+RewriteEngine On
+# RewriteBase /
 
-    # Redirect to the public folder
-    RewriteCond %{REQUEST_URI} !^/public/
-    RewriteRule ^(.*)$ public/$1 [L]
-</IfModule>
+# Redirect request from /admin-panel/build to /admin-panel/public/build
+RewriteRule ^build/(.*)$ /admin-panel/public/build/$1 [L]
+RewriteRule ^vendor/(.*)$ /admin-panel/public/vendor/$1 [L]
+RewriteRule ^css/(.*)$ /admin-panel/public/css/$1 [L]
+RewriteRule ^js/(.*)$ /admin-panel/public/js/$1 [L]
+RewriteRule ^img/(.*)$ /admin-panel/public/img/$1 [L]
+
+
+# Conditionally process index.php for other requests
+RewriteCond %{REQUEST_FILENAME} !-d
+RewriteCond %{REQUEST_FILENAME} !-f
+RewriteRule ^ index.php [L]

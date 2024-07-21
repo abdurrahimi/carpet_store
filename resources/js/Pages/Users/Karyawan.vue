@@ -395,7 +395,7 @@ export default {
       );
     },
     deleteAction(row) {
-      router.delete(`/users/${row.id}`, {
+      router.delete(this.route('user.destroy', row.id), {
         preserveScroll: true,
         onSuccess: () => {
           this.$success("Data berhasil dihapus");
@@ -412,11 +412,11 @@ export default {
       this.selectedIds = selectedRows;
     },
     async getDataUsers(val = "") {
-      let { data } = await axios.get(`/users/karyawan?name=${val}`);
+      let { data } = await axios.get(this.route("users.get", {name: val}));
       this.karyawan = data;
     },
     async getDataStore(val = "") {
-      let { data } = await axios.get(`/store/data?name=${val}`);
+      let { data } = await axios.get(this.route("store.get", {name: val}));
       this.store = data;
     },
     async submitForm() {
@@ -427,7 +427,7 @@ export default {
 
         this.form.submit = true;
         if (this.form.id == "" || this.form.id == null) {
-          return router.post("/users", this.form, {
+          return router.post(this.route('user.store'), this.form, {
             preserveScroll: true,
             onSuccess: () => {
               this.form.submit = false;
@@ -443,7 +443,7 @@ export default {
             },
           });
         } else {
-          return router.put(`/users/${this.form.id}`, this.form, {
+          return router.put(this.route('user.update', this.form.id), this.form, {
             preserveScroll: true,
             onSuccess: () => {
               this.form.submit = false;
