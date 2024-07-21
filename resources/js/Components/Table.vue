@@ -41,7 +41,7 @@
           </tr>
         </thead>
         <tbody>
-          <template v-if="rows.data.length > 0">
+          <template v-if="rows.data?.length > 0">
             <tr v-for="row in rows.data" :key="row.id">
               <td>
                 <div class="input-group">
