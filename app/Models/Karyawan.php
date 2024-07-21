@@ -25,4 +25,9 @@ class Karyawan extends Model
     {
         return $this->hasOne(User::class, 'karyawan_id', 'id');
     }
+
+    public function store()
+    {
+        return $this->belongsTo(Store::class, 'toko_id');
+    }
 }

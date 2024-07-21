@@ -330,6 +330,10 @@ export default {
           data: "leader.name",
         },
         {
+          title: "Store",
+          data: "store.name",
+        },
+        {
           title: "Created At",
           data: "created_at",
         },

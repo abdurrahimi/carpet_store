@@ -12,7 +12,7 @@ class StoreController extends Controller
     public function getDataStore(Request $request)
     {
         $name = $request->get('name', '');
-        $store = Store::query();
+        $store = Store::query()->select('id', 'name');
         if($name){
             $store = $store->where('name', 'like', DB::raw("'%".$name."%'"));
         }

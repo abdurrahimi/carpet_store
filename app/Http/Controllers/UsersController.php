@@ -26,6 +26,9 @@ class UsersController extends Controller
             },
             'account' => function($q){
                 return $q->select('id', 'karyawan_id','email');
+            },
+            'store' => function($q){
+                return $q->select('id', 'name');
             }
         ]);
 
