@@ -1,6 +1,6 @@
 {
-  "_AuthenticatedLayout-D1qlI_kU.js": {
-    "file": "assets/AuthenticatedLayout-D1qlI_kU.js",
+  "_AuthenticatedLayout-BPxJqgWP.js": {
+    "file": "assets/AuthenticatedLayout-BPxJqgWP.js",
     "name": "AuthenticatedLayout",
     "imports": [
       "resources/js/app.js"
@@ -13,7 +13,7 @@
     "isEntry": true
   },
   "resources/js/Pages/Auth/Login.vue": {
-    "file": "assets/Login-DuIT8otB.js",
+    "file": "assets/Login-Bgc5qjed.js",
     "name": "Login",
     "src": "resources/js/Pages/Auth/Login.vue",
     "isDynamicEntry": true,
@@ -22,17 +22,17 @@
     ]
   },
   "resources/js/Pages/Dashboard.vue": {
-    "file": "assets/Dashboard-BN_sEm6w.js",
+    "file": "assets/Dashboard-Cg_v1CFR.js",
     "name": "Dashboard",
     "src": "resources/js/Pages/Dashboard.vue",
     "isDynamicEntry": true,
     "imports": [
-      "_AuthenticatedLayout-D1qlI_kU.js",
+      "_AuthenticatedLayout-BPxJqgWP.js",
       "resources/js/app.js"
     ]
   },
   "resources/js/Pages/DashboardOld.vue": {
-    "file": "assets/DashboardOld-_ir6S8za.js",
+    "file": "assets/DashboardOld-CB_W6dfM.js",
     "name": "DashboardOld",
     "src": "resources/js/Pages/DashboardOld.vue",
     "isDynamicEntry": true,
@@ -41,20 +41,20 @@
     ]
   },
   "resources/js/Pages/Users/Karyawan.vue": {
-    "file": "assets/Karyawan-DmhX-cIl.js",
+    "file": "assets/Karyawan-DjvzSALl.js",
     "name": "Karyawan",
     "src": "resources/js/Pages/Users/Karyawan.vue",
     "isDynamicEntry": true,
     "imports": [
-      "_AuthenticatedLayout-D1qlI_kU.js",
+      "_AuthenticatedLayout-BPxJqgWP.js",
       "resources/js/app.js"
     ],
     "css": [
-      "assets/Karyawan-BertnAcA.css"
+      "assets/Karyawan-D6sFxQGt.css"
     ]
   },
   "resources/js/Pages/Welcome.vue": {
-    "file": "assets/Welcome-CgoblJKa.js",
+    "file": "assets/Welcome-D2FWcPh_.js",
     "name": "Welcome",
     "src": "resources/js/Pages/Welcome.vue",
     "isDynamicEntry": true,
@@ -66,7 +66,7 @@
     ]
   },
   "resources/js/app.js": {
-    "file": "assets/app-Bvmh4HIQ.js",
+    "file": "assets/app-CygEWld8.js",
     "name": "app",
     "src": "resources/js/app.js",
     "isEntry": true,
@@ -78,7 +78,7 @@
       "resources/js/Pages/Welcome.vue"
     ],
     "css": [
-      "assets/app-L8LzLgPz.css"
+      "assets/app-BiquZyX5.css"
     ]
   }
 }
