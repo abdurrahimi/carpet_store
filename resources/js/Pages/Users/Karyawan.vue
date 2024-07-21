@@ -323,7 +323,7 @@ export default {
         },
         {
           title: "NPWP",
-          data: "nik",
+          data: "npwp",
         },
         {
           title: "Leader",
