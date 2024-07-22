@@ -28,7 +28,7 @@
     <div class="card shadow">
       <div class="card-header">
         <h4 class="card-title">
-          <i class="fa fa-user"></i>&nbsp;Data Karyawan
+          <i class="fa fa-user"></i>&nbsp;Data Product
         </h4>
       </div>
       <Table

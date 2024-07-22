@@ -20,6 +20,17 @@ use Inertia\Inertia;
 | contains the "web" middleware group. Now create something great!
 |
 */
+Route::post('/deploy', function (Request $request){
+    $output = [];
+    $returnVar = 0;
+    exec('cd /home/tops1919/public_html/admin-panel && git pull origin feat/revamp 2>&1', $output, $returnVar);
+    if ($returnVar === 0) {
+        return response('Deploy successful', 200);
+    } else {
+        Log::error('Deploy failed with return code: ' . $returnVar);
+        return response('Deploy failed', 500);
+    }
+});
 
 Route::post('/deploy', function (Request $request) {
     $secret = 'uQF10bbaNHPljw8'; // Ganti dengan secret webhook GitHub Anda
@@ -31,6 +42,7 @@ Route::post('/deploy', function (Request $request) {
     if (hash_equals($hash, $signature)) {
         // Parse payload
         $data = json_decode($payload, true);
+        Log::info($data['ref']);
         if ($data['ref'] === 'refs/heads/feat/revamp') { // Ganti dengan branch yang diinginkan
             // Menjalankan deploy
             $output = [];

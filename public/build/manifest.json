@@ -1,6 +1,6 @@
 {
-  "_AuthenticatedLayout-CwSL6L9P.js": {
-    "file": "assets/AuthenticatedLayout-CwSL6L9P.js",
+  "_AuthenticatedLayout-BHIvsydQ.js": {
+    "file": "assets/AuthenticatedLayout-BHIvsydQ.js",
     "name": "AuthenticatedLayout",
     "imports": [
       "resources/js/app.js"
@@ -10,8 +10,8 @@
     "file": "assets/vue-multiselect-1JCai3RW.css",
     "src": "_vue-multiselect-!~{00a}~.js"
   },
-  "_vue-multiselect-Cytalqz2.js": {
-    "file": "assets/vue-multiselect-Cytalqz2.js",
+  "_vue-multiselect-GQy8MUnX.js": {
+    "file": "assets/vue-multiselect-GQy8MUnX.js",
     "name": "vue-multiselect",
     "imports": [
       "resources/js/app.js"
@@ -27,7 +27,7 @@
     "isEntry": true
   },
   "resources/js/Pages/Auth/Login.vue": {
-    "file": "assets/Login-Vh6EX5i7.js",
+    "file": "assets/Login-CYUNoxYg.js",
     "name": "Login",
     "src": "resources/js/Pages/Auth/Login.vue",
     "isDynamicEntry": true,
@@ -36,17 +36,17 @@
     ]
   },
   "resources/js/Pages/Dashboard.vue": {
-    "file": "assets/Dashboard-CM65rOCg.js",
+    "file": "assets/Dashboard-CUo8lvTK.js",
     "name": "Dashboard",
     "src": "resources/js/Pages/Dashboard.vue",
     "isDynamicEntry": true,
     "imports": [
-      "_AuthenticatedLayout-CwSL6L9P.js",
+      "_AuthenticatedLayout-BHIvsydQ.js",
       "resources/js/app.js"
     ]
   },
   "resources/js/Pages/DashboardOld.vue": {
-    "file": "assets/DashboardOld-BIBoyyHU.js",
+    "file": "assets/DashboardOld--QUqPcuo.js",
     "name": "DashboardOld",
     "src": "resources/js/Pages/DashboardOld.vue",
     "isDynamicEntry": true,
@@ -55,27 +55,27 @@
     ]
   },
   "resources/js/Pages/Products/Index.vue": {
-    "file": "assets/Index-lYAg_ZDU.js",
+    "file": "assets/Index-BM7onN9p.js",
     "name": "Index",
     "src": "resources/js/Pages/Products/Index.vue",
     "isDynamicEntry": true,
     "imports": [
-      "_AuthenticatedLayout-CwSL6L9P.js",
-      "_vue-multiselect-Cytalqz2.js",
+      "_AuthenticatedLayout-BHIvsydQ.js",
+      "_vue-multiselect-GQy8MUnX.js",
       "resources/js/app.js"
     ],
     "css": [
-      "assets/Index-C-q4k1j2.css"
+      "assets/Index-DaQU-L2Y.css"
     ]
   },
   "resources/js/Pages/Users/Karyawan.vue": {
-    "file": "assets/Karyawan-DzPV--ak.js",
+    "file": "assets/Karyawan-BdXLHIAc.js",
     "name": "Karyawan",
     "src": "resources/js/Pages/Users/Karyawan.vue",
     "isDynamicEntry": true,
     "imports": [
-      "_AuthenticatedLayout-CwSL6L9P.js",
-      "_vue-multiselect-Cytalqz2.js",
+      "_AuthenticatedLayout-BHIvsydQ.js",
+      "_vue-multiselect-GQy8MUnX.js",
       "resources/js/app.js"
     ],
     "css": [
@@ -83,7 +83,7 @@
     ]
   },
   "resources/js/Pages/Welcome.vue": {
-    "file": "assets/Welcome-BhIG2bpZ.js",
+    "file": "assets/Welcome-Ct_GmBvv.js",
     "name": "Welcome",
     "src": "resources/js/Pages/Welcome.vue",
     "isDynamicEntry": true,
@@ -95,7 +95,7 @@
     ]
   },
   "resources/js/app.js": {
-    "file": "assets/app-BgA1y0Zv.js",
+    "file": "assets/app-BJtmkgR4.js",
     "name": "app",
     "src": "resources/js/app.js",
     "isEntry": true,
