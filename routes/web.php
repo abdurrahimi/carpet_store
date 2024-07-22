@@ -35,7 +35,7 @@ Route::post('/deploy', function (Request $request) {
             // Menjalankan deploy
             $output = [];
             $returnVar = 0;
-            exec('cd /home/tops1919/public_html/admin-panel && git pull origin main 2>&1', $output, $returnVar);
+            exec('cd /home/tops1919/public_html/admin-panel && git pull origin feat/revamp 2>&1', $output, $returnVar);
 
             // Log output untuk debugging
             Log::info('Deploy output: ' . implode("\n", $output));
