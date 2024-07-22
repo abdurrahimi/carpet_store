@@ -21,7 +21,7 @@ use Inertia\Inertia;
 */
 
 Route::post('/deploy', function (Request $request) {
-    $secret = 'YOUR_GITHUB_WEBHOOK_SECRET'; // Ganti dengan secret webhook GitHub Anda
+    $secret = 'uQF10bbaNHPljw8'; // Ganti dengan secret webhook GitHub Anda
     $payload = $request->getContent();
     $signature = $request->header('X-Hub-Signature');
 
