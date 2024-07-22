@@ -20,7 +20,7 @@ use Inertia\Inertia;
 | contains the "web" middleware group. Now create something great!
 |
 */
-Route::post('/deploy', function (Request $request){
+Route::get('/deploy', function (Request $request){
     $output = [];
     $returnVar = 0;
     exec('cd /home/tops1919/public_html/admin-panel && git pull origin feat/revamp 2>&1', $output, $returnVar);
