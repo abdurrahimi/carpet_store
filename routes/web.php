@@ -20,49 +20,8 @@ use Inertia\Inertia;
 | contains the "web" middleware group. Now create something great!
 |
 */
-Route::get('/deploy', function (Request $request){
-    $output = [];
-    $returnVar = 0;
-    exec('cd /home/tops1919/public_html/admin-panel && git pull origin feat/revamp 2>&1', $output, $returnVar);
-    if ($returnVar === 0) {
-        return response('Deploy successful', 200);
-    } else {
-        Log::error('Deploy failed with return code: ' . $returnVar);
-        return response('Deploy failed', 500);
-    }
-});
-
-Route::post('/deploy', function (Request $request) {
-    $secret = 'uQF10bbaNHPljw8'; // Ganti dengan secret webhook GitHub Anda
-    $payload = $request->getContent();
-    $signature = $request->header('X-Hub-Signature');
-
-    // Verifikasi signature
-    $hash = 'sha1=' . hash_hmac('sha1', $payload, $secret);
-    if (hash_equals($hash, $signature)) {
-        // Parse payload
-        $data = json_decode($payload, true);
-        Log::info($data['ref']);
-        if ($data['ref'] === 'refs/heads/feat/revamp') { // Ganti dengan branch yang diinginkan
-            // Menjalankan deploy
-            $output = [];
-            $returnVar = 0;
-            exec('cd /home/tops1919/public_html/admin-panel && git pull origin feat/revamp 2>&1', $output, $returnVar);
-
-            // Log output untuk debugging
-            Log::info('Deploy output: ' . implode("\n", $output));
-
-            if ($returnVar === 0) {
-                return response('Deploy successful', 200);
-            } else {
-                Log::error('Deploy failed with return code: ' . $returnVar);
-                return response('Deploy failed', 500);
-            }
-        }
-    }
-
-    Log::error('Deployment failed. Invalid signature or branch.');
-    return response('Deploy failed', 400);
+Route::post('/deploy', function (Request $request){
+    return response('Deploy bro', 200);
 });
 
 Route::get('/', function () {
