@@ -1,5 +1,6 @@
 <?php
 
+use App\Http\Controllers\ProductController;
 use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\StoreController;
 use App\Http\Controllers\UsersController;
@@ -77,6 +78,9 @@ Route::middleware('auth')->group(function () {
     Route::post('/users', [UsersController::class, 'store'])->name('users.store');
     Route::put('/users/{id}', [UsersController::class, 'update'])->name('users.update');
     Route::delete('/users/{id}', [UsersController::class, 'destroy'])->name('users.destroy');
+
+    Route::get('/products', [ProductController::class, 'index'])->name('products.index');
+    Route::post('/products', [ProductController::class, 'store'])->name('products.store');
 
     //store
     Route::get('/store/data', [StoreController::class, 'getDataStore'])->name('store.get');

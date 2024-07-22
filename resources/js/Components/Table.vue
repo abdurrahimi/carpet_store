@@ -14,6 +14,9 @@
             <option value="100">100</option>
           </select>
         </div>
+        <slot name="filter">
+
+        </slot>
         <div class="form-group">
           <input
             type="text"
@@ -27,17 +30,17 @@
       <table class="table table-hover table-striped">
         <thead>
           <tr>
-            <th>
+            <th style="white-space: nowrap;">
               <input
                 type="checkbox"
                 v-model="selectAll"
                 @change="toggleSelectAll"
               />
             </th>
-            <th v-for="column in columns" :key="column">
+            <th v-for="column in columns" :key="column" style="white-space: nowrap;">
               {{ column.title }}
             </th>
-            <th v-if="$slots.actions">Actions</th>
+            <th v-if="$slots.actions" style="white-space: nowrap;">Actions</th>
           </tr>
         </thead>
         <tbody>
@@ -56,7 +59,7 @@
               <td v-for="column in columns" :key="column.data">
                 {{ getNestedValue(row, column.data) }}
               </td>
-              <td v-if="$slots.actions">
+              <td v-if="$slots.actions" style="white-space: nowrap;">
                 <!-- Use actions slot for custom rendering -->
                 <slot name="actions" :row="row"></slot>
               </td>
