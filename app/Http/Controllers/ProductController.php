@@ -23,6 +23,8 @@ class ProductController extends Controller
             ->leftJoin('users as created_by_user', 'products.created_by', '=', 'created_by_user.id')
             ->leftJoin('users as updated_by_user', 'products.updated_by', '=', 'updated_by_user.id')
             ->select(
+                'products.id',
+                'products.category_id',
                 'products.name as product_name',
                 'products_variant.name as variant_name',
                 'products_variant.length as variant_length',

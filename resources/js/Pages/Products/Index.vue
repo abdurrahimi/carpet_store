@@ -27,9 +27,7 @@
     </div>
     <div class="card shadow">
       <div class="card-header">
-        <h4 class="card-title">
-          <i class="fa fa-box"></i>&nbsp;Data Product
-        </h4>
+        <h4 class="card-title"><i class="fa fa-box"></i>&nbsp;Data Product</h4>
       </div>
       <Table
         :columns="table"
@@ -112,9 +110,9 @@
               $page?.props?.errors?.product_category
             }}</span>
           </div>
-
           <!-- Product Variants -->
           <div class="col-md-12 mb-3">
+            <hr class="divider" />
             <label class="form-label">Product Variants</label>
             <div
               v-for="(variant, index) in form.variants"
@@ -360,13 +358,29 @@ export default {
           {
             name: "",
             length: "",
-            color: ""
+            color: "",
           },
         ],
         submit: false,
       };
     },
-    populateForm(data) {},
+    populateForm(data) {
+        console.log(data);
+      this.form = {
+        id: data.id,
+        product_name: data.product_name,
+        toko_id: data.toko_id,
+        product_category: data.category_id,
+        variants: [
+          {
+            name: data.variant_name,
+            length: data.variant_length,
+            color: data.variant_color,
+          },
+        ],
+        submit: false,
+      };
+    },
     addVariant() {
       this.form.variants.push({
         name: "",

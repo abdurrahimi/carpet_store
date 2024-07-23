@@ -148,8 +148,17 @@ const submit = () => {
                         <button
                           type="submit"
                           class="btn btn-primary btn-user btn-block"
+                          :disabled="form.processing"
                         >
-                          Login
+                        <template v-if="form.processing">
+                            <span
+                              class="spinner-border spinner-border-sm"
+                              role="status"
+                              aria-hidden="true"
+                            ></span>
+                            <span class="bott">Loading</span>
+                          </template>
+                          <span v-else class="bott">Login</span>
                         </button>
                         <hr />
                       </form>
