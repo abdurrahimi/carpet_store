@@ -1,6 +1,6 @@
 <template>
   <div>
-    <div class="overflow-auto">
+    <div>
       <div class="d-flex justify-content-between pl-2 pt-2 pr-2 pb-0">
         <div class="form-group">
           <select
@@ -14,9 +14,7 @@
             <option value="100">100</option>
           </select>
         </div>
-        <slot name="filter">
-
-        </slot>
+        <slot name="filter"> </slot>
         <div class="form-group">
           <input
             type="text"
@@ -27,52 +25,67 @@
           />
         </div>
       </div>
-      <table class="table table-hover table-striped">
-        <thead>
-          <tr>
-            <th style="white-space: nowrap;">
-              <input
-                type="checkbox"
-                v-model="selectAll"
-                @change="toggleSelectAll"
-              />
-            </th>
-            <th v-for="column in columns" :key="column" style="white-space: nowrap;">
-              {{ column.title }}
-            </th>
-            <th v-if="$slots.actions" style="white-space: nowrap;">Actions</th>
-          </tr>
-        </thead>
-        <tbody>
-          <template v-if="rows.data?.length > 0">
-            <tr v-for="row in rows.data" :key="row.id">
-              <td>
-                <div class="input-group">
-                  <input
-                    type="checkbox"
-                    :value="row.id"
-                    v-model="selectedRows"
-                    @change="emitSelectedRows"
-                  />
-                </div>
-              </td>
-              <td v-for="column in columns" :key="column.data">
-                {{ getNestedValue(row, column.data) }}
-              </td>
-              <td v-if="$slots.actions" style="white-space: nowrap;">
-                <!-- Use actions slot for custom rendering -->
-                <slot name="actions" :row="row"></slot>
-              </td>
+      <div class="overflow-auto continer-table" ref="tableContainer">
+        <table class="table table-hover table-striped" ref="table">
+          <thead>
+            <tr>
+              <th style="white-space: nowrap">
+                <input type="checkbox" v-model="selectAll" @change="toggleSelectAll" />
+              </th>
+              <th v-for="column in columns" :key="column" style="white-space: nowrap">
+                {{ column.title }}
+              </th>
+              <th
+                v-if="$slots.actions"
+                class="sticky-column bg-white"
+                style="white-space: nowrap"
+              >
+                Actions
+              </th>
             </tr>
-          </template>
+          </thead>
+          <tbody ref="tableBody">
+            <template v-if="rows.data?.length > 0">
+              <tr v-for="row in rows.data" :key="row.id" ref="trx">
+                <td style="white-space: nowrap">
+                  <div class="input-group">
+                    <input
+                      type="checkbox"
+                      :value="row.id"
+                      v-model="selectedRows"
+                      @change="emitSelectedRows"
+                    />
+                  </div>
+                </td>
+                <td
+                  v-for="column in columns"
+                  :key="column.data"
+                  style="white-space: nowrap"
+                >
+                  {{
+                    column.render
+                      ? column.render(getNestedValue(row, column.data))
+                      : getNestedValue(row, column.data)
+                  }}
+                </td>
+                <td
+                  v-if="$slots.actions"
+                  style="white-space: nowrap"
+                  class="sticky-column"
+                  ref="stickyColumn"
+                >
+                  <!-- Use actions slot for custom rendering -->
+                  <slot name="actions" :row="row"></slot>
+                </td>
+              </tr>
+            </template>
 
-          <tr v-else>
-            <td :colspan="columns.length + 2" class="text-center">
-              No data found
-            </td>
-          </tr>
-        </tbody>
-      </table>
+            <tr v-else>
+              <td :colspan="columns.length + 2" class="text-center">No data found</td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
     </div>
     <nav v-if="rows" class="mb-2 mr-2">
       <ul class="pagination">
@@ -95,7 +108,7 @@
   </div>
 </template>
 
-<script>
+<script lang="jsx">
 import { router } from "@inertiajs/vue3";
 export default {
   name: "Table",
@@ -124,10 +137,21 @@ export default {
   },
   mounted() {
     const url = this.$page.url;
-    const queryParams = new URLSearchParams(url.split('?')[1]);
-    const search = queryParams.get('search') || '';
+    const queryParams = new URLSearchParams(url.split("?")[1]);
+    const search = queryParams.get("search") || "";
     this.search_params = search;
     this.page_size = this.rows.per_page;
+    this.updateStickyColumnBackground();
+    this.$refs.tableContainer.addEventListener(
+      "scroll",
+      this.updateStickyColumnBackground
+    );
+  },
+  beforeDestroy() {
+    this.$refs.tableContainer.removeEventListener(
+      "scroll",
+      this.updateStickyColumnBackground
+    );
   },
   methods: {
     changePage(page) {
@@ -148,9 +172,32 @@ export default {
       this.$emit("update:selectedRows", this.selectedRows);
     },
     updateData(url) {
-      router.get(
-        `${url}&search=${this.search_params}&page_size=${this.page_size}`
-      );
+      router.get(`${url}&search=${this.search_params}&page_size=${this.page_size}`);
+    },
+    updateStickyColumnBackground() {
+      const tableContainer = this.$refs.tableContainer;
+      const scrollLeft = tableContainer.scrollLeft;
+      const containerWidth = tableContainer.clientWidth;
+      const tableWidth = tableContainer.scrollWidth;
+      // Update posisi sticky column
+      const stickyColumnO = this.$refs.stickyColumn[0];
+      const stickyColumnWidth = stickyColumnO.offsetWidth;
+      const maxScrollLeft = tableWidth - containerWidth;
+      window.x = this.$refs.table;
+      this.$refs.stickyColumn.map((v, k) => {
+        if (k % 2 == 0) {
+          v.style.backgroundColor = `#f2f2f2`;
+        } else {
+          v.style.backgroundColor = `white`;
+        }
+        if (scrollLeft < maxScrollLeft - stickyColumnWidth) {
+          v.style.left = `${scrollLeft}px`;
+          v.style.boxShadow = `inset 10px 0 8px -8px rgba(0, 0, 0, 0.2)`;
+        } else {
+          v.style.left = `${maxScrollLeft}px`;
+          v.style.boxShadow = `none`;
+        }
+      });
     },
   },
   watch: {
@@ -173,5 +220,12 @@ export default {
 .page-link {
   color: black;
 }
-</style>
 
+.sticky-column {
+  position: sticky;
+  right: 0px;
+  /*background: inherit; /* optional, biar background column tetap sama */
+  z-index: 1; /* optional, biar column di atas konten lain */
+  transition: box-shadow 0.3s ease;
+}
+</style>
