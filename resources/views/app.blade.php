@@ -17,7 +17,7 @@
         <link rel="stylesheet" href="css/icon.css" />
         <!-- Scripts -->
         @routes
-        @vite(['public/js/sb-admin-2.js', 'resources/js/app.js', "resources/js/Pages/{$page['component']}.vue"])
+        @vite(['public/js/sb-admin-2.js', 'resources/js/app.jsx', "resources/js/Pages/{$page['component']}.vue"])
         @inertiaHead
         <style>
             .icon, .material-symbols-outlined{

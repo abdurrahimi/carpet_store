@@ -9,25 +9,11 @@ class Product extends Model
 {
     use SoftDeletes;
 
-    protected $table = 'products';
-    protected $fillable = [
-        'name',
-        'category_id',
-        'store_id',
-        'supplier_id',
-        'created_by',
-        'updated_by',
-        'deleted_by',
-    ];
+    protected $table = 'product';
 
     public function category()
     {
         return $this->belongsTo(ProductCategory::class, 'category_id');
-    }
-
-    public function variants()
-    {
-        return $this->hasMany(ProductVariant::class, 'product_id');
     }
 
     public function store()

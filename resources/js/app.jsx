@@ -19,17 +19,16 @@ createInertiaApp({
             .use(ZiggyVue);
             //.use(SweetalertPlugin)
 
-            app.config.globalProperties.$confirm = confirmAlert;
-            app.config.globalProperties.$success = successAlert;
-            app.config.globalProperties.$error = errorAlert;
+        app.config.globalProperties.$confirm = confirmAlert;
+        app.config.globalProperties.$success = successAlert;
+        app.config.globalProperties.$error = errorAlert;
 
-            app.component('Table', Table);
-            app.mount(el);
-            delete el.dataset.page
+        app.component('Table', Table);
+        app.mount(el);
+        delete el.dataset.page;
         return app;
     },
     progress: {
         color: '#4B5563',
     },
-
 });

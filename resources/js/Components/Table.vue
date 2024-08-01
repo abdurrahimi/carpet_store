@@ -62,11 +62,13 @@
                   :key="column.data"
                   style="white-space: nowrap"
                 >
-                  {{
+                  <!-- {{
                     column.render
                       ? column.render(getNestedValue(row, column.data))
                       : getNestedValue(row, column.data)
-                  }}
+                  }} -->
+                  <component v-if="column.render" :is="column.render(row)"></component>
+                  <template v-else>{{ getNestedValue(row, column.data) }}</template>
                 </td>
                 <td
                   v-if="$slots.actions"

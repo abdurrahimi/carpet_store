@@ -6,6 +6,7 @@
             "ziggy-js": ["./vendor/tightenco/ziggy"]
         },
         "jsx": "preserve",
+        "jsxImportSource": "vue",
         "moduleResolution": "node",
         "experimentalDecorators": true
     },
