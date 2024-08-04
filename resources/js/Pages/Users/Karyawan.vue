@@ -464,8 +464,6 @@ export default {
           });
         }
       } catch (e) {
-        console.log(e);
-      } finally {
         this.form.submit = false;
       }
     },

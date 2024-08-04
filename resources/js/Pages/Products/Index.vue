@@ -15,11 +15,7 @@
         + Data Baru
       </button>
     </div>
-    <div
-      v-if="$page.props.flash.success"
-      class="alert alert-success"
-      role="alert"
-    >
+    <div v-if="$page.props.flash.success" class="alert alert-success" role="alert">
       {{ $page.props.flash.success }}
     </div>
     <div v-if="$page.props.flash.error" class="alert alert-danger" role="alert">
@@ -29,24 +25,12 @@
       <div class="card-header">
         <h4 class="card-title"><i class="fa fa-box"></i>&nbsp;Data Product</h4>
       </div>
-      <Table
-        :columns="table"
-        :rows="data"
-        @update:selectedRows="handleSelectedRows"
-      >
+      <Table :columns="table" :rows="data" @update:selectedRows="handleSelectedRows">
         <template #actions="{ row }">
-          <button
-            @click="editRow(row)"
-            class="btn btn-warning btn-sm"
-            title="Edit"
-          >
+          <button @click="editRow(row)" class="btn btn-warning btn-sm" title="Edit">
             Edit</button
           >&nbsp;
-          <button
-            @click="deleteRow(row)"
-            class="btn btn-danger btn-sm"
-            title="Delete"
-          >
+          <button @click="deleteRow(row)" class="btn btn-danger btn-sm" title="Delete">
             Delete
           </button>
         </template>
@@ -89,48 +73,44 @@
           <div class="col-md-6 mb-3">
             <label for="toko_id" class="form-label">Store</label>
             <Multiselect
-              v-model="form.toko_id"
+              v-model="form.store"
               :options="store"
               track-by="id"
               label="name"
               @search-change="getDataStore"
               :internal-search="false"
-              :class="{ 'is-invalid': $page?.props?.errors?.toko_id }"
+              :class="{ 'is-invalid': $page?.props?.errors?.store }"
             ></Multiselect>
-            <span class="text-danger">{{ $page?.props?.errors?.toko_id }}</span>
+            <span class="text-danger">{{ $page?.props?.errors?.store?.id }}</span>
           </div>
 
           <!-- Category ID -->
           <div class="col-md-6 mb-3">
-            <label for="category_id" class="form-label">Category ID</label>
-            <input
-              type="number"
-              id="category_id"
-              v-model="form.category_id"
-              class="form-control"
-              :class="{ 'is-invalid': $page?.props?.errors?.category_id }"
-              placeholder="Enter Category ID"
-              required
-            />
-            <span class="text-danger">{{
-              $page?.props?.errors?.category_id
-            }}</span>
+            <label for="category_id" class="form-label">Category</label>
+            <Multiselect
+              v-model="form.category"
+              :options="categories"
+              track-by="id"
+              label="name"
+              :internal-search="true"
+              :class="{ 'is-invalid': $page?.props?.errors?.category?.id }"
+            ></Multiselect>
+            <span class="text-danger">{{ $page?.props?.errors?.category_id }}</span>
           </div>
 
           <!-- Supplier ID -->
           <div class="col-md-6 mb-3">
-            <label for="supp_id" class="form-label">Supplier ID</label>
-            <input
-              type="number"
-              id="supp_id"
-              v-model="form.supp_id"
-              class="form-control"
-              :class="{ 'is-invalid': $page?.props?.errors?.supp_id }"
-              placeholder="Enter Supplier ID"
-            />
-            <span class="text-danger">{{ $page?.props?.errors?.supp_id }}</span>
+            <label for="supp_id" class="form-label">Supplier</label>
+            <Multiselect
+              v-model="form.supplier"
+              :options="supplier"
+              track-by="id"
+              label="name"
+              :internal-search="true"
+              :class="{ 'is-invalid': $page?.props?.errors?.supplier?.id }"
+            ></Multiselect>
+            <span class="text-danger">{{ $page?.props?.errors?.supplier?.id }}</span>
           </div>
-
 
           <!-- Color -->
           <div class="col-md-6 mb-3">
@@ -162,7 +142,7 @@
 
           <!-- Unit Price -->
           <div class="col-md-6 mb-3">
-            <label for="unit_price" class="form-label">Unit Price</label>
+            <label for="unit_price" class="form-label">Unit Price(per meter)</label>
             <input
               type="number"
               id="unit_price"
@@ -171,16 +151,12 @@
               :class="{ 'is-invalid': $page?.props?.errors?.unit_price }"
               placeholder="Enter Unit Price"
             />
-            <span class="text-danger">{{
-              $page?.props?.errors?.unit_price
-            }}</span>
+            <span class="text-danger">{{ $page?.props?.errors?.unit_price }}</span>
           </div>
 
           <!-- Design Description -->
           <div class="col-md-6 mb-3">
-            <label for="design_desc" class="form-label"
-              >Design Description</label
-            >
+            <label for="design_desc" class="form-label">Design Description</label>
             <input
               type="text"
               id="design_desc"
@@ -189,16 +165,12 @@
               :class="{ 'is-invalid': $page?.props?.errors?.design_desc }"
               placeholder="Enter Design Description"
             />
-            <span class="text-danger">{{
-              $page?.props?.errors?.design_desc
-            }}</span>
+            <span class="text-danger">{{ $page?.props?.errors?.design_desc }}</span>
           </div>
 
           <!-- Pattern Description -->
           <div class="col-md-6 mb-3">
-            <label for="pattern_desc" class="form-label"
-              >Pattern Description</label
-            >
+            <label for="pattern_desc" class="form-label">Pattern Description</label>
             <input
               type="text"
               id="pattern_desc"
@@ -207,9 +179,7 @@
               :class="{ 'is-invalid': $page?.props?.errors?.pattern_desc }"
               placeholder="Enter Pattern Description"
             />
-            <span class="text-danger">{{
-              $page?.props?.errors?.pattern_desc
-            }}</span>
+            <span class="text-danger">{{ $page?.props?.errors?.pattern_desc }}</span>
           </div>
 
           <!-- Pattern Name -->
@@ -223,9 +193,7 @@
               :class="{ 'is-invalid': $page?.props?.errors?.pattern_name }"
               placeholder="Enter Pattern Name"
             />
-            <span class="text-danger">{{
-              $page?.props?.errors?.pattern_name
-            }}</span>
+            <span class="text-danger">{{ $page?.props?.errors?.pattern_name }}</span>
           </div>
 
           <!-- Design Name -->
@@ -239,9 +207,7 @@
               :class="{ 'is-invalid': $page?.props?.errors?.design_name }"
               placeholder="Enter Design Name"
             />
-            <span class="text-danger">{{
-              $page?.props?.errors?.design_name
-            }}</span>
+            <span class="text-danger">{{ $page?.props?.errors?.design_name }}</span>
           </div>
 
           <!-- Year -->
@@ -268,9 +234,7 @@
               class="form-control"
               :class="{ 'is-invalid': $page?.props?.errors?.mfg_date }"
             />
-            <span class="text-danger">{{
-              $page?.props?.errors?.mfg_date
-            }}</span>
+            <span class="text-danger">{{ $page?.props?.errors?.mfg_date }}</span>
           </div>
 
           <!-- Length -->
@@ -312,14 +276,7 @@
               :class="{ 'is-invalid': $page?.props?.errors?.roll_number }"
               placeholder="Enter Roll Number"
             />
-            <span class="text-danger">{{
-              $page?.props?.errors?.roll_number
-            }}</span>
-          </div>
-
-          <!-- Submit Button -->
-          <div class="col-md-12 mb-3">
-            <button type="submit" class="btn btn-primary">Submit</button>
+            <span class="text-danger">{{ $page?.props?.errors?.roll_number }}</span>
           </div>
         </div>
       </form>
@@ -331,14 +288,14 @@
           :class="{ disabled: form.submit }"
           @click="submitForm"
         >
-          <template v-if="form.submit">
+          <div v-if="form.submit">
             <span
               class="spinner-border spinner-border-sm"
               role="status"
               aria-hidden="true"
             ></span>
             <span class="bott">Loading</span>
-          </template>
+          </div>
           <span v-else class="bott">Save</span>
         </button>
       </template>
@@ -355,7 +312,7 @@ import axios from "axios";
 import "vue-multiselect/dist/vue-multiselect.css";
 export default {
   layout: AuthenticatedLayout,
-  props: ["products", "categories"],
+  props: ["products", "categories", "supplier"],
   components: {
     Head,
     Modal,
@@ -459,7 +416,6 @@ export default {
           data: "roll_number",
         },
       ],
-
       data: this.products,
       modalTitle: "",
       modalShow: false,
@@ -495,12 +451,12 @@ export default {
       );
     },
     deleteAction(row) {
-      router.delete(this.route("user.destroy", row.id), {
+      router.delete(this.route("products.delete", row.id), {
         preserveScroll: true,
         onSuccess: () => {
           this.$success("Data berhasil dihapus");
           router.visit(this.$page.url, {
-            only: ["users"],
+            only: ["products"],
           });
         },
         onError: () => {
@@ -526,12 +482,12 @@ export default {
           return router.post(this.route("products.store"), this.form, {
             preserveScroll: true,
             onSuccess: () => {
-              this.form.submit = false;
-              $("#modal-product-index").modal("hide");
               this.$success("Data berhasil disimpan");
               router.visit(this.$page.url, {
                 only: ["products"],
               });
+              this.form.submit = false;
+              $("#modal-product-index").modal("hide");
             },
             onError: () => {
               this.form.submit = false;
@@ -539,29 +495,24 @@ export default {
             },
           });
         } else {
-          return router.put(
-            this.route("users.update", this.form.id),
-            this.form,
-            {
-              preserveScroll: true,
-              onSuccess: () => {
-                this.form.submit = false;
-                $("#modal-add").modal("hide");
-                this.$success("Data berhasil disimpan");
-                router.visit(this.$page.url, {
-                  only: ["users"],
-                });
-              },
-              onError: () => {
-                this.form.submit = false;
-                this.$error();
-              },
-            }
-          );
+          return router.put(this.route("products.update", this.form.id), this.form, {
+            preserveScroll: true,
+            onSuccess: () => {
+              this.$success("Data berhasil disimpan");
+              router.visit(this.$page.url, {
+                only: ["products"],
+              });
+              this.form.submit = false;
+              $("#modal-product-index").modal("hide");
+            },
+            onError: () => {
+              this.form.submit = false;
+              this.$error();
+            },
+          });
         }
       } catch (e) {
         console.log(e);
-      } finally {
         this.form.submit = false;
       }
     },
@@ -569,10 +520,20 @@ export default {
       this.form = {
         id: null,
         product_id: "",
-        category_id: 1,
-        supp_id: null,
+        category: {
+          id: null,
+          name: "",
+        },
+        supplier: {
+          id: null,
+          name: "",
+        },
+        store: {
+          id: null,
+          name: "",
+        },
         name: "",
-        origin: 2,
+        origin: 1,
         color: "",
         cost: "",
         unit_price: "",
@@ -589,38 +550,30 @@ export default {
         edit: false,
       };
     },
-    populateForm(data) {
+    populateForm(row) {
+      console.log(row);
       this.form = {
-        id: data.id,
-        category_id: 1,
-        supp_id: null,
-        name: "",
-        origin: 2,
-        color: "",
-        cost: "",
-        unit_price: "",
-        design_desc: "",
-        pattern_desc: "",
-        pattern_name: "",
-        design_name: "",
-        year: "",
-        mfg_date: "",
-        length: 0,
-        width: 0,
-        roll_number: "",
+        id: row.id,
+        category: row.category,
+        supplier: row.supplier,
+        store: row.store,
+        name: row.name,
+        origin: row.origin,
+        color: row.color,
+        cost: row.cost,
+        unit_price: row.unit_price,
+        design_desc: row.design_desc,
+        pattern_desc: row.pattern_desc,
+        pattern_name: row.pattern_name,
+        design_name: row.design_name,
+        year: row.year,
+        mfg_date: row.mfg_date,
+        length: row.length,
+        width: row.width,
+        roll_number: row.roll_number,
         submit: false,
-        edit: false,
+        edit: true,
       };
-    },
-    addVariant() {
-      this.form.variants.push({
-        name: "",
-        length: "",
-        color: "",
-      });
-    },
-    removeVariant(index) {
-      this.form.variants.splice(index, 1);
     },
   },
 };
