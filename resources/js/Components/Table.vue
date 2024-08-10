@@ -62,11 +62,7 @@
                   :key="column.data"
                   style="white-space: nowrap"
                 >
-                  <!-- {{
-                    column.render
-                      ? column.render(getNestedValue(row, column.data))
-                      : getNestedValue(row, column.data)
-                  }} -->
+
                   <component v-if="column.render" :is="column.render(row)"></component>
                   <template v-else>{{ getNestedValue(row, column.data) }}</template>
                 </td>
@@ -181,6 +177,7 @@ export default {
       const scrollLeft = tableContainer.scrollLeft;
       const containerWidth = tableContainer.clientWidth;
       const tableWidth = tableContainer.scrollWidth;
+      if(containerWidth == tableWidth) return
       // Update posisi sticky column
       const stickyColumnO = this.$refs.stickyColumn[0];
       const stickyColumnWidth = stickyColumnO.offsetWidth;

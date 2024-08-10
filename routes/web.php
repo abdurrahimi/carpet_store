@@ -56,7 +56,12 @@ Route::middleware('auth')->group(function () {
     Route::delete('/products/{id}', [ProductController::class, 'delete'])->name('products.delete');
 
     //store
+    Route::get('/store', [StoreController::class, 'index'])->name('store.index');
+    //Route::get('/store/karyawan', [UsersController::class, 'getDataUsers'])->name('users.get');
     Route::get('/store/data', [StoreController::class, 'getDataStore'])->name('store.get');
+    Route::post('/store', [StoreController::class, 'store'])->name('store.store');
+    Route::put('/store/{id}', [StoreController::class, 'update'])->name('store.update');
+    Route::delete('/store/{id}', [StoreController::class, 'destroy'])->name('store.delete');
 
     Route::get('/temp', function(){
         echo 'Coming Soon';
