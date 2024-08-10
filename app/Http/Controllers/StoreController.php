@@ -14,7 +14,7 @@ class StoreController extends Controller
     public function index(Request $request)
     {
         $name = $request->get('name', '');
-        $store = Store::query();
+        $store = Store::query()->with('manager');
         if($name){
             $store = $store->where('name', 'like', DB::raw("'%$name.%'"))
                             ->orWhere('name', 'like', "");
@@ -42,7 +42,7 @@ class StoreController extends Controller
     {
         $validatedData = $request->validate([
             'store_type' => 'required|integer|min:1|max:2',
-            'manager_id' => 'nullable|integer',
+            'manager.id' => 'nullable|integer',
             'name' => 'required|string|max:50',
             'address' => 'nullable|string',
             'phone' => 'nullable|digits_between:10,20'
@@ -51,7 +51,7 @@ class StoreController extends Controller
         try {
             $store = new Store();
             $store->store_type = $validatedData['store_type'];
-            $store->manager_id = $validatedData['manager_id'] ?? null;
+            $store->manager_id = $validatedData['manager']['id'] ?? null;
             $store->name = $validatedData['name'];
             $store->address = $validatedData['address'] ?? null;
             $store->phone = $validatedData['phone'] ?? null;
@@ -71,7 +71,7 @@ class StoreController extends Controller
     {
         $validatedData = $request->validate([
             'store_type' => 'required|integer|min:1|max:2',
-            'manager_id' => 'nullable|integer',
+            'manager.id' => 'nullable|integer',
             'name' => 'required|string|max:50',
             'address' => 'nullable|string',
             'phone' => 'nullable|digits_between:10,20'
@@ -80,7 +80,7 @@ class StoreController extends Controller
         try {
             $store = Store::findOrFail($id);
             $store->store_type = $validatedData['store_type'];
-            $store->manager_id = $validatedData['manager_id'] ?? null;
+            $store->manager_id = $validatedData['manager']['id'] ?? null;
             $store->name = $validatedData['name'];
             $store->address = $validatedData['address'] ?? null;
             $store->phone = $validatedData['phone'] ?? null;

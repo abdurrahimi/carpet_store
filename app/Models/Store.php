@@ -9,4 +9,9 @@ class Store extends Model
 {
     use HasFactory;
     protected $table = 'store';
+
+    public function manager()
+    {
+        return $this->belongsTo(Karyawan::class, 'manager_id');
+    }
 }

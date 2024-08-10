@@ -72,6 +72,19 @@
               </div>
             </div>
           </div>
+          <div class="col-md-6 mb-3">
+            <label for="toko_id" class="form-label">Manager / PIC</label>
+            <Multiselect
+              v-model="form.manager"
+              :options="karyawan"
+              track-by="id"
+              label="name"
+              @search-change="getDataKaryawan"
+              :internal-search="false"
+              :class="{ 'is-invalid': $page?.props?.errors?.manager?.id }"
+            ></Multiselect>
+            <span class="text-danger">{{ $page?.props?.errors?.manager?.id }}</span>
+          </div>
 
           <!-- Phone -->
           <div class="col-md-6 mb-3">
@@ -89,28 +102,6 @@
               </div>
             </div>
           </div>
-        </div>
-
-        <div class="row">
-          <!-- Address -->
-          <div class="col-md-6 mb-3">
-            <div class="form-group">
-              <label for="address">Alamat</label>
-              <textarea
-                v-model="form.address"
-                class="form-control"
-                id="address"
-                :class="{ 'is-invalid': $page?.props?.errors?.address }"
-              ></textarea>
-              <div
-                v-if="$page?.props?.errors?.address"
-                class="invalid-feedback"
-              >
-                {{ $page?.props?.errors?.address }}
-              </div>
-            </div>
-          </div>
-
           <!-- Store Type -->
           <div class="col-md-6 mb-3">
             <div class="form-group">
@@ -129,6 +120,27 @@
                 class="invalid-feedback"
               >
                 {{ $page?.props?.errors?.store_type }}
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div class="row">
+          <!-- Address -->
+          <div class="col-md-12 mb-3">
+            <div class="form-group">
+              <label for="address">Alamat</label>
+              <textarea
+                v-model="form.address"
+                class="form-control"
+                id="address"
+                :class="{ 'is-invalid': $page?.props?.errors?.address }"
+              ></textarea>
+              <div
+                v-if="$page?.props?.errors?.address"
+                class="invalid-feedback"
+              >
+                {{ $page?.props?.errors?.address }}
               </div>
             </div>
           </div>
@@ -160,7 +172,6 @@ import AuthenticatedLayout from "@/Layouts/AuthenticatedLayout.vue";
 import Modal from "@/Components/Modal.vue";
 import { Head, router } from "@inertiajs/vue3";
 import Multiselect from "vue-multiselect";
-import axios from "axios";
 import "vue-multiselect/dist/vue-multiselect.css";
 
 export default {
@@ -175,6 +186,7 @@ export default {
     return {
       table: [
         { title: "Nama Store", data: "name" },
+        { title: "Manajer / PIC", data: "manager.name" },
         { title: "Alamat", data: "address" },
         { title: "Nomor Telepon", data: "phone" },
         {
@@ -190,10 +202,12 @@ export default {
       selectedIds: [],
       form: {},
       data: this.store,
+      karyawan: []
     };
   },
   mounted() {
     this.resetForm();
+    this.getDataKaryawan()
   },
   methods: {
     createProduct() {
@@ -203,6 +217,7 @@ export default {
       $("#modal-product-index").modal("show");
     },
     editRow(row) {
+      this.getDataKaryawan(row.manager?.name)
       this.resetForm();
       this.populateForm(row);
       this.form.account = row.account;
@@ -274,7 +289,6 @@ export default {
           });
         }
       } catch (e) {
-        console.log(e);
         this.form.submit = false;
       }
     },
@@ -285,6 +299,7 @@ export default {
         address: "",
         phone: "",
         store_type: "1",
+        manager: {},
         submit: false,
       };
     },
@@ -294,6 +309,11 @@ export default {
       this.form.address = data.address;
       this.form.phone = data.phone;
       this.form.store_type = data.store_type;
+      this.form.manager = data.manager;
+    },
+    async getDataKaryawan(val = "") {
+      let { data } = await axios.get(this.route("users.get", { name: val }));
+      this.karyawan = data;
     },
   },
 };
