@@ -6,7 +6,7 @@ import vueJsx from '@vitejs/plugin-vue-jsx'
 export default defineConfig({
     plugins: [
         laravel({
-            input: ['resources/js/app.js', 'public/js/sb-admin-2.js'],
+            input: ['resources/js/app.jsx', 'public/js/sb-admin-2.js'],
             refresh: true,
         }),
         vue({

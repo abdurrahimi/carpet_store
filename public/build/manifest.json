@@ -1,20 +1,20 @@
 {
-  "_AuthenticatedLayout-BHaJhSVk.js": {
-    "file": "assets/AuthenticatedLayout-BHaJhSVk.js",
+  "_AuthenticatedLayout-pqXKvyNS.js": {
+    "file": "assets/AuthenticatedLayout-pqXKvyNS.js",
     "name": "AuthenticatedLayout",
     "imports": [
-      "resources/js/app.js"
+      "resources/js/app.jsx"
     ]
   },
-  "_vue-multiselect-!~{00a}~.js": {
+  "_vue-multiselect-!~{00b}~.js": {
     "file": "assets/vue-multiselect-1JCai3RW.css",
-    "src": "_vue-multiselect-!~{00a}~.js"
+    "src": "_vue-multiselect-!~{00b}~.js"
   },
-  "_vue-multiselect-CSb7Lamb.js": {
-    "file": "assets/vue-multiselect-CSb7Lamb.js",
+  "_vue-multiselect-Csrzy6bE.js": {
+    "file": "assets/vue-multiselect-Csrzy6bE.js",
     "name": "vue-multiselect",
     "imports": [
-      "resources/js/app.js"
+      "resources/js/app.jsx"
     ],
     "css": [
       "assets/vue-multiselect-1JCai3RW.css"
@@ -27,88 +27,97 @@
     "isEntry": true
   },
   "resources/js/Pages/Auth/Login.vue": {
-    "file": "assets/Login-BaTGN7WO.js",
+    "file": "assets/Login-BpomzzSo.js",
     "name": "Login",
     "src": "resources/js/Pages/Auth/Login.vue",
     "isDynamicEntry": true,
     "imports": [
-      "resources/js/app.js"
+      "resources/js/app.jsx"
     ]
   },
   "resources/js/Pages/Dashboard.vue": {
-    "file": "assets/Dashboard-Dledjqlo.js",
+    "file": "assets/Dashboard-CTV8upIv.js",
     "name": "Dashboard",
     "src": "resources/js/Pages/Dashboard.vue",
     "isDynamicEntry": true,
     "imports": [
-      "_AuthenticatedLayout-BHaJhSVk.js",
-      "resources/js/app.js"
+      "_AuthenticatedLayout-pqXKvyNS.js",
+      "resources/js/app.jsx"
     ]
   },
   "resources/js/Pages/DashboardOld.vue": {
-    "file": "assets/DashboardOld-Tw29nPmT.js",
+    "file": "assets/DashboardOld-CoOWoxkh.js",
     "name": "DashboardOld",
     "src": "resources/js/Pages/DashboardOld.vue",
     "isDynamicEntry": true,
     "imports": [
-      "resources/js/app.js"
+      "resources/js/app.jsx"
     ]
   },
   "resources/js/Pages/Products/Index.vue": {
-    "file": "assets/Index-DOC-0DQ7.js",
+    "file": "assets/Index-DUMs6J0W.js",
     "name": "Index",
     "src": "resources/js/Pages/Products/Index.vue",
     "isDynamicEntry": true,
     "imports": [
-      "_AuthenticatedLayout-BHaJhSVk.js",
-      "_vue-multiselect-CSb7Lamb.js",
-      "resources/js/app.js"
-    ],
-    "css": [
-      "assets/Index-DAfKRcAY.css"
+      "_AuthenticatedLayout-pqXKvyNS.js",
+      "_vue-multiselect-Csrzy6bE.js",
+      "resources/js/app.jsx"
+    ]
+  },
+  "resources/js/Pages/Store/Index.vue": {
+    "file": "assets/Index-CrN09RiN.js",
+    "name": "Index",
+    "src": "resources/js/Pages/Store/Index.vue",
+    "isDynamicEntry": true,
+    "imports": [
+      "_AuthenticatedLayout-pqXKvyNS.js",
+      "_vue-multiselect-Csrzy6bE.js",
+      "resources/js/app.jsx"
     ]
   },
   "resources/js/Pages/Users/Karyawan.vue": {
-    "file": "assets/Karyawan-5V31tOXa.js",
+    "file": "assets/Karyawan-BlD-taKO.js",
     "name": "Karyawan",
     "src": "resources/js/Pages/Users/Karyawan.vue",
     "isDynamicEntry": true,
     "imports": [
-      "_AuthenticatedLayout-BHaJhSVk.js",
-      "_vue-multiselect-CSb7Lamb.js",
-      "resources/js/app.js"
+      "_AuthenticatedLayout-pqXKvyNS.js",
+      "_vue-multiselect-Csrzy6bE.js",
+      "resources/js/app.jsx"
     ],
     "css": [
-      "assets/Karyawan-Bn7n3DpC.css"
+      "assets/Karyawan-CXbyGDpX.css"
     ]
   },
   "resources/js/Pages/Welcome.vue": {
-    "file": "assets/Welcome-CZKVDdAK.js",
+    "file": "assets/Welcome-Dx38_K1h.js",
     "name": "Welcome",
     "src": "resources/js/Pages/Welcome.vue",
     "isDynamicEntry": true,
     "imports": [
-      "resources/js/app.js"
+      "resources/js/app.jsx"
     ],
     "css": [
       "assets/Welcome-CSsUW0tK.css"
     ]
   },
-  "resources/js/app.js": {
-    "file": "assets/app-kcrfGXKk.js",
+  "resources/js/app.jsx": {
+    "file": "assets/app-hO94-DmL.js",
     "name": "app",
-    "src": "resources/js/app.js",
+    "src": "resources/js/app.jsx",
     "isEntry": true,
     "dynamicImports": [
       "resources/js/Pages/Auth/Login.vue",
       "resources/js/Pages/Dashboard.vue",
       "resources/js/Pages/DashboardOld.vue",
       "resources/js/Pages/Products/Index.vue",
+      "resources/js/Pages/Store/Index.vue",
       "resources/js/Pages/Users/Karyawan.vue",
       "resources/js/Pages/Welcome.vue"
     ],
     "css": [
-      "assets/app-FWYtoWRx.css"
+      "assets/app-Doj4T_jP.css"
     ]
   }
 }
