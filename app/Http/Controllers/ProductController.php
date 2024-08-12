@@ -64,6 +64,23 @@ class ProductController extends Controller
 
     }
 
+    public function getDataProduct(Request $request)
+    {
+        $name = $request->get('name', '');
+        $id = $request->get('name', null);
+        $products = Product::query()->select('id','name');
+        if($name){
+            $products = $products->where('name', 'like', DB::raw("'%".$name."%'"));
+        }
+
+        if($id) {
+            $products = $products->orWhere('id', '=', $id);
+        }
+
+        $products = $products->orWhereRaw('1 = 1')->limit((int) $request->get('limit', 10))->get();
+        return response()->json($products);
+    }
+
     public function store(Request $request)
     {
         $validatedData = $request->validate([

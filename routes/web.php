@@ -2,6 +2,7 @@
 
 use App\Http\Controllers\ProductController;
 use App\Http\Controllers\ProfileController;
+use App\Http\Controllers\StockController;
 use App\Http\Controllers\StoreController;
 use App\Http\Controllers\UsersController;
 use Illuminate\Foundation\Application;
@@ -51,17 +52,24 @@ Route::middleware('auth')->group(function () {
     Route::delete('/users/{id}', [UsersController::class, 'destroy'])->name('users.destroy');
 
     Route::get('/products', [ProductController::class, 'index'])->name('products.index');
+    Route::get('/products/data', [ProductController::class, 'getDataProduct'])->name('products.get');
     Route::post('/products', [ProductController::class, 'store'])->name('products.store');
     Route::put('/products/{id}', [ProductController::class, 'update'])->name('products.update');
     Route::delete('/products/{id}', [ProductController::class, 'delete'])->name('products.delete');
 
     //store
     Route::get('/store', [StoreController::class, 'index'])->name('store.index');
-    //Route::get('/store/karyawan', [UsersController::class, 'getDataUsers'])->name('users.get');
     Route::get('/store/data', [StoreController::class, 'getDataStore'])->name('store.get');
     Route::post('/store', [StoreController::class, 'store'])->name('store.store');
     Route::put('/store/{id}', [StoreController::class, 'update'])->name('store.update');
     Route::delete('/store/{id}', [StoreController::class, 'destroy'])->name('store.delete');
+
+        // stock
+    Route::get('/stock', [StockController::class, 'index'])->name('stock.index');
+    Route::get('/stock/data', [StockController::class, 'getDataStock'])->name('stock.get');
+    Route::post('/stock', [StockController::class, 'store'])->name('stock.store');
+    Route::delete('/stock/{id}', [StockController::class, 'destroy'])->name('stock.delete');
+
 
     Route::get('/temp', function(){
         echo 'Coming Soon';

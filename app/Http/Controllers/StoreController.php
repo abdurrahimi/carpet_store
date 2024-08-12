@@ -61,7 +61,6 @@ class StoreController extends Controller
 
             return redirect()->route('store.index')->with('success', 'Store created successfully.');
         } catch (\Exception $e) {
-            dd($e);
             Log::error('Error creating store: ' . $e->getMessage());
             return redirect()->route('store.index')->with('error', 'Failed to create store.');
         }
