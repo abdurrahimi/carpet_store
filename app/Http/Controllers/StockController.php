@@ -38,7 +38,7 @@ class StockController extends Controller
             $stock = $stock->where('type', $type);
         }
 
-        $stock = $stock->paginate(10);
+        $stock = $stock->paginate($pageSize);
 
         return Inertia::render('Stock/Index', [
             'stock' => $stock

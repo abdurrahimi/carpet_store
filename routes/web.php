@@ -1,5 +1,6 @@
 <?php
 
+use App\Http\Controllers\PenjualanController;
 use App\Http\Controllers\ProductController;
 use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\StockController;
@@ -69,6 +70,9 @@ Route::middleware('auth')->group(function () {
     Route::get('/stock/data', [StockController::class, 'getDataStock'])->name('stock.get');
     Route::post('/stock', [StockController::class, 'store'])->name('stock.store');
     Route::delete('/stock/{id}', [StockController::class, 'destroy'])->name('stock.delete');
+
+    Route::get('/penjualan', [PenjualanController::class, 'index'])->name('penjualan.index');
+    Route::get('/kasir', [PenjualanController::class, 'kasir'])->name('penjualan.kasir');
 
 
     Route::get('/temp', function(){
