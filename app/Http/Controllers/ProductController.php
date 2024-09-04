@@ -68,7 +68,7 @@ class ProductController extends Controller
     {
         $name = $request->get('name', '');
         $id = $request->get('name', null);
-        $products = Product::query()->select('id','name');
+        $products = Product::query()->select('id','name', 'unit_price');
         if($name){
             $products = $products->where('name', 'like', DB::raw("'%".$name."%'"));
         }

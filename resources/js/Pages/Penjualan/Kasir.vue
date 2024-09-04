@@ -1,75 +1,46 @@
 <template>
     <div>
+
         <Head title="Kasir" />
-        <div
-            v-if="$page.props.flash.success"
-            class="alert alert-success"
-            role="alert"
-        >
+        <div v-if="$page.props.flash.success" class="alert alert-success" role="alert">
             {{ $page.props.flash.success }}
         </div>
-        <div
-            v-if="$page.props.flash.error"
-            class="alert alert-danger"
-            role="alert"
-        >
+        <div v-if="$page.props.flash.error" class="alert alert-danger" role="alert">
             {{ $page.props.flash.error }}
         </div>
         <div class="card shadow mb-5">
             <div class="card-body">
                 <form id="form-kasir">
-                    <button
-                        class="btn btn-primary btn-sm mb-2 float-right"
-                        type="button"
-                        @click="tambahProduct"
-                    >
+                    <button class="btn btn-primary btn-sm mb-2 float-right" type="button" @click="tambahProduct">
                         + Tambah Product
                     </button>
                     <table class="table">
                         <thead></thead>
                         <tbody>
                             <tr v-for="(item, key) in form.data">
-                                <td class="nt" style="width: 25%">
+                                <td class="nt" style="width: 20%">
                                     <div class="form-group">
-                                        <label
-                                            for="product_id"
-                                            class="form-label"
-                                            >Produk</label
-                                        >
-                                        <Multiselect
-                                            v-model="form.data[key].product"
-                                            :options="products"
-                                            track-by="id"
-                                            placeholder="Pilih Produk"
-                                            label="name"
-                                            @search-change="getProducts"
-                                            :internal-search="false"
-                                            :class="{
+                                        <label for="product_id" class="form-label">Produk</label>
+                                        <Multiselect v-model="form.data[key].product" :options="products" track-by="id"
+                                            placeholder="Pilih Produk" label="name" @search-change="getProducts"
+                                            @select="pilihData(key)"
+                                            :internal-search="false" :class="{
                                                 'is-invalid':
                                                     $page?.props?.errors
                                                         ?.product?.id,
-                                            }"
-                                        ></Multiselect>
+                                            }"></Multiselect>
                                         <span class="text-danger">{{
                                             $page?.props?.errors?.product?.id
                                         }}</span>
                                     </div>
                                 </td>
-                                <td class="nt" style="width: 12%">
+                                <td class="nt" style="width: 10%">
                                     <div class="form-group">
-                                        <label for="jumlah" class="form-label"
-                                            >Jumlah (Meter)</label
-                                        >
+                                        <label for="jumlah" class="form-label">Jumlah (Meter)</label>
                                         <div class="input-group">
-                                            <input
-                                                type="number"
-                                                class="form-control"
-                                                v-model="form.data[key].qty"
-                                            />
+                                            <input type="number" class="form-control" v-model="form.data[key].qty" />
                                             <div class="input-group-append">
-                                                <span class="input-group-text"
-                                                    >Meter</span
-                                                >
+                                                <span class="input-group-text">Meter</span>
                                             </div>
                                         </div>
                                         <span class="text-danger">{{
@@ -77,23 +48,29 @@
                                         }}</span>
                                     </div>
                                 </td>
+                                <td class="nt" style="width: 15%">
+                                    <div class="form-group">
+                                        <label for="product_id" class="form-label">Variants</label>
+                                        <Multiselect v-model="form.data[key].product" :options="products" track-by="id"
+                                            placeholder="Pilih Produk" label="name" @search-change="getProducts"
+                                            :internal-search="false" :class="{
+                                                'is-invalid':
+                                                    $page?.props?.errors
+                                                        ?.product?.id,
+                                            }"></Multiselect>
+                                        <span class="text-danger">{{
+                                            $page?.props?.errors?.product?.id
+                                        }}</span>
+                                    </div>
+                                </td>
                                 <td class="nt">
                                     <div class="form-group">
-                                        <label for="jumlah" class="form-label"
-                                            >Unit Price (Meter)</label
-                                        >
+                                        <label for="jumlah" class="form-label">Unit Price</label>
                                         <div class="input-group">
                                             <div class="input-group-prepend">
-                                                <span class="input-group-text"
-                                                    >Rp</span
-                                                >
+                                                <span class="input-group-text">Rp</span>
                                             </div>
-                                            <input
-                                                type="text"
-                                                class="form-control"
-                                                value="Rp 0"
-                                                disabled
-                                            />
+                                            <input type="text" class="form-control" v-model="form.data[key].unit_price" disabled />
                                         </div>
                                         <span class="text-danger">{{
                                             $page?.props?.errors?.product?.id
@@ -102,49 +79,31 @@
                                 </td>
                                 <td class="nt">
                                     <div class="form-group">
-                                        <label for="jumlah" class="form-label"
-                                            >Discount (Rp)</label
-                                        >
+                                        <label for="jumlah" class="form-label">Discount (Rp)</label>
 
                                         <div class="input-group">
                                             <div class="input-group-prepend">
-                                                <span class="input-group-text"
-                                                    >Rp</span
-                                                >
+                                                <span class="input-group-text">Rp</span>
                                             </div>
-                                            <input
-                                                type="number"
-                                                class="form-control"
-                                                v-model="
-                                                    form.data[key]
-                                                        .discount_price
-                                                "
-                                            />
+                                            <input type="number" class="form-control" v-model="form.data[key]
+                                                .discount_price
+                                                " />
                                         </div>
                                         <span class="text-danger">{{
                                             $page?.props?.errors?.discount_price
                                         }}</span>
                                     </div>
                                 </td>
-                                <td class="nt" style="width: 10%">
+                                <td class="nt" style="width: 8%">
                                     <div class="form-group">
-                                        <label for="jumlah" class="form-label"
-                                            >Discount (%)</label
-                                        >
+                                        <label for="jumlah" class="form-label">Discount (%)</label>
 
                                         <div class="input-group">
-                                            <input
-                                                type="number"
-                                                class="form-control"
-                                                v-model="
-                                                    form.data[key]
-                                                        .discount_percentage
-                                                "
-                                            />
+                                            <input type="number" class="form-control" v-model="form.data[key]
+                                                .discount_percentage
+                                                " />
                                             <div class="input-group-append">
-                                                <span class="input-group-text"
-                                                    >%</span
-                                                >
+                                                <span class="input-group-text">%</span>
                                             </div>
                                         </div>
                                         <span class="text-danger">{{
@@ -155,21 +114,12 @@
                                 </td>
                                 <td class="nt" style="width: 20%">
                                     <div class="form-group">
-                                        <label for="jumlah" class="form-label"
-                                            >Total Price</label
-                                        >
+                                        <label for="jumlah" class="form-label">Total Price</label>
                                         <div class="input-group">
                                             <div class="input-group-prepend">
-                                                <span class="input-group-text"
-                                                    >Rp</span
-                                                >
+                                                <span class="input-group-text">Rp</span>
                                             </div>
-                                            <input
-                                                type="number"
-                                                class="form-control"
-                                                value="0"
-                                                disabled
-                                            />
+                                            <input type="number" class="form-control" value="0" disabled />
                                         </div>
                                         <span class="text-danger">{{
                                             $page?.props?.errors?.product?.id
@@ -177,98 +127,54 @@
                                     </div>
                                 </td>
                                 <td class="nt align-middle">
-                                    <a
-                                        v-show="key != 0"
-                                        class="btn btn-danger btn-sm"
-                                        @click="removeProduct(key)"
-                                        >x</a
-                                    >
+                                    <a v-show="key != 0" class="btn btn-danger btn-sm" @click="removeProduct(key)">x</a>
                                 </td>
                             </tr>
 
                             <tr v-for="(add, k) in form.additional" :key="k">
-                                <td
-                                    v-if="k == 0"
-                                    colspan="3"
-                                    :rowspan="
-                                        Object.keys(form.additional).length
-                                    "
-                                    class="align-middle"
-                                >
+                                <td v-if="k == 0" colspan="4" :rowspan="Object.keys(form.additional).length
+                                    " class="align-middle">
                                     <label>Additional Fee</label>
                                 </td>
                                 <td colspan="2">
                                     <div class="form-group">
-                                        <label
-                                            for="additional_fee"
-                                            class="form-label"
-                                        >
+                                        <label for="additional_fee" class="form-label">
                                             Additional Service {{ k + 1 }}
                                         </label>
-                                        <input
-                                            type="text"
-                                            class="form-control"
-                                            v-model="form.additional[k].name"
-                                        />
+                                        <input type="text" class="form-control" v-model="form.additional[k].name" />
                                     </div>
                                 </td>
                                 <td>
                                     <div class="form-group">
-                                        <label
-                                            for="additional_fee"
-                                            class="form-label"
-                                            >Harga</label
-                                        >
+                                        <label for="additional_fee" class="form-label">Harga</label>
                                         <div class="input-group">
                                             <div class="input-group-prepend">
-                                                <span class="input-group-text"
-                                                    >Rp</span
-                                                >
+                                                <span class="input-group-text">Rp</span>
                                             </div>
-                                            <input
-                                                class="form-control"
-                                                type="text"
-                                                v-model="
-                                                    form.additional[k].total
-                                                "
-                                            />
+                                            <input class="form-control" type="text"
+                                                v-model="form.additional[k].total" />
                                         </div>
                                     </div>
                                 </td>
                                 <td class="nt align-middle">
-                                    <button
-                                        v-if="k != 0"
-                                        class="btn btn-danger btn-sm"
-                                        @click="removeAdditional(k)"
-                                    >
+                                    <button v-if="k != 0" class="btn btn-danger btn-sm" @click="removeAdditional(k)">
                                         x
                                     </button>
-                                    <button
-                                        v-if="k == 0"
-                                        class="btn btn-primary btn-sm"
-                                        type="button"
-                                        @click="tambahFee"
-                                    >
+                                    <button v-if="k == 0" class="btn btn-primary btn-sm" type="button"
+                                        @click="tambahFee">
                                         +
                                     </button>
                                 </td>
                             </tr>
                             <tr>
-                                <td colspan="4">Discount</td>
+                                <td colspan="5">Discount</td>
                                 <td>
                                     <div class="form-group">
                                         <div class="input-group">
-                                            <input
-                                                v-model="
-                                                    form.discount_percentage
-                                                "
-                                                class="form-control"
-                                                type="number"
-                                            />
+                                            <input v-model="form.discount_percentage
+                                                " class="form-control" type="number" />
                                             <div class="input-group-append">
-                                                <span class="input-group-text"
-                                                    >%</span
-                                                >
+                                                <span class="input-group-text">%</span>
                                             </div>
                                         </div>
                                     </div>
@@ -277,51 +183,42 @@
                                     <div class="form-group">
                                         <div class="input-group">
                                             <div class="input-group-prepend">
-                                                <span class="input-group-text"
-                                                    >Rp</span
-                                                >
+                                                <span class="input-group-text">Rp</span>
                                             </div>
-                                            <input
-                                                v-model="form.discount"
-                                                class="form-control"
-                                                type="number"
-                                            />
+                                            <input v-model="form.discount" class="form-control" type="number" />
                                         </div>
                                     </div>
                                 </td>
                                 <td></td>
                             </tr>
                             <tr>
-                                <td colspan="5">Total Transaksi</td>
+                                <td colspan="6">Total Transaksi</td>
                                 <td>
                                     <div class="form-group">
                                         <div class="input-group">
                                             <div class="input-group-prepend">
-                                                <span class="input-group-text"
-                                                    >Rp</span
-                                                >
+                                                <span class="input-group-text">Rp</span>
                                             </div>
-                                            <input
-                                                class="form-control"
-                                                type="number"
-                                                disabled
-                                            />
+                                            <input class="form-control" type="number" disabled />
                                         </div>
                                     </div>
                                 </td>
                                 <td></td>
                             </tr>
-                            <!-- <tr>
-                                <td colspan="5">Customer</td>
+                            <tr>
+                                <td colspan="6">Customer</td>
                                 <td>
                                     <Multiselect
 
                                         :options="products"
-                                        track-by="id"
+                                        track-by="name"
                                         placeholder="Pilih Produk"
                                         label="name"
+                                        tag-placeholder="Add this as new customer"
                                         @search-change="getProducts"
                                         :internal-search="false"
+                                        :taggable="true"
+                                        @tag="addCustomer"
                                         :class="{
                                             'is-invalid':
                                                 $page?.props?.errors?.product
@@ -330,7 +227,7 @@
                                     ></Multiselect>
                                 </td>
                                 <td></td>
-                            </tr> -->
+                            </tr>
                             <tr>
                                 <td colspan="5">Kasir</td>
                                 <td>
@@ -384,6 +281,7 @@ export default {
             selectedIds: [],
             form: {},
             products: [],
+            variant: null,
             store: [],
             supplier: [
                 {
@@ -434,8 +332,9 @@ export default {
             this.form.data.push({
                 product: null,
                 qty: 0,
-                discount_price: "",
-                discount_percentage: "",
+                discount_price: 0,
+                discount_percentage: 0,
+                variant: null
             });
         },
         tambahFee() {
@@ -452,6 +351,13 @@ export default {
             if (key == 0) return;
             this.form.data.splice(key, 1);
         },
+        addCustomer() {
+            console.log("okok")
+        },
+        pilihData(key) {
+            const product = this.form.data[key].product;
+            this.form.data[key].unit_price = product.unit_price ?? 0
+        }
     },
 };
 </script>
