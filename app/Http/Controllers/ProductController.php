@@ -8,7 +8,7 @@ use Illuminate\Support\Facades\DB;
 use Inertia\Inertia;
 use App\Models\Product;
 use App\Models\ProductCategory;
-use App\Models\ProductVariant;
+use PhpOffice\PhpSpreadsheet\IOFactory;
 
 class ProductController extends Controller
 {
@@ -16,24 +16,16 @@ class ProductController extends Controller
     {
         $pageSize = (int) $request->get('page_size', 10);
         $name = $request->get('name', '');
-        $store_name = $request->get('store', '');
         $supplier_name = $request->get('store', '');
 
-        $products = Product::query()->select('product.*', 'store.name as store_name')
+        $products = Product::query()
             ->with([
                 'category' => function ($q) {
                     return $q->select('id', 'name');
-                },
-                'store' => function ($q) {
-                    return $q->select('id', 'name');
-                },
+                }
             ])
-            ->leftJoin('store', 'product.store_id', 'store.id')
             ->when($name, function ($query, $name) {
                 return $query->where('product.name', 'like', "%$name%");
-            })
-            ->when($store_name, function ($query, $store_name) {
-                return $query->where('store.name', 'like', "%$store_name%");
             })
             ->when($supplier_name, function ($query, $supplier_name) {
                 return $query->where('suplier.name', 'like', "%$supplier_name%");
@@ -43,7 +35,6 @@ class ProductController extends Controller
 
         $category = ProductCategory::select('id', 'name')->get();
         $supplier = Supplier::select('id', 'name')->get();
-
         return Inertia::render('Products/Index', [
             'products' => $products,
             'categories' => $category,
@@ -142,7 +133,6 @@ class ProductController extends Controller
 
     public function update(Request $request, $id)
     {
-        //dd($request->all());
         $validatedData = $request->validate([
             //'product_id' => 'nullable|integer',
             'category.id' => 'required|integer',
@@ -194,7 +184,6 @@ class ProductController extends Controller
 
             return redirect()->route('products.index')->with('success', 'Produk berhasil diubah.');
         } catch (\Exception $e) {
-            dd($e);
             // Rollback transaksi jika ada kesalahan
             DB::rollBack();
             return redirect()->route('products.index')->with('error', 'Terjadi Error.');
@@ -206,5 +195,56 @@ class ProductController extends Controller
         $product = Product::find($id);
         $product->delete();
         return redirect()->route('products.index')->with('success', 'Produk berhasil dihapus.');
+    }
+
+    public function importExcel(Request $request)
+    {
+        // Validasi file excel
+        $request->validate([
+            'file' => 'required|mimes:xlsx,xls',
+        ]);
+
+        // Load file Excel yang di-upload
+        $file = $request->file('file');
+        $spreadsheet = IOFactory::load($file->getPathname());
+
+        // Ambil sheet pertama
+        $sheet = $spreadsheet->getActiveSheet();
+        $rows = $sheet->toArray();
+
+        // Mulai dari baris ke-4 (B4)
+        foreach ($rows as $index => $row) {
+            if ($index < 3) continue;  // Lewatkan 3 baris pertama
+            if($row[1] == null) break;
+
+            // Insert data ke database
+            $product = new Product();
+            $product->ori_design = $row[1];
+            $product->name = $row[1];
+            $product->color = $row[2];
+            $product->design_name = $row[3];
+            $product->ori_barcode = $row[4];
+            $product->pattern = $row[5];
+            $product->lebar = $row[6];
+            $product->panjang = $row[7];
+            //$product->berat = $row[];
+            //$product->category_id = $row[9];
+            $product->kode_benang = $row[10];
+            $product->cost = $row[11] == 'N/A' ? 0 : $row[11];
+            //$product->product_id = $row[12];
+            //$product->supp_id = $row[13];
+            //$product->name = $row[14];
+            $product->unit_bottom_price = $row[12];
+            $product->unit_top_price = $row[13];
+            $product->status = $row[15] == 'ACTIVE' ? 1 : 0;
+            $product->origin = 1;
+            $product->sku = $row[18];
+            $product->desc = $row[19];
+
+            // Simpan ke database
+            $product->save();
+        }
+
+        return redirect()->route('products.index')->with('success', 'Produk berhasil diupload.');
     }
 }

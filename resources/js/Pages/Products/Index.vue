@@ -1,18 +1,20 @@
 <template>
   <div>
+
     <Head title="Products" />
     <div class="text-right">
       <transition name="fade">
-        <button
-          :class="selectedIds.length > 0 ? 'show' : ''"
-          @click="deleteSelected"
-          class="btn btn-danger mr-2 mb-2 fade"
-        >
+        <button :class="selectedIds.length > 0 ? 'show' : ''" @click="deleteSelected"
+          class="btn btn-danger mr-2 mb-2 fade">
           <i class="fa fa-trash"></i>&nbsp;Delete Bulk
         </button>
       </transition>
       <button class="btn btn-primary mb-2" type="button" @click="createProduct">
         + Data Baru
+      </button>
+      &nbsp;
+      <button class="btn btn-success mb-2" type="button" @click="uploadProduct">
+        + Upload
       </button>
     </div>
     <div v-if="$page.props.flash.success" class="alert alert-success" role="alert">
@@ -28,8 +30,7 @@
       <Table :columns="table" :rows="data" @update:selectedRows="handleSelectedRows">
         <template #actions="{ row }">
           <button @click="editRow(row)" class="btn btn-warning btn-sm" title="Edit">
-            Edit</button
-          >&nbsp;
+            Edit</button>&nbsp;
           <button @click="deleteRow(row)" class="btn btn-danger btn-sm" title="Delete">
             Delete
           </button>
@@ -42,27 +43,16 @@
           <!-- Name -->
           <div class="col-md-6 mb-3">
             <label for="name" class="form-label">Name</label>
-            <input
-              type="text"
-              id="name"
-              v-model="form.name"
-              class="form-control"
-              :class="{ 'is-invalid': $page?.props?.errors?.name }"
-              placeholder="Enter Name"
-              required
-            />
+            <input type="text" id="name" v-model="form.name" class="form-control"
+              :class="{ 'is-invalid': $page?.props?.errors?.name }" placeholder="Enter Name" required />
             <span class="text-danger">{{ $page?.props?.errors?.name }}</span>
           </div>
 
           <!-- Origin -->
           <div class="col-md-6 mb-3">
             <label for="origin" class="form-label">Origin</label>
-            <select
-              id="origin"
-              v-model="form.origin"
-              class="form-control"
-              :class="{ 'is-invalid': $page?.props?.errors?.origin }"
-            >
+            <select id="origin" v-model="form.origin" class="form-control"
+              :class="{ 'is-invalid': $page?.props?.errors?.origin }">
               <option value="1">Lokal</option>
               <option value="2">Impor</option>
             </select>
@@ -72,228 +62,144 @@
           <!-- Store ID -->
           <div class="col-md-6 mb-3">
             <label for="toko_id" class="form-label">Store</label>
-            <Multiselect
-              v-model="form.store"
-              :options="store"
-              track-by="id"
-              label="name"
-              @search-change="getDataStore"
-              :internal-search="false"
-              :class="{ 'is-invalid': $page?.props?.errors?.store }"
-            ></Multiselect>
+            <Multiselect v-model="form.store" :options="store" track-by="id" label="name" @search-change="getDataStore"
+              :internal-search="false" :class="{ 'is-invalid': $page?.props?.errors?.store }"></Multiselect>
             <span class="text-danger">{{ $page?.props?.errors?.store?.id }}</span>
           </div>
 
           <!-- Category ID -->
           <div class="col-md-6 mb-3">
             <label for="category_id" class="form-label">Category</label>
-            <Multiselect
-              v-model="form.category"
-              :options="categories"
-              track-by="id"
-              label="name"
-              :internal-search="true"
-              :class="{ 'is-invalid': $page?.props?.errors?.category?.id }"
-            ></Multiselect>
+            <Multiselect v-model="form.category" :options="categories" track-by="id" label="name"
+              :internal-search="true" :class="{ 'is-invalid': $page?.props?.errors?.category?.id }"></Multiselect>
             <span class="text-danger">{{ $page?.props?.errors?.category_id }}</span>
           </div>
 
           <!-- Supplier ID -->
           <div class="col-md-6 mb-3">
             <label for="supp_id" class="form-label">Supplier</label>
-            <Multiselect
-              v-model="form.supplier"
-              :options="supplier"
-              track-by="id"
-              label="name"
-              :internal-search="true"
-              :class="{ 'is-invalid': $page?.props?.errors?.supplier?.id }"
-            ></Multiselect>
+            <Multiselect v-model="form.supplier" :options="supplier" track-by="id" label="name" :internal-search="true"
+              :class="{ 'is-invalid': $page?.props?.errors?.supplier?.id }"></Multiselect>
             <span class="text-danger">{{ $page?.props?.errors?.supplier?.id }}</span>
           </div>
 
           <!-- Color -->
           <div class="col-md-6 mb-3">
             <label for="color" class="form-label">Color</label>
-            <input
-              type="text"
-              id="color"
-              v-model="form.color"
-              class="form-control"
-              :class="{ 'is-invalid': $page?.props?.errors?.color }"
-              placeholder="Enter Color"
-            />
+            <input type="text" id="color" v-model="form.color" class="form-control"
+              :class="{ 'is-invalid': $page?.props?.errors?.color }" placeholder="Enter Color" />
             <span class="text-danger">{{ $page?.props?.errors?.color }}</span>
           </div>
 
           <!-- Cost -->
           <div class="col-md-6 mb-3">
             <label for="cost" class="form-label">Cost</label>
-            <input
-              type="number"
-              id="cost"
-              v-model="form.cost"
-              class="form-control"
-              :class="{ 'is-invalid': $page?.props?.errors?.cost }"
-              placeholder="Enter Cost"
-            />
+            <input type="number" id="cost" v-model="form.cost" class="form-control"
+              :class="{ 'is-invalid': $page?.props?.errors?.cost }" placeholder="Enter Cost" />
             <span class="text-danger">{{ $page?.props?.errors?.cost }}</span>
           </div>
 
           <!-- Unit Price -->
           <div class="col-md-6 mb-3">
             <label for="unit_price" class="form-label">Unit Price(per meter)</label>
-            <input
-              type="number"
-              id="unit_price"
-              v-model="form.unit_price"
-              class="form-control"
-              :class="{ 'is-invalid': $page?.props?.errors?.unit_price }"
-              placeholder="Enter Unit Price"
-            />
+            <input type="number" id="unit_price" v-model="form.unit_price" class="form-control"
+              :class="{ 'is-invalid': $page?.props?.errors?.unit_price }" placeholder="Enter Unit Price" />
             <span class="text-danger">{{ $page?.props?.errors?.unit_price }}</span>
           </div>
 
           <!-- Design Description -->
           <div class="col-md-6 mb-3">
             <label for="design_desc" class="form-label">Design Description</label>
-            <input
-              type="text"
-              id="design_desc"
-              v-model="form.design_desc"
-              class="form-control"
-              :class="{ 'is-invalid': $page?.props?.errors?.design_desc }"
-              placeholder="Enter Design Description"
-            />
+            <input type="text" id="design_desc" v-model="form.design_desc" class="form-control"
+              :class="{ 'is-invalid': $page?.props?.errors?.design_desc }" placeholder="Enter Design Description" />
             <span class="text-danger">{{ $page?.props?.errors?.design_desc }}</span>
           </div>
 
           <!-- Pattern Description -->
           <div class="col-md-6 mb-3">
             <label for="pattern_desc" class="form-label">Pattern Description</label>
-            <input
-              type="text"
-              id="pattern_desc"
-              v-model="form.pattern_desc"
-              class="form-control"
-              :class="{ 'is-invalid': $page?.props?.errors?.pattern_desc }"
-              placeholder="Enter Pattern Description"
-            />
+            <input type="text" id="pattern_desc" v-model="form.pattern_desc" class="form-control"
+              :class="{ 'is-invalid': $page?.props?.errors?.pattern_desc }" placeholder="Enter Pattern Description" />
             <span class="text-danger">{{ $page?.props?.errors?.pattern_desc }}</span>
           </div>
 
           <!-- Pattern Name -->
           <div class="col-md-6 mb-3">
             <label for="pattern_name" class="form-label">Pattern Name</label>
-            <input
-              type="text"
-              id="pattern_name"
-              v-model="form.pattern_name"
-              class="form-control"
-              :class="{ 'is-invalid': $page?.props?.errors?.pattern_name }"
-              placeholder="Enter Pattern Name"
-            />
+            <input type="text" id="pattern_name" v-model="form.pattern_name" class="form-control"
+              :class="{ 'is-invalid': $page?.props?.errors?.pattern_name }" placeholder="Enter Pattern Name" />
             <span class="text-danger">{{ $page?.props?.errors?.pattern_name }}</span>
           </div>
 
           <!-- Design Name -->
           <div class="col-md-6 mb-3">
             <label for="design_name" class="form-label">Design Name</label>
-            <input
-              type="text"
-              id="design_name"
-              v-model="form.design_name"
-              class="form-control"
-              :class="{ 'is-invalid': $page?.props?.errors?.design_name }"
-              placeholder="Enter Design Name"
-            />
+            <input type="text" id="design_name" v-model="form.design_name" class="form-control"
+              :class="{ 'is-invalid': $page?.props?.errors?.design_name }" placeholder="Enter Design Name" />
             <span class="text-danger">{{ $page?.props?.errors?.design_name }}</span>
           </div>
 
           <!-- Year -->
           <div class="col-md-6 mb-3">
             <label for="year" class="form-label">Year</label>
-            <input
-              type="number"
-              id="year"
-              v-model="form.year"
-              class="form-control"
-              :class="{ 'is-invalid': $page?.props?.errors?.year }"
-              placeholder="Enter Year"
-            />
+            <input type="number" id="year" v-model="form.year" class="form-control"
+              :class="{ 'is-invalid': $page?.props?.errors?.year }" placeholder="Enter Year" />
             <span class="text-danger">{{ $page?.props?.errors?.year }}</span>
           </div>
 
           <!-- Manufacturing Date -->
           <div class="col-md-6 mb-3">
             <label for="mfg_date" class="form-label">Manufacturing Date</label>
-            <input
-              type="date"
-              id="mfg_date"
-              v-model="form.mfg_date"
-              class="form-control"
-              :class="{ 'is-invalid': $page?.props?.errors?.mfg_date }"
-            />
+            <input type="date" id="mfg_date" v-model="form.mfg_date" class="form-control"
+              :class="{ 'is-invalid': $page?.props?.errors?.mfg_date }" />
             <span class="text-danger">{{ $page?.props?.errors?.mfg_date }}</span>
           </div>
 
           <!-- Length -->
           <div class="col-md-6 mb-3">
             <label for="length" class="form-label">Panjang(Meter)</label>
-            <input
-              type="number"
-              id="length"
-              v-model="form.length"
-              class="form-control"
-              :class="{ 'is-invalid': $page?.props?.errors?.length }"
-              placeholder="Enter Length"
-            />
+            <input type="number" id="length" v-model="form.length" class="form-control"
+              :class="{ 'is-invalid': $page?.props?.errors?.length }" placeholder="Enter Length" />
             <span class="text-danger">{{ $page?.props?.errors?.length }}</span>
           </div>
 
           <!-- Width -->
           <div class="col-md-6 mb-3">
             <label for="width" class="form-label">Lebar</label>
-            <input
-              type="number"
-              id="width"
-              v-model="form.width"
-              class="form-control"
-              :class="{ 'is-invalid': $page?.props?.errors?.width }"
-              placeholder="Enter Width"
-            />
+            <input type="number" id="width" v-model="form.width" class="form-control"
+              :class="{ 'is-invalid': $page?.props?.errors?.width }" placeholder="Enter Width" />
             <span class="text-danger">{{ $page?.props?.errors?.width }}</span>
           </div>
 
           <!-- Roll Number -->
           <div class="col-md-6 mb-3">
             <label for="roll_number" class="form-label">Roll Number</label>
-            <input
-              type="text"
-              id="roll_number"
-              v-model="form.roll_number"
-              class="form-control"
-              :class="{ 'is-invalid': $page?.props?.errors?.roll_number }"
-              placeholder="Enter Roll Number"
-            />
+            <input type="text" id="roll_number" v-model="form.roll_number" class="form-control"
+              :class="{ 'is-invalid': $page?.props?.errors?.roll_number }" placeholder="Enter Roll Number" />
             <span class="text-danger">{{ $page?.props?.errors?.roll_number }}</span>
           </div>
         </div>
       </form>
 
       <template #footer>
-        <button
-          type="button"
-          class="btn btn-primary"
-          :class="{ disabled: form.submit }"
-          @click="submitForm"
-        >
+        <button type="button" class="btn btn-primary" :class="{ disabled: form.submit }" @click="submitForm">
           <div v-if="form.submit">
-            <span
-              class="spinner-border spinner-border-sm"
-              role="status"
-              aria-hidden="true"
-            ></span>
+            <span class="spinner-border spinner-border-sm" role="status" aria-hidden="true"></span>
+            <span class="bott">Loading</span>
+          </div>
+          <span v-else class="bott">Save</span>
+        </button>
+      </template>
+    </Modal>
+    <Modal :show="modalUploadShow" :title="modalTitle" id="modal-product-upload">
+      <form ref="formUpload" @submit.prevent="submitUpload">
+        <input type="file" ref="file" @change="handleFileUpload" />
+        <button type="submit">Upload</button>
+      </form>
+      <template #footer>
+        <button type="button" class="btn btn-primary" :class="{ disabled: form.submit }" @click="submitUpload">
+          <div v-if="form.submit">
+            <span class="spinner-border spinner-border-sm" role="status" aria-hidden="true"></span>
             <span class="bott">Loading</span>
           </div>
           <span v-else class="bott">Save</span>
@@ -322,16 +228,16 @@ export default {
     return {
       table: [
         {
+          title: "SKU",
+          data: "sku",
+        },
+        {
           title: "Nama Produk",
-          data: "name",
+          data: "design_name",
         },
         {
-          title: "Toko",
-          data: "store_name",
-        },
-        {
-          title: "Kategori",
-          data: "category_id",
+          title: "Ori Design",
+          data: "ori_design",
         },
         {
           title: "Supplier",
@@ -341,15 +247,8 @@ export default {
           title: "Tipe Produk",
           data: "origin",
           render: (row) => {
-            //return <a class={'btn btn-primary'} href='https://xxx.com'>xxx</a>
-            return row.origin == 1 ? "Import" : "Local";
+            return row.origin == 1 ? <span>Import</span>: <span>Local</span>;
           },
-          /* render: () => (
-                <div>
-                <h1>This is JSX content</h1>
-                <p>It will be rendered in the child component.</p>
-                </div>
-            ) */
         },
         {
           title: "Warna Produk",
@@ -360,16 +259,16 @@ export default {
           data: "cost",
         },
         {
-          title: "Harga Per Meter",
-          data: "unit_price",
-        },
+          title: "Harga Bawah",
+          data: "unit_bottom_price",
+        }, // Ganti unit_price ke unit_bottom_price
         {
           title: "Deskripsi Desain",
-          data: "design_desc",
+          data: "desc", // Ganti design_desc ke desc
         },
         {
           title: "Deskripsi Pola",
-          data: "pattern_desc",
+          data: "pattern", // Ganti pattern_desc ke pattern
         },
         {
           title: "Nama Pola",
@@ -389,11 +288,11 @@ export default {
         },
         {
           title: "Panjang Produk",
-          data: "length",
+          data: "panjang", // Ganti length ke panjang
         },
         {
           title: "Lebar Produk",
-          data: "width",
+          data: "lebar", // Ganti width ke lebar
         },
         {
           title: "Dibuat Pada",
@@ -416,12 +315,14 @@ export default {
           data: "roll_number",
         },
       ],
+
       data: this.products,
       modalTitle: "",
       modalShow: false,
       selectedIds: [],
       form: {},
       store: [],
+      file: null
     };
   },
   mounted() {
@@ -429,11 +330,43 @@ export default {
     this.getDataStore();
   },
   methods: {
+    handleFileUpload(event) {
+      this.file = event.target.files[0];
+    },
+    submitUpload() {
+      const formData = new FormData();
+      formData.append('file', this.file);
+      if (this.form.submit) {
+        return;
+      }
+
+      this.form.submit = true;
+      router.post(route('product.import'), formData, {
+        onFinish: () => {
+
+          this.$success("Data berhasil disimpan");
+          router.visit(this.$page.url, {
+            only: ["products"],
+          });
+          this.form.submit = false;
+          $("#modal-product-upload").modal("hide");
+        },
+        onError: () => {
+          this.form.submit = false;
+          this.$error();
+        },
+      });
+    },
     createProduct() {
       this.$page.props.errors = null;
       this.resetForm();
       this.modalTitle = "Tambah Data Product";
       $("#modal-product-index").modal("show");
+    },
+    uploadProduct() {
+      this.$page.props.errors = null;
+      this.modalTitle = "Tambah Data Product";
+      $("#modal-product-upload").modal("show");
     },
     editRow(row) {
       this.resetForm();
