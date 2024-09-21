@@ -512,6 +512,10 @@ export default {
                     data: "cost",
                 },
                 {
+                    title: "Harga Atas",
+                    data: "unit_top_price",
+                },
+                {
                     title: "Harga Bawah",
                     data: "unit_bottom_price",
                 }, // Ganti unit_price ke unit_bottom_price

@@ -18,7 +18,7 @@
                         <thead></thead>
                         <tbody>
                             <tr v-for="(item, key) in form.data">
-                                <td class="nt" style="width: 20%">
+                                <td class="nt">
                                     <div class="form-group">
                                         <label for="product_id" class="form-label">Produk</label>
                                         <Multiselect v-model="form.data[key].product" :options="products" track-by="id"
@@ -34,11 +34,11 @@
                                         }}</span>
                                     </div>
                                 </td>
-                                <td class="nt" style="width: 10%">
+                                <td class="nt">
                                     <div class="form-group">
                                         <label for="jumlah" class="form-label">Jumlah (Meter)</label>
                                         <div class="input-group">
-                                            <input type="number" class="form-control" v-model="form.data[key].qty" />
+                                            <input type="number" class="form-control" min="0" v-model="form.data[key].qty" />
                                             <div class="input-group-append">
                                                 <span class="input-group-text">Meter</span>
                                             </div>
@@ -48,7 +48,7 @@
                                         }}</span>
                                     </div>
                                 </td>
-                                <td class="nt" style="width: 15%">
+                                <td class="nt">
                                     <div class="form-group">
                                         <label for="product_id" class="form-label">Variants</label>
                                         <Multiselect v-model="form.data[key].product" :options="products" track-by="id"
@@ -85,7 +85,7 @@
                                             <div class="input-group-prepend">
                                                 <span class="input-group-text">Rp</span>
                                             </div>
-                                            <input type="number" class="form-control" v-model="form.data[key]
+                                            <input type="number" class="form-control" @keyup="calcDisPerc(key)" v-model="form.data[key]
                                                 .discount_price
                                                 " />
                                         </div>
@@ -94,12 +94,12 @@
                                         }}</span>
                                     </div>
                                 </td>
-                                <td class="nt" style="width: 8%">
+                                <td class="nt">
                                     <div class="form-group">
                                         <label for="jumlah" class="form-label">Discount (%)</label>
 
                                         <div class="input-group">
-                                            <input type="number" class="form-control" v-model="form.data[key]
+                                            <input type="number" class="form-control" @keyup="calcDisPrice(key)" v-model="form.data[key]
                                                 .discount_percentage
                                                 " />
                                             <div class="input-group-append">
@@ -112,14 +112,15 @@
                                         }}</span>
                                     </div>
                                 </td>
-                                <td class="nt" style="width: 20%">
+                                <td class="nt">
                                     <div class="form-group">
                                         <label for="jumlah" class="form-label">Total Price</label>
                                         <div class="input-group">
                                             <div class="input-group-prepend">
                                                 <span class="input-group-text">Rp</span>
                                             </div>
-                                            <input type="number" class="form-control" value="0" disabled />
+                                            {{}}
+                                            <input type="number" class="form-control" :value="totalUnitPrice(key)" disabled />
                                         </div>
                                         <span class="text-danger">{{
                                             $page?.props?.errors?.product?.id
@@ -206,30 +207,7 @@
                                 <td></td>
                             </tr>
                             <tr>
-                                <td colspan="6">Customer</td>
-                                <td>
-                                    <Multiselect
-
-                                        :options="products"
-                                        track-by="name"
-                                        placeholder="Pilih Produk"
-                                        label="name"
-                                        tag-placeholder="Add this as new customer"
-                                        @search-change="getProducts"
-                                        :internal-search="false"
-                                        :taggable="true"
-                                        @tag="addCustomer"
-                                        :class="{
-                                            'is-invalid':
-                                                $page?.props?.errors?.product
-                                                    ?.id,
-                                        }"
-                                    ></Multiselect>
-                                </td>
-                                <td></td>
-                            </tr>
-                            <tr>
-                                <td colspan="5">Kasir</td>
+                                <td colspan="6">Kasir</td>
                                 <td>
                                     <div class="form-group">
                                         <a class="btn btn-primary float-right">Submit</a>
@@ -296,10 +274,13 @@ export default {
         this.getProducts();
     },
     methods: {
+        totalUnitPrice(key) {
+            return (this.form.data[key].unit_price * this.form.data[key].qty) - this.form.data[key].discount_price
+        },
         async getProducts(search = "") {
             try {
                 const { data } = await axios.get(
-                    this.route("products.get", { search })
+                    this.route("products.get", { name: search })
                 );
                 this.products = data;
             } catch (error) {
@@ -311,6 +292,7 @@ export default {
                 data: [
                     {
                         product: null,
+                        unit_top_price: 0,
                         qty: 0,
                         discount_price: 0,
                         discount_percentage: 0,
@@ -332,6 +314,7 @@ export default {
             this.form.data.push({
                 product: null,
                 qty: 0,
+                unit_top_price: 0,
                 discount_price: 0,
                 discount_percentage: 0,
                 variant: null
@@ -356,7 +339,13 @@ export default {
         },
         pilihData(key) {
             const product = this.form.data[key].product;
-            this.form.data[key].unit_price = product.unit_price ?? 0
+            this.form.data[key].unit_price = product.unit_top_price ?? 0
+        },
+        calcDisPrice(key) {
+            this.form.data[key].discount_price = this.form.data[key].discount_percentage * this.form.data[key].unit_price
+        },
+        calcDisPerc(key) {
+            this.form.data[key].discount_percentage = (this.form.data[key].discount_price / this.form.data[key].unit_price) * 100
         }
     },
 };

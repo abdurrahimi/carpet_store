@@ -59,16 +59,16 @@ class ProductController extends Controller
     {
         $name = $request->get('name', '');
         $id = $request->get('name', null);
-        $products = Product::query()->select('id', 'name', 'unit_price');
+        $products = Product::query();
         if ($name) {
-            $products = $products->where('name', 'like', DB::raw("'%" . $name . "%'"));
+            $products = $products->where(DB::raw('lower(design_name)'), 'like', DB::raw("'%" . strtolower($name) . "%'"));
         }
 
         if ($id) {
             $products = $products->orWhere('id', '=', $id);
         }
-
-        $products = $products->orWhereRaw('1 = 1')->limit((int) $request->get('limit', 10))->get();
+        //$products = $products->orWhereRaw('1 = 1');
+        $products = $products->limit((int) $request->get('limit', 10))->get();
         return response()->json($products);
     }
 
