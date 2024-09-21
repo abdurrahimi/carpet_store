@@ -206,7 +206,7 @@ class ProductController extends Controller
             // Insert data ke database
             $product = new Product();
             $product->ori_design = $row[1];
-            $product->name = $row[1];
+            $product->name = $row[3];
             $product->color = $row[2];
             $product->design_name = $row[3];
             $product->ori_barcode = $row[4];

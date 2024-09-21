@@ -482,7 +482,7 @@ export default {
                 },
                 {
                     title: "Nama Produk",
-                    data: "design_name",
+                    data: "name",
                 },
                 {
                     title: "Ori Design",
