@@ -218,7 +218,7 @@ class ProductController extends Controller
             $product->unit_bottom_price = $row[12];
             $product->unit_top_price = $row[13];
             $product->status = $row[15] == 'ACTIVE' ? 1 : 0;
-            $product->origin = 1;
+            $product->origin = 2;
             $product->sku = $row[18];
             $product->desc = $row[19];
 
