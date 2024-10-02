@@ -4,12 +4,13 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\SoftDeletes;
+use Illuminate\Support\Facades\Auth;
 
 class Product extends Model
 {
     use SoftDeletes;
 
-    protected $table = 'product';
+    protected $table = 'products';
 
     public function category()
     {
@@ -21,11 +22,6 @@ class Product extends Model
         return $this->belongsTo(Supplier::class, 'supp_id');
     }
 
-    public function store()
-    {
-        return $this->belongsTo(Store::class, 'store_id');
-    }
-
     public function createdBy()
     {
         return $this->belongsTo(User::class, 'created_by');
@@ -34,5 +30,24 @@ class Product extends Model
     public function updatedBy()
     {
         return $this->belongsTo(User::class, 'updated_by');
+    }
+
+    protected static function booted()
+    {
+        // Set created_by saat create data
+        static::creating(function ($model) {
+            $model->created_by = Auth::id();
+        });
+
+        // Set updated_by saat update data
+        static::updating(function ($model) {
+            $model->updated_by = Auth::id();
+        });
+
+        // Set deleted_by saat delete data (soft delete)
+        static::deleting(function ($model) {
+            $model->deleted_by = Auth::id();
+            $model->save(); // Kalau lo pakai soft delete
+        });
     }
 }
