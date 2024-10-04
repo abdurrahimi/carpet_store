@@ -20,7 +20,7 @@ class ProductController extends Controller
 
         $products = Product::query()
             ->when($name, function ($query, $name) {
-                $query->where(DB::raw('lower(design_name)'), 'like', "%".strtolower($name)."%");
+                $query->where(DB::raw('lower(design_name)'), 'like', "%" . strtolower($name) . "%");
             })
             ->when($supplier_name, function ($query, $supplier_name) {
                 return $query->where('suplier.name', 'like', "%$supplier_name%");
@@ -47,7 +47,6 @@ class ProductController extends Controller
                 return $query->where('product.name', 'like', "%$name%");
             })
             ->paginate($pageSize);
-
     }
 
     public function getDataProduct(Request $request)
@@ -111,7 +110,7 @@ class ProductController extends Controller
 
             return redirect()->route('products.index')->with('success', 'Produk berhasil dibuat.');
         } catch (\Exception $th) {
-            
+
             return redirect()->route('products.index')->with('error', 'Produk gagal dibuat, hubungi administrator.');
         }
     }
@@ -156,7 +155,7 @@ class ProductController extends Controller
             $product->supplier_id = $validatedData['supplier_id'];
             $product->deskripsi = $validatedData['deskripsi'];
             $product->image = $validatedData['image'];
-        $product->save();
+            $product->save();
             return redirect()->route('products.index')->with('success', 'Produk berhasil diubah.');
         } catch (\Exception $th) {
             return redirect()->route('products.index')->with('error', 'Produk gagal diubah, hubungi administrator.');
@@ -189,32 +188,54 @@ class ProductController extends Controller
 
         // Mulai dari baris ke-4 (B4)
         foreach ($rows as $index => $row) {
-            if ($index < 3)
-                continue;  // Lewatkan 3 baris pertama
-            if ($row[1] == null)
+            if ($index < 3) {
+                continue; // Lewatkan 3 baris pertama
+            }
+
+            if ($row[1] == null) {
                 break;
+            }
 
-            // Insert data ke database
-            $product = new Product();
-            $product->ori_design = $row[1];
-            $product->name = $row[3];
-            $product->color = $row[2];
-            $product->design_name = $row[3];
-            $product->ori_barcode = $row[4];
-            $product->pattern = $row[5];
-            $product->lebar = $row[6];
-            $product->panjang = $row[7];
-            $product->kode_benang = $row[10];
-            $product->cost = $row[11] == 'N/A' ? 0 : $row[11];
-            $product->unit_bottom_price = $row[12];
-            $product->unit_top_price = $row[13];
-            $product->status = $row[15] == 'ACTIVE' ? 1 : 0;
-            $product->origin = 2;
-            $product->sku = $row[18];
-            $product->desc = $row[19];
+            // Menyiapkan data untuk upsert
+            $data = [
+                'sku' => $row[1],
+                'category' => $row[2],
+                'design_name' => $row[3],
+                'color' => $row[4],
+                'pattern' => $row[5],
+                'panjang_per_roll' => $row[6],
+                'tipe' => $row[7],
+                'origin' => $row[8],
+                'backing' => $row[8],
+                'kode_benang' => $row[9],
+                'reorder_level' => $row[10],
+                'manufacture_id' => $row[11],
+                'manufacture_category' => $row[12],
+                'supplier_id' => $row[13],
+                'deskripsi' => $row[14]
+            ];
 
-            // Simpan ke database
-            $product->save();
+            // Upsert data ke database
+            Product::upsert(
+                [$data],
+                ['sku'],
+                [
+                    'category',
+                    'design_name',
+                    'color',
+                    'pattern',
+                    'panjang_per_roll',
+                    'tipe',
+                    'origin',
+                    'backing',
+                    'kode_benang',
+                    'reorder_level',
+                    'manufacture_id',
+                    'manufacture_category',
+                    'supplier_id',
+                    'deskripsi'
+                ]
+            );
         }
 
         return redirect()->route('products.index')->with('success', 'Produk berhasil diupload.');

@@ -79,7 +79,7 @@
         </div>
     </div>
     <ModalUpload/>
-    <ModalForm :modalTitle="modalTitle" :type="type" :editData="rowData"/>
+    <ModalForm :modalTitle="modalTitle" :type="type" :editData="rowData" :toEdit="toEdit"/>
 </template>
 <script lang="jsx">
 import AuthenticatedLayout from "@/Layouts/AuthenticatedLayout.vue";
@@ -141,6 +141,7 @@ export default {
                 upload: false,
                 form: false,
             },
+            toEdit: true,
             selectedIds: [],
             modalTitle: "",
             type: "create",
@@ -159,9 +160,16 @@ export default {
         uploadProduct() {
             $("#modal-product-upload").modal("show");
         },
+        detailRow(row) {
+            this.rowData = row
+            this.toEdit = false;
+            this.modalTitle = "Detail Data Product";
+            $("#modal-product-index").modal("show");
+        },
         editRow(row) {
             this.rowData = row
-            this.modalTitle = "Ubah Data Karyawan";
+            this.toEdit = true;
+            this.modalTitle = "Ubah Data Product";
             $("#modal-product-index").modal("show");
         },
         deleteRow(row) {

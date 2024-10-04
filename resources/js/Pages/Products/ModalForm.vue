@@ -1,6 +1,6 @@
 <template>
     <Modal :title="modalTitle" id="modal-product-index">
-        <form ref="formProduct" @submit.prevent="handleSubmit">
+        <form ref="formProduct" @submit.prevent="handleSubmit" v-if="edit">
             <div class="row">
                 <div class="col-md-6 mb-3">
                     <img :src="preview ?? 'https://img.freepik.com/premium-vector/default-image-icon-vector-missing-picture-page-website-design-mobile-app-no-photo-available_87543-11093.jpg'"
@@ -130,7 +130,88 @@
                 </div>
             </div>
         </form>
-        <template #footer>
+        <div class="row" v-else>
+            <div class="col-md-6 mb-3">
+                <img :src="preview ?? 'https://img.freepik.com/premium-vector/default-image-icon-vector-missing-picture-page-website-design-mobile-app-no-photo-available_87543-11093.jpg'"
+                    alt="Image Preview" class="img-fluid" style="max-width: 300px;" />
+            </div>
+
+            <div class="col-md-6 mb-3">
+                <strong>SKU:</strong>
+                <p>{{ form.sku }}</p>
+            </div>
+
+            <div class="col-md-6 mb-3">
+                <strong>Category:</strong>
+                <p>{{ form.category }}</p>
+            </div>
+
+            <div class="col-md-6 mb-3">
+                <strong>Design Name:</strong>
+                <p>{{ form.design_name }}</p>
+            </div>
+
+            <div class="col-md-6 mb-3">
+                <strong>Color:</strong>
+                <p>{{ form.color }}</p>
+            </div>
+
+            <div class="col-md-6 mb-3">
+                <strong>Pattern:</strong>
+                <p>{{ form.pattern }}</p>
+            </div>
+
+            <div class="col-md-6 mb-3">
+                <strong>Panjang per Roll:</strong>
+                <p>{{ form.panjang_per_roll }}</p>
+            </div>
+
+            <div class="col-md-6 mb-3">
+                <strong>Tipe:</strong>
+                <p>{{ form.tipe }}</p>
+            </div>
+
+            <div class="col-md-6 mb-3">
+                <strong>Origin:</strong>
+                <p>{{ form.origin == 1 ? 'Import' : 'Lokal' }}</p>
+            </div>
+
+            <div class="col-md-6 mb-3">
+                <strong>Backing:</strong>
+                <p>{{ form.backing }}</p>
+            </div>
+
+            <div class="col-md-6 mb-3">
+                <strong>Kode Benang:</strong>
+                <p>{{ form.kode_benang }}</p>
+            </div>
+
+            <div class="col-md-6 mb-3">
+                <strong>Reorder Level:</strong>
+                <p>{{ form.reorder_level }}</p>
+            </div>
+
+            <div class="col-md-6 mb-3">
+                <strong>Manufacture ID:</strong>
+                <p>{{ form.manufacture_id }}</p>
+            </div>
+
+            <div class="col-md-6 mb-3">
+                <strong>Manufacture Category:</strong>
+                <p>{{ form.manufacture_category }}</p>
+            </div>
+
+            <div class="col-md-6 mb-3">
+                <strong>Supplier:</strong>
+                <p>{{ form.supplier?.name }}</p>
+            </div>
+
+            <div class="col-md-12 mb-3">
+                <strong>Deskripsi:</strong>
+                <p>{{ form.deskripsi }}</p>
+            </div>
+        </div>
+        <template #footer v-if="edit">
             <button type="button" class="btn btn-primary" :class="{ disabled: form.submit }" @click="handleSubmit">
                 <div v-if="form.submit">
                     <span class="spinner-border spinner-border-sm" role="status" aria-hidden="true"></span>
@@ -151,7 +232,7 @@ export default {
         Modal,
         Multiselect
     },
-    props: ['modalTitle', 'editData'],
+    props: ['modalTitle', 'editData', 'toEdit'],
     watch: {
         editData() {
             this.id = this.editData.id
@@ -173,6 +254,9 @@ export default {
                 deskripsi: this.editData.deskripsi ?? "",
                 image: this.editData.image ?? null,
             }
+        },
+        toEdit() {
+            this.edit = this.toEdit
         }
     },
     data() {
@@ -182,6 +266,7 @@ export default {
             suppliers: [],
             preview: null,
             submit: false,
+            edit: true,
         };
     },
     mounted() {
@@ -273,6 +358,9 @@ export default {
                 deskripsi: this.editData.deskripsi ?? "",
                 image: this.editData.image ?? null,
             }
+        },
+        editButtonHandler(){
+            this.edit = !this.edit
         }
     },
 };

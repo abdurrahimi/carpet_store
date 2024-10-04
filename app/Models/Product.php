@@ -12,6 +12,25 @@ class Product extends Model
 
     protected $table = 'products';
 
+    protected $fillable = [
+        'sku',
+        'category',
+        'design_name',
+        'color',
+        'pattern',
+        'panjang_per_roll',
+        'tipe',
+        'origin',
+        'backing',
+        'kode_benang',
+        'reorder_level',
+        'manufacture_id',
+        'manufacture_category',
+        'supplier_id',
+        'deskripsi',
+        'image',
+    ];
+
     public function category()
     {
         return $this->belongsTo(ProductCategory::class, 'category_id');
