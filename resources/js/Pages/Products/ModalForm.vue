@@ -27,12 +27,32 @@
                         :class="{ 'is-invalid': $page?.props?.errors?.category }" placeholder="Enter Category" />
                     <span class="text-danger">{{ $page?.props?.errors?.category }}</span>
                 </div>
-
                 <div class="col-md-6 mb-3">
                     <label for="design_name" class="form-label">Design Name</label>
                     <input type="text" id="design_name" v-model="form.design_name" class="form-control"
                         :class="{ 'is-invalid': $page?.props?.errors?.design_name }" placeholder="Enter Design Name" />
                     <span class="text-danger">{{ $page?.props?.errors?.design_name }}</span>
+                </div>
+
+
+                <div class="col-md-6 mb-3">
+                    <label for="cost" class="form-label">Cost</label>
+                    <input type="number" id="cost" v-model="form.cost" class="form-control"
+                        :class="{ 'is-invalid': $page?.props?.errors?.cost }" placeholder="Enter Design Name" />
+                    <span class="text-danger">{{ $page?.props?.errors?.cost }}</span>
+                </div>
+                <div class="col-md-6 mb-3">
+                    <label for="lowest_price" class="form-label">Lowest Price</label>
+                    <input type="number" id="lowest_price" v-model="form.lowest_price" class="form-control"
+                        :class="{ 'is-invalid': $page?.props?.errors?.lowest_price }" placeholder="Enter Design Name" />
+                    <span class="text-danger">{{ $page?.props?.errors?.lowest_price }}</span>
+                </div>
+
+                <div class="col-md-6 mb-3">
+                    <label for="higher_price" class="form-label">Higher Price</label>
+                    <input type="number" id="higher_price" v-model="form.higher_price" class="form-control"
+                        :class="{ 'is-invalid': $page?.props?.errors?.higher_price }" placeholder="Enter Design Name" />
+                    <span class="text-danger">{{ $page?.props?.errors?.higher_price }}</span>
                 </div>
 
                 <div class="col-md-6 mb-3">
