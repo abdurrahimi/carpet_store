@@ -154,6 +154,7 @@ export default {
         },
         createProduct() {
             this.rowData = {}
+            this.toEdit = true;
             this.modalTitle = "Tambah Data Product";
             $("#modal-product-index").modal("show");
         },
