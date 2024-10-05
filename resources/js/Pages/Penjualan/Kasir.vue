@@ -41,7 +41,7 @@
                                             style="max-width: 300px"
                                         />
                                     </td>
-                                    <td class="nt">
+                                    <td class="nt" style="width: 20%">
                                         <div class="form-group">
                                             <label
                                                 for="product_id"
@@ -69,7 +69,7 @@
                                             }}</span>
                                         </div>
                                     </td>
-                                    <td class="nt">
+                                    <td class="nt" style="width: 15%">
                                         <div class="form-group">
                                             <label
                                                 for="jumlah"
@@ -202,6 +202,37 @@
                                             <label
                                                 for="jumlah"
                                                 class="form-label"
+                                                >Discount (%)</label
+                                            >
+
+                                            <div class="input-group">
+                                                <input
+                                                    type="number"
+                                                    class="form-control"
+                                                    @keyup="calcDisPrice(key)"
+                                                    v-model="
+                                                        form.data[key]
+                                                            .discount_percentage
+                                                    "
+                                                />
+                                                <div class="input-group-append">
+                                                    <span
+                                                        class="input-group-text"
+                                                        >%</span
+                                                    >
+                                                </div>
+                                            </div>
+                                            <span class="text-danger">{{
+                                                $page?.props?.errors
+                                                    ?.discount_percentage
+                                            }}</span>
+                                        </div>
+                                    </td>
+                                    <td class="nt">
+                                        <div class="form-group">
+                                            <label
+                                                for="jumlah"
+                                                class="form-label"
                                                 >Discount (Rp)</label
                                             >
 
@@ -227,37 +258,6 @@
                                             <span class="text-danger">{{
                                                 $page?.props?.errors
                                                     ?.discount_price
-                                            }}</span>
-                                        </div>
-                                    </td>
-                                    <td class="nt">
-                                        <div class="form-group">
-                                            <label
-                                                for="jumlah"
-                                                class="form-label"
-                                                >Discount (%)</label
-                                            >
-
-                                            <div class="input-group">
-                                                <input
-                                                    type="number"
-                                                    class="form-control"
-                                                    @keyup="calcDisPrice(key)"
-                                                    v-model="
-                                                        form.data[key]
-                                                            .discount_percentage
-                                                    "
-                                                />
-                                                <div class="input-group-append">
-                                                    <span
-                                                        class="input-group-text"
-                                                        >%</span
-                                                    >
-                                                </div>
-                                            </div>
-                                            <span class="text-danger">{{
-                                                $page?.props?.errors
-                                                    ?.discount_percentage
                                             }}</span>
                                         </div>
                                     </td>

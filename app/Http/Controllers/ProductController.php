@@ -9,6 +9,7 @@ use Inertia\Inertia;
 use App\Models\Product;
 use App\Models\ProductCategory;
 use PhpOffice\PhpSpreadsheet\IOFactory;
+use Illuminate\Support\Facades\Storage;
 
 class ProductController extends Controller
 {
@@ -70,7 +71,7 @@ class ProductController extends Controller
     {
         // Validasi input
         $validatedData = $request->validate([
-            'sku' => 'nullable|string|max:100',
+            'sku' => 'required|string|max:100',
             'category' => 'nullable|string|max:100',
             'design_name' => 'nullable|string|max:100',
             'color' => 'nullable|string|max:100',
@@ -85,27 +86,32 @@ class ProductController extends Controller
             'manufacture_category' => 'nullable|string|max:100',
             'supplier_id' => 'nullable|string|max:100',
             'deskripsi' => 'nullable|string',
-            'image' => 'nullable|string|max:255',
+            'image' => 'nullable|string',
         ]);
 
         try {
+            $fileData = base64_decode(preg_replace('/^data:image\/[a-zA-Z]+;base64,/', '', $request->input('image')));
+            $fileName = 'product-' . time() . '.png';
+            $filePath = "public/products/$fileName";
+            Storage::put($filePath, $fileData);
+
             $product = new Product();
-            $product->sku = $validatedData['sku'];
-            $product->category = $validatedData['category'];
-            $product->design_name = $validatedData['design_name'];
-            $product->color = $validatedData['color'];
-            $product->pattern = $validatedData['pattern'];
-            $product->panjang_per_roll = $validatedData['panjang_per_roll'];
-            $product->tipe = $validatedData['tipe'];
-            $product->origin = $validatedData['origin'];
-            $product->backing = $validatedData['backing'];
-            $product->kode_benang = $validatedData['kode_benang'];
-            $product->reorder_level = $validatedData['reorder_level'];
-            $product->manufacture_id = $validatedData['manufacture_id'];
-            $product->manufacture_category = $validatedData['manufacture_category'];
-            $product->supplier_id = $validatedData['supplier_id'];
-            $product->deskripsi = $validatedData['deskripsi'];
-            $product->image = $validatedData['image'];
+            $product->sku = $request->input('sku');
+            $product->category = $request->input('category');
+            $product->design_name = $request->input('design_name');
+            $product->color = $request->input('color');
+            $product->pattern = $request->input('pattern');
+            $product->panjang_per_roll = $request->input('panjang_per_roll');
+            $product->tipe = $request->input('tipe');
+            $product->origin = $request->input('origin');
+            $product->backing = $request->input('backing');
+            $product->kode_benang = $request->input('kode_benang');
+            $product->reorder_level = $request->input('reorder_level');
+            $product->manufacture_id = $request->input('manufacture_id');
+            $product->manufacture_category = $request->input('manufacture_category');
+            $product->supplier_id = $request->input('supplier_id');
+            $product->deskripsi = $request->input('deskripsi');
+            $product->image = Storage::url("products/$fileName");
             $product->save();
 
             return redirect()->route('products.index')->with('success', 'Produk berhasil dibuat.');
@@ -117,8 +123,9 @@ class ProductController extends Controller
 
     public function update($id, Request $request)
     {
+
         $validatedData = $request->validate([
-            'sku' => 'nullable|string|max:100',
+            'sku' => 'required|string|max:100',
             'category' => 'nullable|string|max:100',
             'design_name' => 'nullable|string|max:100',
             'color' => 'nullable|string|max:100',
@@ -131,30 +138,35 @@ class ProductController extends Controller
             'reorder_level' => 'nullable|string|max:100',
             'manufacture_id' => 'nullable|string|max:100',
             'manufacture_category' => 'nullable|string|max:100',
-            'supplier_id' => 'nullable|string|max:100',
+            'supplier.id' => 'nullable|number|max:100',
             'deskripsi' => 'nullable|string',
-            'image' => 'nullable|string|max:255',
+            'image' => 'nullable|string',
         ]);
 
         try {
 
+            $fileData = base64_decode(preg_replace('/^data:image\/[a-zA-Z]+;base64,/', '', $request->input('image')));
+            $fileName = 'product-' . time() . '.png';
+            $filePath = "public/products/$fileName";
+            Storage::put($filePath, $fileData);
+
             $product = Product::findOrFail($id);
-            $product->sku = $validatedData['sku'];
-            $product->category = $validatedData['category'];
-            $product->design_name = $validatedData['design_name'];
-            $product->color = $validatedData['color'];
-            $product->pattern = $validatedData['pattern'];
-            $product->panjang_per_roll = $validatedData['panjang_per_roll'];
-            $product->tipe = $validatedData['tipe'];
-            $product->origin = $validatedData['origin'];
-            $product->backing = $validatedData['backing'];
-            $product->kode_benang = $validatedData['kode_benang'];
-            $product->reorder_level = $validatedData['reorder_level'];
-            $product->manufacture_id = $validatedData['manufacture_id'];
-            $product->manufacture_category = $validatedData['manufacture_category'];
-            $product->supplier_id = $validatedData['supplier_id'];
-            $product->deskripsi = $validatedData['deskripsi'];
-            $product->image = $validatedData['image'];
+            $product->sku = $request->input('sku');
+            $product->category = $request->input('category');
+            $product->design_name = $request->input('design_name');
+            $product->color = $request->input('color');
+            $product->pattern = $request->input('pattern');
+            $product->panjang_per_roll = $request->input('panjang_per_roll');
+            $product->tipe = $request->input('tipe');
+            $product->origin = $request->input('origin');
+            $product->backing = $request->input('backing');
+            $product->kode_benang = $request->input('kode_benang');
+            $product->reorder_level = $request->input('reorder_level');
+            $product->manufacture_id = $request->input('manufacture_id');
+            $product->manufacture_category = $request->input('manufacture_category');
+            $product->supplier_id = $request->input('supplier_id');
+            $product->deskripsi = $request->input('deskripsi');
+            $product->image = Storage::url("products/$fileName");
             $product->save();
             return redirect()->route('products.index')->with('success', 'Produk berhasil diubah.');
         } catch (\Exception $th) {
@@ -168,6 +180,12 @@ class ProductController extends Controller
     {
         $product = Product::find($id);
         $product->delete();
+        return redirect()->route('products.index')->with('success', 'Produk berhasil dihapus.');
+    }
+
+    public function deleteBulk(Request $request)
+    {
+        $product = Product::whereIn('id', $request->input('id'))->delete();
         return redirect()->route('products.index')->with('success', 'Produk berhasil dihapus.');
     }
 

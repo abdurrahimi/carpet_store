@@ -193,6 +193,27 @@ export default {
                     this.$error();
                 },
             });
+        },
+        deleteSelected() {
+            this.$confirm(
+                "You won't be able to revert this!",
+                () => this.deleteSelectedAction(),
+                false
+            );
+        },
+        deleteSelectedAction() {
+            router.post(this.route("products.deleteBulk"),{id: this.selectedIds}, {
+                preserveScroll: true,
+                onSuccess: () => {
+                    this.$success("Data berhasil dihapus");
+                    router.visit(this.$page.url, {
+                        only: ["products"],
+                    });
+                },
+                onError: () => {
+                    this.$error();
+                },
+            });
         }
     }
 };

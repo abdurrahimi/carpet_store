@@ -58,6 +58,7 @@ Route::middleware('auth')->group(function () {
     Route::put('/products/{id}', [ProductController::class, 'update'])->name('products.update');
     Route::delete('/products/{id}', [ProductController::class, 'delete'])->name('products.delete');
     Route::post('/product/import', [ProductController::class, 'importExcel'])->name('product.import');
+    Route::post('/products/delete-bulk', [ProductController::class, 'deleteBulk'])->name('products.deleteBulk');
 
 
     //store
