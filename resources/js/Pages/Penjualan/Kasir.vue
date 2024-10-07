@@ -33,7 +33,7 @@
                                     <td rowspan="3">
                                         <img
                                             :src="
-                                                preview ??
+                                                item.image ??
                                                 'https://img.freepik.com/premium-vector/default-image-icon-vector-missing-picture-page-website-design-mobile-app-no-photo-available_87543-11093.jpg'
                                             "
                                             alt="Image Preview"
@@ -81,6 +81,7 @@
                                                     type="number"
                                                     class="form-control"
                                                     min="0"
+                                                    @keyup="form.data[key].qty = form.data[key].qty === '' || form.data[key].qty === null ? 0 : form.data[key].qty"
                                                     v-model="form.data[key].qty"
                                                 />
                                                 <div class="input-group-append">
@@ -495,6 +496,7 @@
                                             <input
                                                 class="form-control"
                                                 type="number"
+                                                :value="totalPrice"
                                                 disabled
                                             />
                                         </div>
@@ -545,6 +547,27 @@ export default {
         Modal,
         Multiselect,
     },
+    computed : {
+        totalPrice(){
+            let total = 0;
+            this.form.data?.map((v,k) => total += this.totalUnitPrice(k) ?? 0 )
+            return total
+        }
+    },
+    watch: {
+        "form.data": {
+            handler() {
+                const len = this.form.data?.length
+                if(len > 0){
+                    for(let i= 0; i< len; i++){
+                        this.calcDisPrice(i)
+                        this.calcDisPerc(i)
+                    }
+                }
+            },
+            deep: true
+        }
+    },
     data() {
         return {
             table: [
@@ -581,7 +604,7 @@ export default {
     methods: {
         totalUnitPrice(key) {
             return (
-                this.form.data[key].unit_price * this.form.data[key].qty -
+                (this.form.data[key].unit_price * this.form.data[key].qty) -
                 this.form.data[key].discount_price
             );
         },
@@ -653,9 +676,11 @@ export default {
         },
         pilihData(key) {
             const product = this.form.data[key].product;
-            this.form.data[key].unit_price = product.unit_top_price ?? 0;
+            this.form.data[key].unit_price = product.lowest_price ?? 0;
+            this.form.data[key].image = product.image
         },
         calcDisPrice(key) {
+            if(this.form.data[key].discount_percentage == "" || this.form.data[key].discount_percentage == null) this.form.data[key].discount_percentage = 0;
             this.form.data[key].discount_price =
                 (this.form.data[key].discount_percentage / 100) *
                 (this.form.data[key].unit_price * this.form.data[key].qty);
@@ -664,8 +689,7 @@ export default {
             this.form.data[key].discount_percentage =
                 (this.form.data[key].discount_price /
                     (this.form.data[key].unit_price *
-                        this.form.data[key].qty)) *
-                100;
+                        this.form.data[key].qty)) * 100;
         },
         formatMoney(value) {
             return new Intl.NumberFormat("id-ID", {
