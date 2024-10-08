@@ -229,7 +229,7 @@ export default {
     data() {
         return {
             table: [
-                { title: "Nama Produk", data: "product.name" },
+                { title: "Nama Produk", data: "product.design_name" },
                 { title: "Jumlah", data: "total" },
                 {
                     title: "Tipe",

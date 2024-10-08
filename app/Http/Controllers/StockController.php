@@ -19,7 +19,7 @@ class StockController extends Controller
         $pageSize = (int) $request->get('limit', 10);
         $stock = Stock::query()->with([
             'product' => function($q){
-                return $q->select('id', 'name');
+                return $q->select('id', 'design_name');
             },
             'supplier' => function($q){
                 return $q->select('id', 'name');
