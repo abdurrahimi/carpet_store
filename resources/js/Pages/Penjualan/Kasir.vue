@@ -1,28 +1,17 @@
 <template>
     <div>
+
         <Head title="Kasir" />
-        <div
-            v-if="$page.props.flash.success"
-            class="alert alert-success"
-            role="alert"
-        >
+        <div v-if="$page.props.flash.success" class="alert alert-success" role="alert">
             {{ $page.props.flash.success }}
         </div>
-        <div
-            v-if="$page.props.flash.error"
-            class="alert alert-danger"
-            role="alert"
-        >
+        <div v-if="$page.props.flash.error" class="alert alert-danger" role="alert">
             {{ $page.props.flash.error }}
         </div>
         <div class="card shadow mb-5">
             <div class="card-body">
                 <form id="form-kasir">
-                    <button
-                        class="btn btn-primary btn-sm mb-2 float-right"
-                        type="button"
-                        @click="tambahProduct"
-                    >
+                    <button class="btn btn-primary btn-sm mb-2 float-right" type="button" @click="tambahProduct">
                         + Tambah Product
                     </button>
                     <table class="table">
@@ -31,38 +20,21 @@
                             <template v-for="(item, key) in form.data">
                                 <tr>
                                     <td rowspan="3">
-                                        <img
-                                            :src="
-                                                item.image ??
-                                                'https://img.freepik.com/premium-vector/default-image-icon-vector-missing-picture-page-website-design-mobile-app-no-photo-available_87543-11093.jpg'
-                                            "
-                                            alt="Image Preview"
-                                            class="img-fluid"
-                                            style="max-width: 300px"
-                                        />
+                                        <img :src="item.image ??
+                                            'https://img.freepik.com/premium-vector/default-image-icon-vector-missing-picture-page-website-design-mobile-app-no-photo-available_87543-11093.jpg'
+                                            " alt="Image Preview" class="img-fluid" style="max-width: 300px" />
                                     </td>
                                     <td class="nt" style="width: 25%">
                                         <div class="form-group">
-                                            <label
-                                                for="product_id"
-                                                class="form-label"
-                                                >Produk</label
-                                            >
-                                            <Multiselect
-                                                v-model="form.data[key].product"
-                                                :options="products"
-                                                track-by="id"
-                                                placeholder="Pilih Produk"
-                                                label="design_name"
-                                                @search-change="getProducts"
-                                                @select="pilihData(key)"
-                                                :internal-search="false"
-                                                :class="{
+                                            <label for="product_id" class="form-label">Produk</label>
+                                            <Multiselect v-model="form.data[key].product" :options="products"
+                                                track-by="id" placeholder="Pilih Produk" label="design_name"
+                                                @search-change="getProducts" @select="pilihData(key)"
+                                                @remove="resetFormByKey(key)" :internal-search="false" :class="{
                                                     'is-invalid':
                                                         $page?.props?.errors
                                                             ?.product?.id,
-                                                }"
-                                            ></Multiselect>
+                                                }"></Multiselect>
                                             <span class="text-danger">{{
                                                 $page?.props?.errors?.product
                                                     ?.id
@@ -71,24 +43,14 @@
                                     </td>
                                     <td class="nt" style="width: 15%">
                                         <div class="form-group">
-                                            <label
-                                                for="jumlah"
-                                                class="form-label"
-                                                >Jumlah (Meter)</label
-                                            >
+                                            <label for="jumlah" class="form-label">Jumlah (Meter)</label>
                                             <div class="input-group">
-                                                <input
-                                                    type="number"
-                                                    class="form-control"
-                                                    min="0"
+                                                <input type="number" class="form-control"
+                                                    :disabled="form.data[key].product ? false : true" min="0"
                                                     @keyup="form.data[key].qty = form.data[key].qty === '' || form.data[key].qty === null ? 0 : form.data[key].qty"
-                                                    v-model="form.data[key].qty"
-                                                />
+                                                    v-model="form.data[key].qty" />
                                                 <div class="input-group-append">
-                                                    <span
-                                                        class="input-group-text"
-                                                        >Meter</span
-                                                    >
+                                                    <span class="input-group-text">Meter</span>
                                                 </div>
                                             </div>
                                             <span class="text-danger">{{
@@ -100,11 +62,7 @@
 
                                     <td class="nt" style="width: 30%">
                                         <div class="form-group">
-                                            <label
-                                                for="jumlah"
-                                                class="form-label"
-                                                >Unit Price</label
-                                            >
+                                            <label for="jumlah" class="form-label">Unit Price</label>
                                             <span v-if="form.data[key].product">
                                                 ({{
                                                     formatMoney(
@@ -118,25 +76,15 @@
                                                         form.data[key].product
                                                             .lowest_price
                                                     )
-                                                }})</span
-                                            >
+                                                }})</span>
                                             <div class="input-group">
-                                                <div
-                                                    class="input-group-prepend"
-                                                >
-                                                    <span
-                                                        class="input-group-text"
-                                                        >Rp</span
-                                                    >
+                                                <div class="input-group-prepend">
+                                                    <span class="input-group-text">Rp</span>
                                                 </div>
-                                                <input
-                                                    type="text"
-                                                    class="form-control"
-                                                    v-model="
-                                                        form.data[key]
+                                                <input type="text" class="form-control" @keyup="calcDisPrice(key)"
+                                                    :disabled="form.data[key].product ? false : true" v-model="form.data[key]
                                                             .unit_price
-                                                    "
-                                                />
+                                                        " />
                                             </div>
                                             <span class="text-danger">{{
                                                 $page?.props?.errors?.product
@@ -145,133 +93,78 @@
                                         </div>
                                     </td>
                                     <td class="nt align-middle" rowspan="3">
-                                        <a
-                                            v-show="key != 0"
-                                            class="btn btn-danger btn-sm"
-                                            @click="removeProduct(key)"
-                                            >x</a
-                                        >
+                                        <a v-show="key != 0" class="btn btn-danger btn-sm"
+                                            @click="removeProduct(key)">x</a>
                                     </td>
                                 </tr>
                                 <tr>
                                     <td class="nt" colspan="3">
                                         <div class="col-md-12 row">
-                                            <label
-                                                for="jumlah"
-                                                class="form-label"
-                                                >Variants</label
-                                            >
+                                            <label for="jumlah" class="form-label">Variants</label>
                                             &nbsp;
-                                            <button
-                                                class="btn btn-primary btn-sm"
-                                                type="button"
-                                                @click="tambahVariants(key)"
-                                            >
-                                                <span style="font-size: 10px"
-                                                    >+</span
-                                                >
+                                            <button class="btn btn-primary btn-sm" type="button"
+                                                @click="tambahVariants(key)">
+                                                <span style="font-size: 10px">+</span>
                                             </button>
                                             <div class="col-md-12">
                                                 <div class="row">
-                                                    <div
-                                                        class="col-md-3 shadow mr-2 p-3 rounded-lg"
-                                                        style="
+                                                    <div class="col-md-3 shadow mr-2 p-3 rounded-lg" style="
                                                             border: 1px solid
                                                                 #f0f0f0;
-                                                        "
-                                                        v-for="(
+                                                        " v-for="(
                                                             variant, key_variant
                                                         ) in form.data[key]
-                                                            .variants"
-                                                    >
-                                                        <a
-                                                        v-if="key_variant !==0"
-                                                            class="btn btn-danger btn-sm"
-                                                            @click="
-                                                                removeVariant(
-                                                                    key,
-                                                                    key_variant
-                                                                )
-                                                            "
-                                                            style="
+                                                                    .variants">
+                                                        <a v-if="key_variant !== 0" class="btn btn-danger btn-sm" @click="
+                                                            removeVariant(
+                                                                key,
+                                                                key_variant
+                                                            )
+                                                            " style="
                                                                 position: absolute;
                                                                 right: -6px;
                                                                 top: -6px;
-                                                            "
-                                                            >x</a
-                                                        >
+                                                            ">x</a>
                                                         <div class="row">
-                                                            <div
-                                                                class="col-md-6"
-                                                                style="
+                                                            <div class="col-md-6" style="
                                                                     padding: 0px;
-                                                                "
-                                                            >
-                                                                <div
-                                                                    class="form-group"
-                                                                >
-                                                                    <label
-                                                                        for="jumlah"
-                                                                        class="form-label"
-                                                                        style="
+                                                                ">
+                                                                <div class="form-group">
+                                                                    <label for="jumlah" class="form-label" style="
                                                                             font-size: 12px;
-                                                                        "
-                                                                        >Panjang</label
-                                                                    >
-                                                                    <div
-                                                                        class="input-group"
-                                                                    >
-                                                                        <input
-                                                                            v-model="
-                                                                                form
-                                                                                    .data[
-                                                                                    key
-                                                                                ]
-                                                                                    .variants[
-                                                                                    key_variant
-                                                                                ]
-                                                                                    .panjang
-                                                                            "
-                                                                            type="number"
-                                                                            class="form-control"
-                                                                            min="0"
-                                                                        />
+                                                                        ">Panjang</label>
+                                                                    <div class="input-group">
+                                                                        <input v-model="form
+                                                                                .data[
+                                                                                key
+                                                                            ]
+                                                                                .variants[
+                                                                                key_variant
+                                                                            ]
+                                                                                .panjang
+                                                                            " type="number"
+                                                                            :disabled="form.data[key].product ? false : true"
+                                                                            class="form-control" min="0" />
                                                                     </div>
                                                                 </div>
                                                             </div>
-                                                            <div
-                                                                class="col-md-6"
-                                                                style=""
-                                                            >
-                                                                <div
-                                                                    class="form-group"
-                                                                >
-                                                                    <label
-                                                                        for="jumlah"
-                                                                        class="form-label"
-                                                                        style="
+                                                            <div class="col-md-6" style="">
+                                                                <div class="form-group">
+                                                                    <label for="jumlah" class="form-label" style="
                                                                             font-size: 12px;
-                                                                        "
-                                                                        >Jumlah</label
-                                                                    >
-                                                                    <div
-                                                                        class="input-group"
-                                                                    >
-                                                                        <input
-                                                                            type="number"
-                                                                            v-model="
-                                                                                form
-                                                                                    .data[
-                                                                                    key
-                                                                                ]
-                                                                                    .variants[
-                                                                                    key_variant
-                                                                                ]
-                                                                                    .jumlah
-                                                                            "
-                                                                            class="form-control"
-                                                                            min="0"
-                                                                        />
+                                                                        ">Jumlah</label>
+                                                                    <div class="input-group">
+                                                                        <input type="number" v-model="form
+                                                                                .data[
+                                                                                key
+                                                                            ]
+                                                                                .variants[
+                                                                                key_variant
+                                                                            ]
+                                                                                .jumlah
+                                                                            " class="form-control"
+                                                                            :disabled="form.data[key].product ? false : true"
+                                                                            min="0" />
                                                                     </div>
                                                                 </div>
                                                             </div>
@@ -285,27 +178,15 @@
                                 <tr>
                                     <td class="nt">
                                         <div class="form-group">
-                                            <label
-                                                for="jumlah"
-                                                class="form-label"
-                                                >Discount (%)</label
-                                            >
+                                            <label for="jumlah" class="form-label">Discount (%)</label>
 
                                             <div class="input-group">
-                                                <input
-                                                    type="number"
-                                                    class="form-control"
-                                                    @keyup="calcDisPrice(key)"
-                                                    v-model="
-                                                        form.data[key]
+                                                <input type="number" class="form-control" @keyup="calculateAll(key)"
+                                                    :disabled="form.data[key].product ? false : true" v-model="form.data[key]
                                                             .discount_percentage
-                                                    "
-                                                />
+                                                        " />
                                                 <div class="input-group-append">
-                                                    <span
-                                                        class="input-group-text"
-                                                        >%</span
-                                                    >
+                                                    <span class="input-group-text">%</span>
                                                 </div>
                                             </div>
                                             <span class="text-danger">{{
@@ -316,30 +197,16 @@
                                     </td>
                                     <td class="nt">
                                         <div class="form-group">
-                                            <label
-                                                for="jumlah"
-                                                class="form-label"
-                                                >Discount (Rp)</label
-                                            >
+                                            <label for="jumlah" class="form-label">Discount (Rp)</label>
 
                                             <div class="input-group">
-                                                <div
-                                                    class="input-group-prepend"
-                                                >
-                                                    <span
-                                                        class="input-group-text"
-                                                        >Rp</span
-                                                    >
+                                                <div class="input-group-prepend">
+                                                    <span class="input-group-text">Rp</span>
                                                 </div>
-                                                <input
-                                                    type="number"
-                                                    class="form-control"
-                                                    @keyup="calcDisPerc(key)"
-                                                    v-model="
-                                                        form.data[key]
+                                                <input type="number" class="form-control" @keyup="calcDisPerc(key)"
+                                                    :disabled="form.data[key].product ? false : true" v-model="form.data[key]
                                                             .discount_price
-                                                    "
-                                                />
+                                                        " />
                                             </div>
                                             <span class="text-danger">{{
                                                 $page?.props?.errors
@@ -349,26 +216,13 @@
                                     </td>
                                     <td class="nt">
                                         <div class="form-group">
-                                            <label
-                                                for="jumlah"
-                                                class="form-label"
-                                                >Total Price</label
-                                            >
+                                            <label for="jumlah" class="form-label">Total Price</label>
                                             <div class="input-group">
-                                                <div
-                                                    class="input-group-prepend"
-                                                >
-                                                    <span
-                                                        class="input-group-text"
-                                                        >Rp</span
-                                                    >
+                                                <div class="input-group-prepend">
+                                                    <span class="input-group-text">Rp</span>
                                                 </div>
-                                                <input
-                                                    type="number"
-                                                    class="form-control"
-                                                    :value="totalUnitPrice(key)"
-                                                    disabled
-                                                />
+                                                <input type="number" class="form-control" :value="totalUnitPrice(key)"
+                                                    disabled />
                                             </div>
                                             <span class="text-danger">{{
                                                 $page?.props?.errors?.product
@@ -380,67 +234,36 @@
                             </template>
 
                             <tr v-for="(add, k) in form.additional" :key="k">
-                                <td
-                                    v-if="k == 0"
-                                    :rowspan="
-                                        Object.keys(form.additional).length
-                                    "
-                                    class="align-middle"
-                                >
+                                <td v-if="k == 0" :rowspan="Object.keys(form.additional).length
+                                    " class="align-middle">
                                     <label>Additional Fee</label>
                                 </td>
                                 <td colspan="2">
                                     <div class="form-group">
-                                        <label
-                                            for="additional_fee"
-                                            class="form-label"
-                                        >
+                                        <label for="additional_fee" class="form-label">
                                             Additional Service {{ k + 1 }}
                                         </label>
-                                        <input
-                                            type="text"
-                                            class="form-control"
-                                            v-model="form.additional[k].name"
-                                        />
+                                        <input type="text" class="form-control" v-model="form.additional[k].name" />
                                     </div>
                                 </td>
                                 <td>
                                     <div class="form-group">
-                                        <label
-                                            for="additional_fee"
-                                            class="form-label"
-                                            >Harga</label
-                                        >
+                                        <label for="additional_fee" class="form-label">Harga</label>
                                         <div class="input-group">
                                             <div class="input-group-prepend">
-                                                <span class="input-group-text"
-                                                    >Rp</span
-                                                >
+                                                <span class="input-group-text">Rp</span>
                                             </div>
-                                            <input
-                                                class="form-control"
-                                                type="text"
-                                                v-model="
-                                                    form.additional[k].total
-                                                "
-                                            />
+                                            <input class="form-control" type="text" v-model="form.additional[k].total
+                                                " />
                                         </div>
                                     </div>
                                 </td>
                                 <td class="nt align-middle">
-                                    <button
-                                        v-if="k != 0"
-                                        class="btn btn-danger btn-sm"
-                                        @click="removeAdditional(k)"
-                                    >
+                                    <button v-if="k != 0" class="btn btn-danger btn-sm" @click="removeAdditional(k)">
                                         x
                                     </button>
-                                    <button
-                                        v-if="k == 0"
-                                        class="btn btn-primary btn-sm"
-                                        type="button"
-                                        @click="tambahFee"
-                                    >
+                                    <button v-if="k == 0" class="btn btn-primary btn-sm" type="button"
+                                        @click="tambahFee">
                                         +
                                     </button>
                                 </td>
@@ -450,17 +273,10 @@
                                 <td>
                                     <div class="form-group">
                                         <div class="input-group">
-                                            <input
-                                                v-model="
-                                                    form.discount_percentage
-                                                "
-                                                class="form-control"
-                                                type="number"
-                                            />
+                                            <input v-model="form.discount_percentage
+                                                " class="form-control" type="number" />
                                             <div class="input-group-append">
-                                                <span class="input-group-text"
-                                                    >%</span
-                                                >
+                                                <span class="input-group-text">%</span>
                                             </div>
                                         </div>
                                     </div>
@@ -469,15 +285,9 @@
                                     <div class="form-group">
                                         <div class="input-group">
                                             <div class="input-group-prepend">
-                                                <span class="input-group-text"
-                                                    >Rp</span
-                                                >
+                                                <span class="input-group-text">Rp</span>
                                             </div>
-                                            <input
-                                                v-model="form.discount"
-                                                class="form-control"
-                                                type="number"
-                                            />
+                                            <input v-model="form.discount" class="form-control" type="number" />
                                         </div>
                                     </div>
                                 </td>
@@ -489,16 +299,9 @@
                                     <div class="form-group">
                                         <div class="input-group">
                                             <div class="input-group-prepend">
-                                                <span class="input-group-text"
-                                                    >Rp</span
-                                                >
+                                                <span class="input-group-text">Rp</span>
                                             </div>
-                                            <input
-                                                class="form-control"
-                                                type="number"
-                                                :value="totalPrice"
-                                                disabled
-                                            />
+                                            <input class="form-control" type="number" :value="totalPrice" disabled />
                                         </div>
                                     </div>
                                 </td>
@@ -508,9 +311,7 @@
                                 <td colspan="3">Kasir</td>
                                 <td>
                                     <div class="form-group">
-                                        <a class="btn btn-primary float-right"
-                                            >Submit</a
-                                        >
+                                        <a class="btn btn-primary float-right">Submit</a>
                                     </div>
                                 </td>
                                 <td></td>
@@ -547,15 +348,15 @@ export default {
         Modal,
         Multiselect,
     },
-    computed : {
-        totalPrice(){
+    computed: {
+        totalPrice() {
             let total = 0;
-            this.form.data?.map((v,k) => total += this.totalUnitPrice(k) ?? 0 )
+            this.form.data?.map((v, k) => total += this.totalUnitPrice(k) ?? 0)
             return total
         }
     },
     watch: {
-        "form.data": {
+        /* "form.data": {
             handler() {
                 const len = this.form.data?.length
                 if(len > 0){
@@ -566,7 +367,7 @@ export default {
                 }
             },
             deep: true
-        }
+        } */
     },
     data() {
         return {
@@ -603,10 +404,9 @@ export default {
     },
     methods: {
         totalUnitPrice(key) {
-            return (
-                (this.form.data[key].unit_price * this.form.data[key].qty) -
-                this.form.data[key].discount_price
-            );
+            let price = ((this.form.data[key].unit_price * this.form.data[key].qty) / 6) -
+                this.form.data[key].discount_price;
+            return isNaN(price) ? 0 : price;
         },
         async getProducts(search = "") {
             try {
@@ -624,13 +424,13 @@ export default {
                     {
                         product: null,
                         unit_top_price: 0,
-                        qty: 0,
+                        qty: 6,
                         discount_price: 0,
                         discount_percentage: 0,
                         variants: [
                             {
-                                panjang: 0,
-                                jumlah: 0,
+                                panjang: 6,
+                                jumlah: 1,
                             },
                         ],
                     },
@@ -646,6 +446,21 @@ export default {
                 ],
                 total: 0,
             };
+        },
+        resetFormByKey(key) {
+            this.form.data[key] = {
+                product: null,
+                unit_top_price: 0,
+                qty: 6,
+                discount_price: 0,
+                discount_percentage: 0,
+                variants: [
+                    {
+                        panjang: 6,
+                        jumlah: 1,
+                    },
+                ],
+            }
         },
         tambahProduct() {
             this.form.data.push({
@@ -680,16 +495,18 @@ export default {
             this.form.data[key].image = product.image
         },
         calcDisPrice(key) {
-            if(this.form.data[key].discount_percentage == "" || this.form.data[key].discount_percentage == null) this.form.data[key].discount_percentage = 0;
+            if (this.form.data[key].discount_percentage == "" || this.form.data[key].discount_percentage == null) {
+                this.form.data[key].discount_percentage = 0;
+                return
+            }
             this.form.data[key].discount_price =
                 (this.form.data[key].discount_percentage / 100) *
-                (this.form.data[key].unit_price * this.form.data[key].qty);
+                ((this.form.data[key].unit_price * this.form.data[key].qty) / 6);
         },
         calcDisPerc(key) {
             this.form.data[key].discount_percentage =
                 (this.form.data[key].discount_price /
-                    (this.form.data[key].unit_price *
-                        this.form.data[key].qty)) * 100;
+                    ((this.form.data[key].unit_price * this.form.data[key].qty) / 6)) * 100;
         },
         formatMoney(value) {
             return new Intl.NumberFormat("id-ID", {
@@ -698,13 +515,21 @@ export default {
             }).format(value);
         },
         tambahVariants(key) {
+            if (!this.form.data[key].product) {
+                console.log(this.form.data[key].product)
+                return
+            }
+
             this.form.data[key].variants.push({
-                panjang: 0,
-                jumlah: 0,
+                panjang: 6,
+                jumlah: 1,
             });
         },
         removeVariant(key, key_variant) {
             this.form.data[key].variants.splice(key_variant, 1);
+        },
+        calculateAll(key) {
+            this.calcDisPrice(key)
         }
     },
 };
