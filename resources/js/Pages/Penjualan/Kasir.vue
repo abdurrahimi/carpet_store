@@ -81,9 +81,10 @@
                                                 <div class="input-group-prepend">
                                                     <span class="input-group-text">Rp</span>
                                                 </div>
-                                                <input type="text" class="form-control" @keyup="calcDisPrice(key)"
+                                                <input v-money type="text" class="form-control"
+                                                    @keyup="calcDisPrice(key)"
                                                     :disabled="form.data[key].product ? false : true" v-model="form.data[key]
-                                                            .unit_price
+                                                        .unit_price
                                                         " />
                                             </div>
                                             <span class="text-danger">{{
@@ -115,12 +116,13 @@
                                                             variant, key_variant
                                                         ) in form.data[key]
                                                                     .variants">
-                                                        <a v-if="key_variant !== 0" class="btn btn-danger btn-sm" @click="
-                                                            removeVariant(
-                                                                key,
-                                                                key_variant
-                                                            )
-                                                            " style="
+                                                        <a v-if="key_variant !== 0" class="btn btn-danger btn-sm"
+                                                            @click="
+                                                                removeVariant(
+                                                                    key,
+                                                                    key_variant
+                                                                )
+                                                                " style="
                                                                 position: absolute;
                                                                 right: -6px;
                                                                 top: -6px;
@@ -135,13 +137,13 @@
                                                                         ">Panjang</label>
                                                                     <div class="input-group">
                                                                         <input v-model="form
-                                                                                .data[
-                                                                                key
-                                                                            ]
-                                                                                .variants[
-                                                                                key_variant
-                                                                            ]
-                                                                                .panjang
+                                                                            .data[
+                                                                            key
+                                                                        ]
+                                                                            .variants[
+                                                                            key_variant
+                                                                        ]
+                                                                            .panjang
                                                                             " type="number"
                                                                             :disabled="form.data[key].product ? false : true"
                                                                             class="form-control" min="0" />
@@ -155,13 +157,13 @@
                                                                         ">Jumlah</label>
                                                                     <div class="input-group">
                                                                         <input type="number" v-model="form
-                                                                                .data[
-                                                                                key
-                                                                            ]
-                                                                                .variants[
-                                                                                key_variant
-                                                                            ]
-                                                                                .jumlah
+                                                                            .data[
+                                                                            key
+                                                                        ]
+                                                                            .variants[
+                                                                            key_variant
+                                                                        ]
+                                                                            .jumlah
                                                                             " class="form-control"
                                                                             :disabled="form.data[key].product ? false : true"
                                                                             min="0" />
@@ -183,7 +185,7 @@
                                             <div class="input-group">
                                                 <input type="number" class="form-control" @keyup="calculateAll(key)"
                                                     :disabled="form.data[key].product ? false : true" v-model="form.data[key]
-                                                            .discount_percentage
+                                                        .discount_percentage
                                                         " />
                                                 <div class="input-group-append">
                                                     <span class="input-group-text">%</span>
@@ -203,9 +205,10 @@
                                                 <div class="input-group-prepend">
                                                     <span class="input-group-text">Rp</span>
                                                 </div>
-                                                <input type="number" class="form-control" @keyup="calcDisPerc(key)"
+                                                <input v-money type="text" class="form-control"
+                                                    @keyup="calcDisPerc(key)"
                                                     :disabled="form.data[key].product ? false : true" v-model="form.data[key]
-                                                            .discount_price
+                                                        .discount_price
                                                         " />
                                             </div>
                                             <span class="text-danger">{{
@@ -221,8 +224,8 @@
                                                 <div class="input-group-prepend">
                                                     <span class="input-group-text">Rp</span>
                                                 </div>
-                                                <input type="number" class="form-control" :value="totalUnitPrice(key)"
-                                                    disabled />
+                                                <input v-money type="text" class="form-control"
+                                                    :value="totalUnitPrice(key)" disabled />
                                             </div>
                                             <span class="text-danger">{{
                                                 $page?.props?.errors?.product
@@ -243,7 +246,8 @@
                                         <label for="additional_fee" class="form-label">
                                             Additional Service {{ k + 1 }}
                                         </label>
-                                        <input type="text" class="form-control" v-model="form.additional[k].name" />
+                                        <input type="text" class="form-control" v-model="form.additional[k].name"
+                                            :disabled="form.data[0].product ? false : true" />
                                     </div>
                                 </td>
                                 <td>
@@ -253,8 +257,9 @@
                                             <div class="input-group-prepend">
                                                 <span class="input-group-text">Rp</span>
                                             </div>
-                                            <input class="form-control" type="text" v-model="form.additional[k].total
-                                                " />
+                                            <input v-money class="form-control" type="text"
+                                                v-model="form.additional[k].total"
+                                                :disabled="form.data[0].product ? false : true" min="0" />
                                         </div>
                                     </div>
                                 </td>
@@ -273,8 +278,9 @@
                                 <td>
                                     <div class="form-group">
                                         <div class="input-group">
-                                            <input v-model="form.discount_percentage
-                                                " class="form-control" type="number" />
+                                            <input v-model="form.discount_percentage" class="form-control" type="number"
+                                                @keyup="calcTotalDisPrice"
+                                                :disabled="form.data[0].product ? false : true" />
                                             <div class="input-group-append">
                                                 <span class="input-group-text">%</span>
                                             </div>
@@ -287,7 +293,9 @@
                                             <div class="input-group-prepend">
                                                 <span class="input-group-text">Rp</span>
                                             </div>
-                                            <input v-model="form.discount" class="form-control" type="number" />
+                                            <input v-money v-model="form.discount" class="form-control" type="text"
+                                                :disabled="form.data[0].product ? false : true"
+                                                @keyup="calcTotalDisPerc" />
                                         </div>
                                     </div>
                                 </td>
@@ -301,7 +309,8 @@
                                             <div class="input-group-prepend">
                                                 <span class="input-group-text">Rp</span>
                                             </div>
-                                            <input class="form-control" type="number" :value="totalPrice" disabled />
+                                            <input v-money class="form-control" type="text" :value="totalPrice"
+                                                disabled />
                                         </div>
                                     </div>
                                 </td>
@@ -351,23 +360,19 @@ export default {
     computed: {
         totalPrice() {
             let total = 0;
-            this.form.data?.map((v, k) => total += this.totalUnitPrice(k) ?? 0)
-            return total
+            let additional = 0;
+            this.form.data?.map((v, k) => {
+                total += parseInt(this.totalUnitPrice(k)) ?? 0
+            })
+            this.form.additional?.map((v, k) => {
+                let add = v.total.toString().replace(/\./g, "")
+                additional += parseInt(add)
+            })
+
+            let disc = this.form.discount ?? 0
+            const totalTrans = parseInt(total) + parseInt(additional) - parseInt(disc.toString().replace(/\./g, ""))
+            return isNaN(totalTrans) ? 0 : totalTrans
         }
-    },
-    watch: {
-        /* "form.data": {
-            handler() {
-                const len = this.form.data?.length
-                if(len > 0){
-                    for(let i= 0; i< len; i++){
-                        this.calcDisPrice(i)
-                        this.calcDisPerc(i)
-                    }
-                }
-            },
-            deep: true
-        } */
     },
     data() {
         return {
@@ -389,13 +394,7 @@ export default {
                     panjang: 0,
                     jumlah: 0,
                 },
-            ],
-            supplier: [
-                {
-                    id: 2,
-                    name: "xx",
-                },
-            ],
+            ]
         };
     },
     mounted() {
@@ -403,10 +402,83 @@ export default {
         this.getProducts();
     },
     methods: {
+        totalPriceBeforeDisc() {
+            let total = 0;
+            let additional = 0;
+            this.form.data?.map((v, k) => {
+                total += parseInt(this.totalUnitPrice(k)) ?? 0
+            })
+            this.form.additional?.map((v, k) => {
+                let add = v.total.toString().replace(/\./g, "")
+                additional += parseInt(add)
+            })
+            console.log(total)
+            return parseInt(total) + parseInt(additional)
+        },
         totalUnitPrice(key) {
-            let price = ((this.form.data[key].unit_price * this.form.data[key].qty) / 6) -
-                this.form.data[key].discount_price;
+            let harga = this.form.data[key].unit_price || 0;
+            let diskon = this.form.data[key].discount_price || 0;
+            let unitPrice = parseInt(harga.toString().replace(/\./g, "")) || 0;
+            let qty = parseInt(this.form.data[key].qty) || 0;
+            let discountPrice = parseInt(diskon.toString().replace(/\./g, "")) || 0;
+
+            let price = ((unitPrice * qty) / 6) - discountPrice;
             return isNaN(price) ? 0 : price;
+        },
+        calcDisPrice(key) {
+            if (this.form.data[key].discount_percentage == "" || this.form.data[key].discount_percentage == null) {
+                this.form.data[key].discount_percentage = 0;
+                return
+            }
+            let unitPrice = this.form.data[key].unit_price.toString().replace(/\./g, "");
+
+            this.form.data[key].discount_price =
+                (this.form.data[key].discount_percentage / 100) *
+                ((parseInt(unitPrice) * this.form.data[key].qty) / 6);
+        },
+        calcDisPerc(key) {
+            let disc = this.form.data[key].discount_price.toString().replace(/\./g, "")
+            let unitPrice = this.form.data[key].unit_price.toString().replace(/\./g, "");
+            this.form.data[key].discount_percentage =
+                (parseInt(disc) /
+                    ((parseInt(unitPrice) * this.form.data[key].qty) / 6)) * 100;
+            this.form.data[key].discount_percentage = this.form.data[key].discount_percentage.toFixed(2)
+        },
+        calcTotalDisPrice() {
+            if (this.form.discount_percentage == "" || this.form.discount_percentage == null) {
+                this.form.discount_percentage = 0;
+                return
+            }
+            let sumPrice = this.totalPriceBeforeDisc();
+            console.log(sumPrice)
+            this.form.discount = (this.form.discount_percentage / 100) * parseInt(sumPrice.toString().replace(/\./g, ""));
+        },
+        calcTotalDisPerc() {
+            let disc = this.form.discount.toString().replace(/\./g, "")
+            let sumPrice = this.totalPriceBeforeDisc();
+            this.form.discount_percentage = (parseInt(disc) / parseInt(sumPrice.toString().replace(/\./g, "")) * 100).toFixed(2);
+        },
+        formatMoney(value) {
+            return new Intl.NumberFormat("id-ID", {
+                style: "currency",
+                currency: "IDR",
+            }).format(value);
+        },
+        tambahVariants(key) {
+            if (!this.form.data[key].product) {
+                return
+            }
+
+            this.form.data[key].variants.push({
+                panjang: 6,
+                jumlah: 1,
+            });
+        },
+        removeVariant(key, key_variant) {
+            this.form.data[key].variants.splice(key_variant, 1);
+        },
+        calculateAll(key) {
+            this.calcDisPrice(key)
         },
         async getProducts(search = "") {
             try {
@@ -465,11 +537,16 @@ export default {
         tambahProduct() {
             this.form.data.push({
                 product: null,
-                qty: 0,
+                qty: 6,
                 unit_top_price: 0,
                 discount_price: 0,
                 discount_percentage: 0,
-                variant: null,
+                variants: [
+                    {
+                        panjang: 6,
+                        jumlah: 1,
+                    },
+                ],
             });
         },
         tambahFee() {
@@ -494,50 +571,10 @@ export default {
             this.form.data[key].unit_price = product.lowest_price ?? 0;
             this.form.data[key].image = product.image
         },
-        calcDisPrice(key) {
-            if (this.form.data[key].discount_percentage == "" || this.form.data[key].discount_percentage == null) {
-                this.form.data[key].discount_percentage = 0;
-                return
-            }
-            this.form.data[key].discount_price =
-                (this.form.data[key].discount_percentage / 100) *
-                ((this.form.data[key].unit_price * this.form.data[key].qty) / 6);
-        },
-        calcDisPerc(key) {
-            this.form.data[key].discount_percentage =
-                (this.form.data[key].discount_price /
-                    ((this.form.data[key].unit_price * this.form.data[key].qty) / 6)) * 100;
-        },
-        formatMoney(value) {
-            return new Intl.NumberFormat("id-ID", {
-                style: "currency",
-                currency: "IDR",
-            }).format(value);
-        },
-        tambahVariants(key) {
-            if (!this.form.data[key].product) {
-                console.log(this.form.data[key].product)
-                return
-            }
-
-            this.form.data[key].variants.push({
-                panjang: 6,
-                jumlah: 1,
-            });
-        },
-        removeVariant(key, key_variant) {
-            this.form.data[key].variants.splice(key_variant, 1);
-        },
-        calculateAll(key) {
-            this.calcDisPrice(key)
-        }
     },
 };
 </script>
 <style scoped>
-/* .nt {
-    border-top: 0px !important;
-} */
 .form-group {
     margin-bottom: 0px !important;
 }

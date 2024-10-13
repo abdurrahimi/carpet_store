@@ -1,5 +1,6 @@
 <?php
 
+use App\Http\Controllers\CustomerController;
 use App\Http\Controllers\PenjualanController;
 use App\Http\Controllers\ProductController;
 use App\Http\Controllers\ProfileController;
@@ -51,6 +52,9 @@ Route::middleware('auth')->group(function () {
     Route::post('/users', [UsersController::class, 'store'])->name('users.store');
     Route::put('/users/{id}', [UsersController::class, 'update'])->name('users.update');
     Route::delete('/users/{id}', [UsersController::class, 'destroy'])->name('users.destroy');
+
+    //Customer
+    Route::get('/customer', [CustomerController::class, 'index'])->name('customer.index');
 
     Route::get('/products', [ProductController::class, 'index'])->name('products.index');
     Route::get('/products/data', [ProductController::class, 'getDataProduct'])->name('products.get');

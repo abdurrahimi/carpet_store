@@ -17,11 +17,46 @@ createInertiaApp({
         const app = createApp({ render: () => h(App, props) })
             .use(plugin)
             .use(ZiggyVue);
-            //.use(SweetalertPlugin)
+        //.use(SweetalertPlugin)
 
         app.config.globalProperties.$confirm = confirmAlert;
         app.config.globalProperties.$success = successAlert;
         app.config.globalProperties.$error = errorAlert;
+        app.directive("money", {
+            beforeMount(el, binding) {
+                const formatValue = (value) => {
+                    if (!value) return "";
+                    return parseInt(value.replace(/\D/g, "") || "0").toLocaleString("id-ID");
+                };
+
+                // Update tampilan input saat ada perubahan
+                const updateDisplay = (value) => {
+                    el.value = formatValue(value);
+                };
+
+                // Event listener buat input
+                el.addEventListener("input", (e) => {
+                    let rawValue = e.target.value.replace(/\D/g, "");
+                    el.value = formatValue(rawValue);
+
+                    // Emit event 'update:modelValue' supaya reactive di parent
+                    el.dispatchEvent(new CustomEvent("update:modelValue", {
+                        detail: parseInt(rawValue) || 0,
+                        bubbles: true,
+                    }));
+                });
+
+                // Update tampilan awal kalau ada value binding
+                if (binding.value) {
+                    updateDisplay(binding.value.toString());
+                }
+            },
+            updated(el) {
+                if(el.value == 0 || el.value == null || el.value == ""){ el.value = 0; return; }
+                el.value = parseInt(el.value.toString().replace(/\D/g, "")).toLocaleString("id-ID");
+            },
+        });
+
 
         app.component('Table', Table);
         app.mount(el);
@@ -32,3 +67,5 @@ createInertiaApp({
         color: '#4B5563',
     },
 });
+
+
