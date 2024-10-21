@@ -247,7 +247,7 @@
                                             Additional Service {{ k + 1 }}
                                         </label>
                                         <input type="text" class="form-control" v-model="form.additional[k].name"
-                                            :disabled="form.data[0].product ? false : true" />
+                                            :disabled="form.data[0]?.product ? false : true" />
                                     </div>
                                 </td>
                                 <td>
@@ -259,7 +259,7 @@
                                             </div>
                                             <input v-money class="form-control" type="text"
                                                 v-model="form.additional[k].total"
-                                                :disabled="form.data[0].product ? false : true" min="0" />
+                                                :disabled="form.data[0]?.product ? false : true" min="0" />
                                         </div>
                                     </div>
                                 </td>
@@ -280,7 +280,7 @@
                                         <div class="input-group">
                                             <input v-model="form.discount_percentage" class="form-control" type="number"
                                                 @keyup="calcTotalDisPrice"
-                                                :disabled="form.data[0].product ? false : true" />
+                                                :disabled="form.data[0]?.product ? false : true" />
                                             <div class="input-group-append">
                                                 <span class="input-group-text">%</span>
                                             </div>
@@ -294,7 +294,7 @@
                                                 <span class="input-group-text">Rp</span>
                                             </div>
                                             <input v-money v-model="form.discount" class="form-control" type="text"
-                                                :disabled="form.data[0].product ? false : true"
+                                                :disabled="form.data[0]?.product ? false : true"
                                                 @keyup="calcTotalDisPerc" />
                                         </div>
                                     </div>
@@ -320,7 +320,7 @@
                                 <td colspan="3">Kasir</td>
                                 <td>
                                     <div class="form-group">
-                                        <a class="btn btn-primary float-right">Submit</a>
+                                        <a class="btn btn-primary float-right" @click="submitForm" :class="{ disabled: form.submit }">Submit</a>
                                     </div>
                                 </td>
                                 <td></td>
@@ -384,7 +384,34 @@ export default {
             modalTitle: "",
             modalShow: false,
             selectedIds: [],
-            form: {},
+            form: {
+                data: [
+                    {
+                        product: null,
+                        unit_top_price: 0,
+                        qty: 6,
+                        discount_price: 0,
+                        discount_percentage: 0,
+                        variants: [
+                            {
+                                panjang: 6,
+                                jumlah: 1,
+                            },
+                        ],
+                    },
+                ],
+                customer: null,
+                discount: 0,
+                discount_percentage: 0,
+                additional: [
+                    {
+                        name: "",
+                        total: 0,
+                    },
+                ],
+                total: 0,
+                submit: false,
+            },
             products: [],
             variant: null,
             store: [],
@@ -402,6 +429,34 @@ export default {
         this.getProducts();
     },
     methods: {
+        async submitForm() {
+            try {
+                if (this.form.submit) {
+                    return;
+                }
+
+                this.form.submit = true;
+                
+                return router.post(this.route('order.create'), this.form, {
+                    preserveScroll: true,
+                    onSuccess: () => {
+                        this.form.submit = false;
+                        $("#modal-add").modal("hide");
+                        this.$success("Data berhasil disimpan");
+                        router.visit(this.$page.url, {
+                            only: ["users"],
+                        });
+                    },
+                    onError: () => {
+                        this.form.submit = false;
+                        this.$error();
+                    },
+                });
+            
+            } catch (e) {
+                this.form.submit = false;
+            }
+        },
         totalPriceBeforeDisc() {
             let total = 0;
             let additional = 0;
@@ -517,6 +572,7 @@ export default {
                     },
                 ],
                 total: 0,
+                submit: false,
             };
         },
         resetFormByKey(key) {

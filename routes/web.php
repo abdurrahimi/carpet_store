@@ -1,6 +1,7 @@
 <?php
 
 use App\Http\Controllers\CustomerController;
+use App\Http\Controllers\OrderController;
 use App\Http\Controllers\PenjualanController;
 use App\Http\Controllers\ProductController;
 use App\Http\Controllers\ProfileController;
@@ -80,6 +81,9 @@ Route::middleware('auth')->group(function () {
 
     Route::get('/penjualan', [PenjualanController::class, 'index'])->name('penjualan.index');
     Route::get('/kasir', [PenjualanController::class, 'kasir'])->name('penjualan.kasir');
+
+    //order
+    Route::post('/order', [OrderController::class, 'order'])->name('order.create');
 
 
     Route::get('/temp', function(){
