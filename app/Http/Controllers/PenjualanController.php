@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\Order;
 use App\Models\Penjualan;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Http\Request;
@@ -28,7 +29,7 @@ class PenjualanController extends Controller
     public function kasir(Request $request)
     {
         $pageSize = (int) $request->get('limit', 10);
-        $data = Penjualan::query()->with('creator')->where(DB::raw('date(created_at)'),date('Y-m-d'));
+        $data = Order::query()->with('creator')->where(DB::raw('date(created_at)'),date('Y-m-d'));
         if(Auth::user()->store_id){
             $data = $data->where('store_id', Auth::user()->store_id);
         }

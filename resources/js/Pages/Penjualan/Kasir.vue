@@ -378,8 +378,8 @@ export default {
         return {
             table: [
                 { title: "Tanggal", data: "created_at" },
-                { title: "Toko", data: "store.name" },
-                { title: "Jumlah", data: "total" },
+                { title: "Customer", data: "customer.name" },
+                { title: "Jumlah", data: "final_price" },
             ],
             modalTitle: "",
             modalShow: false,
