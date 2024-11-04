@@ -125,7 +125,7 @@ export default {
                     data: "pattern",
                 },
                 {
-                    title: "TYPE",
+                    title: "ORIGIN",
                     data: "origin",
                     render: (row) => {
                         return row.origin == 1 ? (
