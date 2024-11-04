@@ -399,7 +399,7 @@ export default {
       );
     },
     deleteAction(row) {
-      router.delete(this.route('user.destroy', row.id), {
+      router.delete(this.route('users.destroy', row.id), {
         preserveScroll: true,
         onSuccess: () => {
           this.$success("Data berhasil dihapus");
