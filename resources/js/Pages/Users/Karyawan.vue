@@ -415,6 +415,20 @@ export default {
     handleSelectedRows(selectedRows) {
       this.selectedIds = selectedRows;
     },
+    async deleteSelected(){
+      router.post(this.route('users.massDestroy'), {ids: this.selectedIds}, {
+        preserveScroll: true,
+        onSuccess: () => {
+          this.$success("Data berhasil dihapus");
+          router.visit(this.$page.url, {
+            only: ["users"],
+          });
+        },
+        onError: () => {
+          this.$error();
+        },
+      });
+    },
     async getDataUsers(val = "") {
       let { data } = await axios.get(this.route("users.get", {name: val}));
       this.karyawan = data;

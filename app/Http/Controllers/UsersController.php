@@ -173,4 +173,24 @@ class UsersController extends Controller
             return redirect()->route('users.index')->with('error', 'Karyawan gagal dihapus.');
         }
     }
+
+    public function massDestroy(Request $request)
+    {
+        DB::beginTransaction();
+        try {
+            $ids = $request->input('ids', []);
+            $karyawan = Karyawan::whereIn('id', $ids);
+            $karyawan->delete();
+
+            $user = User::whereIn('karyawan_id', $ids)->first();
+            if($user){
+                $user->delete();
+            }
+            DB::commit();
+            return redirect()->route('users.index')->with('success', 'Karyawan berhasil dihapus.');
+        } catch (\Exception $e) {
+            DB::rollBack();
+            return redirect()->route('users.index')->with('error', 'Karyawan gagal dihapus.');
+        }
+    }
 }

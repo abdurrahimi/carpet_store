@@ -53,6 +53,7 @@ Route::middleware('auth')->group(function () {
     Route::post('/users', [UsersController::class, 'store'])->name('users.store');
     Route::put('/users/{id}', [UsersController::class, 'update'])->name('users.update');
     Route::delete('/users/{id}', [UsersController::class, 'destroy'])->name('users.destroy');
+    Route::post('/users/mass', [UsersController::class, 'massDestroy'])->name('users.massDestroy');
 
     //Customer
     Route::get('/customer', [CustomerController::class, 'index'])->name('customer.index');
