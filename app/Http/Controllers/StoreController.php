@@ -31,8 +31,8 @@ class StoreController extends Controller
         $name = $request->get('name', '');
         $store = Store::query()->select('id', 'name');
         if($name){
-            $store = $store->where('name', 'like', DB::raw("'%$name.%'"))
-                            ->orWhere('name', 'like', "");
+            $store = $store->where('name', 'like', DB::raw("'%$name%'"))
+                            ->orWhere('name', '<>', null);
         }
         $store = $store->limit((int) $request->get('limit', 10))->get();
         return response()->json($store);

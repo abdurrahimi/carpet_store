@@ -515,7 +515,7 @@ export default {
         ? new Date(data.join_date).toISOString().substr(0, 10)
         : new Date().toISOString().substr(0, 10);
       this.form.leader_id = data.leader || null;
-      this.form.toko_id = data.toko_id || null;
+      this.form.toko_id = data.store || null;
       this.form.email = data.email || "";
       this.form.is_account = !!data.account;
     },

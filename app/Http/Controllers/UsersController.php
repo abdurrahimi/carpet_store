@@ -93,6 +93,7 @@ class UsersController extends Controller
                 $user->name = $request->name;
                 $user->email = $request->email;
                 $user->password = Hash::make($request->password);
+                $user->save();
             }
             DB::commit();
             return redirect()->route('users.index')->with('success', 'Karyawan berhasil ditambahkan.');
