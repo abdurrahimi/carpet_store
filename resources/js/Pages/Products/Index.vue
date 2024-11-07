@@ -105,6 +105,10 @@ export default {
                     data: "id",
                 },
                 {
+                    title: "ORI BARCODE",
+                    data: "ori_barcode"
+                },
+                {
                     title: "NEW DESIGN (SKU)",
                     data: "sku",
                 },

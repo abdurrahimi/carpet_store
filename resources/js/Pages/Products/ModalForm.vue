@@ -47,6 +47,22 @@
                 </div>
 
                 <div class="col-md-6 mb-3">
+                    <label for="sku" class="form-label">SKU</label>
+                    <input
+                        type="text"
+                        id="sku"
+                        v-model="form.ori_barcode"
+                        class="form-control"
+                        :class="{ 'is-invalid': $page?.props?.errors?.ori_barcode }"
+                        placeholder="Enter SKU"
+                        required
+                    />
+                    <span class="text-danger">{{
+                        $page?.props?.errors?.ori_barcode
+                    }}</span>
+                </div>
+
+                <div class="col-md-6 mb-3">
                     <label for="category" class="form-label">Category</label>
                     <input
                         type="text"
@@ -180,6 +196,66 @@
                     />
                     <span class="text-danger">{{
                         $page?.props?.errors?.panjang_per_roll
+                    }}</span>
+                </div>
+
+                <div class="col-md-6 mb-3">
+                    <label for="thickness" class="form-label"
+                        >Thickness</label
+                    >
+                    <input
+                        type="number"
+                        id="thickness"
+                        v-model="form.thickness"
+                        class="form-control"
+                        :class="{
+                            'is-invalid':
+                                $page?.props?.errors?.thickness,
+                        }"
+                        placeholder="Enter Panjang per Roll"
+                    />
+                    <span class="text-danger">{{
+                        $page?.props?.errors?.thickness
+                    }}</span>
+                </div>
+
+                <div class="col-md-6 mb-3">
+                    <label for="weight" class="form-label"
+                        >Weight</label
+                    >
+                    <input
+                        type="number"
+                        id="weight"
+                        v-model="form.weight"
+                        class="form-control"
+                        :class="{
+                            'is-invalid':
+                                $page?.props?.errors?.weight,
+                        }"
+                        placeholder="Enter Panjang per Roll"
+                    />
+                    <span class="text-danger">{{
+                        $page?.props?.errors?.weight
+                    }}</span>
+                </div>
+
+                <div class="col-md-6 mb-3">
+                    <label for="lebar" class="form-label"
+                        >Lebar</label
+                    >
+                    <input
+                        type="number"
+                        id="lebar"
+                        v-model="form.lebar"
+                        class="form-control"
+                        :class="{
+                            'is-invalid':
+                                $page?.props?.errors?.lebar,
+                        }"
+                        placeholder="Enter Panjang per Roll"
+                    />
+                    <span class="text-danger">{{
+                        $page?.props?.errors?.lebar
                     }}</span>
                 </div>
 
@@ -476,6 +552,10 @@ export default {
                 supplier: this.editData.supplier ?? null,
                 deskripsi: this.editData.deskripsi ?? "",
                 image: this.editData.image ?? null,
+                ori_barcode: this.editData.ori_barcode ?? "",
+                thickness: this.editData.thickness ?? 0,
+                weight: this.editData.weight ?? 0,
+                lebar: this.editData.lebar ?? 0,
             };
         },
         toEdit() {
@@ -580,6 +660,10 @@ export default {
                 supplier: this.editData.supplier ?? null,
                 deskripsi: this.editData.deskripsi ?? "",
                 image: this.editData.image ?? null,
+                ori_barcode: this.editData.ori_barcode ?? "",
+                thickness: this.editData.thickness ?? 0,
+                weight: this.editData.weight ?? 0,
+                lebar: this.editData.lebar ?? 0,
             };
         },
         editButtonHandler() {

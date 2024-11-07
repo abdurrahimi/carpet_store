@@ -87,6 +87,10 @@ class ProductController extends Controller
             'supplier_id' => 'nullable|string|max:100',
             'deskripsi' => 'nullable|string',
             'image' => 'nullable|string',
+            'ori_barcode' => 'required|string',
+            'thickness' => 'nullable|integer',
+            'weight' => 'nullable|integer',
+            'lebar' => 'nullable|integer'
         ]);
 
         try {
@@ -112,6 +116,10 @@ class ProductController extends Controller
             $product->supplier_id = $request->input('supplier_id');
             $product->deskripsi = $request->input('deskripsi');
             $product->image = Storage::url("products/$fileName");
+            $product->ori_barcode = $request->input('ori_barcode', '');
+            $product->thickness = $request->input('thickness', 0);
+            $product->weight = $request->input('weight', 0);
+            $product->lebar = $request->input('lebar', 0);
             $product->save();
 
             return redirect()->route('products.index')->with('success', 'Produk berhasil dibuat.');
@@ -141,6 +149,10 @@ class ProductController extends Controller
             'supplier.id' => 'nullable|number|max:100',
             'deskripsi' => 'nullable|string',
             'image' => 'nullable|string',
+            'ori_barcode' => 'required|string',
+            'thickness' => 'nullable|integer',
+            'weight' => 'nullable|integer',
+            'lebar' => 'nullable|integer',
         ]);
 
         try {
@@ -167,6 +179,10 @@ class ProductController extends Controller
             $product->supplier_id = $request->input('supplier_id');
             $product->deskripsi = $request->input('deskripsi');
             $product->image = Storage::url("products/$fileName");
+            $product->ori_barcode = $request->input('ori_barcode', '');
+            $product->thickness = $request->input('thickness', 0);
+            $product->weight = $request->input('weight', 0);
+            $product->lebar = $request->input('lebar', 0);
             $product->save();
             return redirect()->route('products.index')->with('success', 'Produk berhasil diubah.');
         } catch (\Exception $th) {
