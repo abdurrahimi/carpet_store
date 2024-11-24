@@ -11,12 +11,193 @@
         <div class="card shadow mb-5">
             <div class="card-body">
                 <form id="form-kasir">
-                    <button class="btn btn-primary btn-sm mb-2 float-right" type="button" @click="tambahProduct">
-                        + Tambah Product
-                    </button>
                     <table class="table">
                         <thead></thead>
                         <tbody>
+                            <tr>
+                                <td colspan="5">
+                                    <div class="col-md-12 row">
+                                        <div v-for="(item, key) in form.data" class="col-xl-6 col-md-12">
+                                            <div class="card mb-3 shadow-lg">
+                                                <div class="row card-body">
+                                                    <!-- Image Section -->
+                                                    <div class="col-md-4">
+                                                        <img :src="item.image ??
+                                                            'https://img.freepik.com/premium-vector/default-image-icon-vector-missing-picture-page-website-design-mobile-app-no-photo-available_87543-11093.jpg'"
+                                                            class="card-img" alt="Image Preview" />
+                                                    </div>
+
+                                                    <!-- Form Section -->
+                                                    <div class="col-md-8">
+                                                        <div>
+                                                            <!-- Remove Button -->
+                                                            <div class="text-right">
+                                                                <button type="button" class="btn btn-danger btn-sm"
+                                                                    :class="key == 0 ? 'disabled' : ''"
+                                                                    @click="removeProduct(key)">Hapus</button>
+                                                            </div>
+                                                            <!-- Product Selector -->
+                                                            <div class="form-group">
+                                                                <label for="product_id"
+                                                                    class="form-label">Produk</label>
+                                                                <Multiselect v-model="form.data[key].product"
+                                                                    :options="products" track-by="id"
+                                                                    placeholder="Pilih Produk" label="design_name"
+                                                                    @search-change="getProducts"
+                                                                    @select="pilihData(key)"
+                                                                    @remove="resetFormByKey(key)"
+                                                                    :internal-search="false"
+                                                                    :class="{ 'is-invalid': $page?.props?.errors?.product?.id }">
+                                                                </Multiselect>
+                                                                <span class="text-danger">{{
+                                                                    $page?.props?.errors?.product?.id }}</span>
+                                                            </div>
+
+                                                            <!-- Unit Price -->
+                                                            <div class="form-group">
+                                                                <label for="unit_price" class="form-label">Unit
+                                                                    Price</label>
+                                                                <span v-if="form.data[key].product">
+                                                                    ({{ formatMoney(form.data[key].product.lowest_price)
+                                                                    }}
+                                                                    -
+                                                                    {{ formatMoney(form.data[key].product.highest_price)
+                                                                    }})
+                                                                </span>
+                                                                <div class="input-group">
+                                                                    <div class="input-group-prepend">
+                                                                        <span class="input-group-text">Rp</span>
+                                                                    </div>
+                                                                    <input v-money type="text" class="form-control"
+                                                                        :disabled="!form.data[key].product"
+                                                                        v-model="form.data[key].unit_price"
+                                                                        @keyup="calcDisPrice(key)" />
+                                                                </div>
+                                                                <span class="text-danger">{{
+                                                                    $page?.props?.errors?.product?.id }}</span>
+                                                            </div>
+
+                                                            <!-- Variants -->
+                                                            <div class="p-2 m-2 rounded" style="background: #f0f0f0">
+                                                                <label class="form-label">Variants</label>
+                                                                <button class="btn btn-sm btn-primary mb-2"
+                                                                    type="button"
+                                                                    @click="tambahVariants(key)">+</button>
+                                                                <div class="row">
+                                                                    <div class="col-md-3 mb-2"
+                                                                        v-for="(variant, key_variant) in form.data[key].variants"
+                                                                        :key="key_variant">
+                                                                        <div
+                                                                            class="border p-2 rounded  shadow bg-white">
+                                                                            <button
+                                                                                class="btn btn-sm btn-danger float-right"
+                                                                                v-if="key_variant !== 0"
+                                                                                @click="removeVariant(key, key_variant)"
+                                                                                type="button">x</button>
+                                                                            <div class="form-group">
+                                                                                <label
+                                                                                    class="form-label">Panjang</label>
+                                                                                <input type="number"
+                                                                                    class="form-control"
+                                                                                    v-model="variant.panjang"
+                                                                                    :disabled="!form.data[key].product" />
+                                                                            </div>
+                                                                            <div class="form-group">
+                                                                                <label class="form-label">Jumlah</label>
+                                                                                <input type="number"
+                                                                                    class="form-control"
+                                                                                    v-model="variant.jumlah"
+                                                                                    :disabled="!form.data[key].product" />
+                                                                            </div>
+                                                                        </div>
+                                                                    </div>
+                                                                </div>
+                                                            </div>
+                                                            <!-- Quantity -->
+                                                            <div class="form-group">
+                                                                <label for="jumlah" class="form-label">Jumlah
+                                                                    (Meter)</label>
+                                                                <div class="input-group">
+                                                                    <input type="number" class="form-control"
+                                                                        :disabled="!form.data[key].product"
+                                                                        v-model="form.data[key].qty"
+                                                                        @keyup="form.data[key].qty = form.data[key].qty || 0" />
+                                                                    <div class="input-group-append">
+                                                                        <span class="input-group-text">Meter</span>
+                                                                    </div>
+                                                                </div>
+                                                                <span class="text-danger">{{
+                                                                    $page?.props?.errors?.product?.id }}</span>
+                                                            </div>
+
+                                                            <!-- Discount and Total Price -->
+                                                            <div class="row">
+                                                                <div class="col-md-4">
+                                                                    <div class="form-group">
+                                                                        <label for="discount_percentage"
+                                                                            class="form-label">Discount (%)</label>
+                                                                        <div class="input-group">
+                                                                            <input type="number" class="form-control"
+                                                                                :disabled="!form.data[key].product"
+                                                                                v-model="form.data[key].discount_percentage"
+                                                                                @keyup="calculateAll(key)" />
+                                                                            <div class="input-group-append">
+                                                                                <span class="input-group-text">%</span>
+                                                                            </div>
+                                                                        </div>
+                                                                        <span class="text-danger">{{
+                                                                            $page?.props?.errors?.discount_percentage
+                                                                            }}</span>
+                                                                    </div>
+                                                                </div>
+                                                                <div class="col-md-4">
+                                                                    <div class="form-group">
+                                                                        <label for="discount_price"
+                                                                            class="form-label">Discount (Rp)</label>
+                                                                        <div class="input-group">
+                                                                            <div class="input-group-prepend">
+                                                                                <span class="input-group-text">Rp</span>
+                                                                            </div>
+                                                                            <input v-money type="text"
+                                                                                class="form-control"
+                                                                                :disabled="!form.data[key].product"
+                                                                                v-model="form.data[key].discount_price"
+                                                                                @keyup="calcDisPerc(key)" />
+                                                                        </div>
+                                                                        <span class="text-danger">{{
+                                                                            $page?.props?.errors?.discount_price
+                                                                            }}</span>
+                                                                    </div>
+                                                                </div>
+                                                                <div class="col-md-4">
+                                                                    <div class="form-group">
+                                                                        <label for="total_price"
+                                                                            class="form-label">Total
+                                                                            Price</label>
+                                                                        <div class="input-group">
+                                                                            <div class="input-group-prepend">
+                                                                                <span class="input-group-text">Rp</span>
+                                                                            </div>
+                                                                            <input v-money type="text"
+                                                                                class="form-control"
+                                                                                :value="totalUnitPrice(key)" disabled />
+                                                                        </div>
+                                                                    </div>
+                                                                </div>
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <button class="btn btn-primary mb-2 col-md-12" type="button" @click="tambahProduct">
+                                        + Tambah Product
+                                    </button>
+
+
+                                </td>
+                            </tr>
                             <template v-for="(item, key) in form.data">
                                 <tr>
                                     <td rowspan="3">
@@ -320,7 +501,8 @@
                                 <td colspan="3">Kasir</td>
                                 <td>
                                     <div class="form-group">
-                                        <a class="btn btn-primary float-right" @click="submitForm" :class="{ disabled: form.submit }">Submit</a>
+                                        <a class="btn btn-primary float-right" @click="submitForm"
+                                            :class="{ disabled: form.submit }">Submit</a>
                                     </div>
                                 </td>
                                 <td></td>
@@ -436,7 +618,7 @@ export default {
                 }
 
                 this.form.submit = true;
-                
+
                 return router.post(this.route('order.create'), this.form, {
                     preserveScroll: true,
                     onSuccess: () => {
@@ -452,7 +634,7 @@ export default {
                         this.$error();
                     },
                 });
-            
+
             } catch (e) {
                 this.form.submit = false;
             }
