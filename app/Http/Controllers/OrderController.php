@@ -38,7 +38,7 @@ class OrderController extends Controller
             'additional.*.name' => 'nullable|string|max:255',
             'additional.*.total' => 'nullable|numeric',
         ]);
-
+        //dd($request->all());
         DB::beginTransaction();
         try {
             $product_ids = collect($request->input('data'))
@@ -51,23 +51,31 @@ class OrderController extends Controller
                             ->keyBy('id')
                             ->toArray();
 
+            $totalAdditional = 0;
+            foreach($request->additional as $additional){
+                $totalAdditional += (int) str_replace('.', '', $additional['total']);
+            }
+
+            $totalItemPriceBeforeDisc = 0;
+            foreach($request->data as $produx){
+                $totalItemPriceBeforeDisc += (int)str_replace('.','', $produx['unit_price']) * ((int) str_replace('.','', $produx['qty'])/6);
+            }
+
             //create new temporary order
             $order = new Order();
             $order->customer_id = $request->input('customer.id', 0);
             $order->discount = $request->input('discount', 0);
             $order->discount_percentage = $request->input('discount_percentage', 0);;
-            $order->total_additional_price = 0;
-            $order->total_price = 0; //harga sebelum diskon global
-            $order->final_price = 0; //harga setelah diskon global
+            $order->total_additional_price = $totalAdditional;
+            $order->total_price_before_disc = $totalItemPriceBeforeDisc; //harga sebelum diskon global
+            $order->final_price = $totalItemPriceBeforeDisc + $totalAdditional - (int)str_replace('.','', $request->discount); //harga setelah diskon global
             
             $order->approval_id = 0;
             $order->save();
 
             $orderId = $order->id;
 
-            $totalAdditionalPrice = 0;
-            $totalPrice = 0;
-            $finalPrice = 0;
+            //$totalPrice = 0;
 
             $approval = false;
             foreach($request->input('data') as $item) {
@@ -96,7 +104,7 @@ class OrderController extends Controller
                 $orderDetail->selling_total_price   = ($item['qty'] / 6) * $item['unit_price'] - $item['discount_price'];
                 $orderDetail->save();
 
-                $totalPrice += ($item['qty'] / 6) * $item['unit_price'] - $item['discount_price'];
+                //$totalPrice += ($item['qty'] / 6) * $item['unit_price'] - $item['discount_price'];
 
                 foreach($item['variants'] as $variant) {
                     $orderVarian = new OrderVariant();
@@ -118,23 +126,15 @@ class OrderController extends Controller
                 $orderAdditional->price = $additional['total'];
                 $orderAdditional->save();
 
-                $totalAdditionalPrice += $additional['total'];
+                /* $totalAdditionalPrice += $additional['total']; */
             }
 
-            
-            
-            $finalPrice = $totalPrice + $totalAdditionalPrice;
-
-            $updateOrder = Order::find($orderId);
-            $updateOrder->total_additional_price = $totalAdditionalPrice;
-            $updateOrder->total_price = $totalPrice;
-            $updateOrder->final_price = $finalPrice;
-            $updateOrder->save();
-
             DB::commit();
-            return redirect()->route('penjualan.kasir')->with('success', 'Transaksi berhasil ditambahkan.');
+            return response()->json([
+                'message' => 'success',
+                'order_id' => $order->id,
+            ]);
         } catch (Exception $e) {
-            dd($e);
             DB::rollBack();
             return redirect()->route('penjualan.kasir')->with('error', 'Transaksi gagal ditambahkan.');
         }

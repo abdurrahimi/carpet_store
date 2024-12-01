@@ -32,7 +32,8 @@
                                                             <div class="col-md-12 text-center">
                                                                 <img :src="item.image ??
                                                                     'https://img.freepik.com/premium-vector/default-image-icon-vector-missing-picture-page-website-design-mobile-app-no-photo-available_87543-11093.jpg'"
-                                                                    class="card-img w-50 text-center" alt="Image Preview" />
+                                                                    class="card-img w-50 text-center"
+                                                                    alt="Image Preview" />
                                                             </div>
                                                             <!-- Product Selector -->
                                                             <div class="form-group">
@@ -85,11 +86,10 @@
                                                                     <div class="col-md-3 mb-2"
                                                                         v-for="(variant, key_variant) in form.data[key].variants"
                                                                         :key="key_variant">
-                                                                        <div
-                                                                            class="border p-2 rounded shadow bg-white">
+                                                                        <div class="border p-2 rounded shadow bg-white">
                                                                             <button
                                                                                 class="btn btn-sm btn-danger float-right"
-                                                                                :class="{ 'disabled' : key_variant == 0 }"
+                                                                                :class="{ 'disabled': key_variant == 0 }"
                                                                                 @click="removeVariant(key, key_variant)"
                                                                                 type="button">x</button>
                                                                             <div class="form-group">
@@ -118,7 +118,7 @@
                                                                 <div class="input-group">
                                                                     <input type="number" class="form-control"
                                                                         :disabled="!form.data[key].product"
-                                                                        :value="totalPanjang(key)"/>
+                                                                        :value="totalPanjang(key)" />
                                                                     <div class="input-group-append">
                                                                         <span class="input-group-text">Meter</span>
                                                                     </div>
@@ -144,7 +144,7 @@
                                                                         </div>
                                                                         <span class="text-danger">{{
                                                                             $page?.props?.errors?.discount_percentage
-                                                                            }}</span>
+                                                                        }}</span>
                                                                     </div>
                                                                 </div>
                                                                 <div class="col-md-4">
@@ -163,7 +163,7 @@
                                                                         </div>
                                                                         <span class="text-danger">{{
                                                                             $page?.props?.errors?.discount_price
-                                                                            }}</span>
+                                                                        }}</span>
                                                                     </div>
                                                                 </div>
                                                                 <div class="col-md-4">
@@ -488,7 +488,7 @@ export default {
             });
         },
         removeVariant(key, key_variant) {
-            if(key_variant == 0) return
+            if (key_variant == 0) return
             this.form.data[key].variants.splice(key_variant, 1);
         },
         calculateAll(key) {
@@ -587,7 +587,9 @@ export default {
             this.form.data[key].image = product.image
         },
         totalPanjang(key) {
-            return this.form.data[key].variants.reduce((total, variant) => { return total+ (variant.panjang * variant.jumlah)}, 0)
+            let total = this.form.data[key].variants.reduce((total, variant) => { return total + (variant.panjang * variant.jumlah) }, 0)
+            this.form.data[key].qty = total;
+            return total;
         }
     },
 };
