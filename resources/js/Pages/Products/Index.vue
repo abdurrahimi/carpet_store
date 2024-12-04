@@ -101,8 +101,8 @@ export default {
         return {
             table: [
                 {
-                    title: "ORI DESIGN ID",
-                    data: "id",
+                    title: "ORI DESIGN SKU",
+                    data: "ori_sku",
                 },
                 {
                     title: "ORI BARCODE",

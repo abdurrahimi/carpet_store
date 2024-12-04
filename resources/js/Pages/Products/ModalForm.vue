@@ -31,14 +31,30 @@
                 </div>
 
                 <div class="col-md-6 mb-3">
-                    <label for="sku" class="form-label">SKU</label>
+                    <label for="ori_sku" class="form-label">ORI DESIGN SKU</label>
+                    <input
+                        type="text"
+                        id="ori_sku"
+                        v-model="form.ori_sku"
+                        class="form-control"
+                        :class="{ 'is-invalid': $page?.props?.errors?.ori_sku }"
+                        placeholder="Enter Ori SKU"
+                        required
+                    />
+                    <span class="text-danger">{{
+                        $page?.props?.errors?.ori_sku
+                    }}</span>
+                </div>
+
+                <div class="col-md-6 mb-3">
+                    <label for="sku" class="form-label">NEW DESIGN SKU</label>
                     <input
                         type="text"
                         id="sku"
                         v-model="form.sku"
                         class="form-control"
                         :class="{ 'is-invalid': $page?.props?.errors?.sku }"
-                        placeholder="Enter SKU"
+                        placeholder="Enter New SKU"
                         required
                     />
                     <span class="text-danger">{{
@@ -47,14 +63,14 @@
                 </div>
 
                 <div class="col-md-6 mb-3">
-                    <label for="sku" class="form-label">SKU</label>
+                    <label for="ori_barcode" class="form-label">ORI BARCODE</label>
                     <input
                         type="text"
-                        id="sku"
+                        id="ori_barcode"
                         v-model="form.ori_barcode"
                         class="form-control"
                         :class="{ 'is-invalid': $page?.props?.errors?.ori_barcode }"
-                        placeholder="Enter SKU"
+                        placeholder="Enter Ori Barcode"
                         required
                     />
                     <span class="text-danger">{{

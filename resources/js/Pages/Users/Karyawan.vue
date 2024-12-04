@@ -1,13 +1,11 @@
 <template>
   <div>
+
     <Head title="Karyawan" />
     <div class="text-right">
       <transition name="fade">
-        <button
-          :class="selectedIds.length > 0 ? 'show' : ''"
-          @click="deleteSelected"
-          class="btn btn-danger mr-2 mb-2 fade"
-        >
+        <button :class="selectedIds.length > 0 ? 'show' : ''" @click="deleteSelected"
+          class="btn btn-danger mr-2 mb-2 fade">
           <i class="fa fa-trash"></i>&nbsp;Delete Bulk
         </button>
       </transition>
@@ -15,11 +13,7 @@
         + Data Baru
       </button>
     </div>
-    <div
-      v-if="$page.props.flash.success"
-      class="alert alert-success"
-      role="alert"
-    >
+    <div v-if="$page.props.flash.success" class="alert alert-success" role="alert">
       {{ $page.props.flash.success }}
     </div>
     <div v-if="$page.props.flash.error" class="alert alert-danger" role="alert">
@@ -31,24 +25,11 @@
           <i class="fa fa-user"></i>&nbsp;Data Karyawan
         </h4>
       </div>
-      <Table
-        :columns="table"
-        :rows="data"
-        @update:selectedRows="handleSelectedRows"
-      >
+      <Table :columns="table" :rows="data" @update:selectedRows="handleSelectedRows">
         <template #actions="{ row }">
-          <button
-            @click="editRow(row)"
-            class="btn btn-warning btn-sm"
-            title="Edit"
-          >
-            Edit</button
-          >&nbsp;
-          <button
-            @click="deleteRow(row)"
-            class="btn btn-danger btn-sm"
-            title="Delete"
-          >
+          <button @click="editRow(row)" class="btn btn-warning btn-sm" title="Edit">
+            Edit</button>&nbsp;
+          <button @click="deleteRow(row)" class="btn btn-danger btn-sm" title="Delete">
             Delete
           </button>
         </template>
@@ -63,222 +44,129 @@
           <!-- Name -->
           <div class="col-md-6 mb-3">
             <label for="name" class="form-label">Name</label>
-            <input
-              type="text"
-              id="name"
-              v-model="form.name"
-              class="form-control"
-              :class="{ 'is-invalid': $page?.props?.errors?.name }"
-              placeholder="Enter Name"
-              required
-            />
+            <input type="text" id="name" v-model="form.name" class="form-control"
+              :class="{ 'is-invalid': $page?.props?.errors?.name }" placeholder="Enter Name" required />
             <span class="text-danger">{{ $page?.props?.errors?.name }}</span>
           </div>
 
           <!-- NIK -->
           <div class="col-md-6 mb-3">
             <label for="nik" class="form-label">NIK</label>
-            <input
-              type="text"
-              id="nik"
-              v-model="form.nik"
-              class="form-control"
-              :class="{ 'is-invalid': $page?.props?.errors?.nik }"
-              placeholder="Enter NIK"
-            />
+            <input type="text" id="nik" v-model="form.nik" class="form-control"
+              :class="{ 'is-invalid': $page?.props?.errors?.nik }" placeholder="Enter NIK" />
             <span class="text-danger">{{ $page?.props?.errors?.nik }}</span>
           </div>
 
           <!-- Address -->
           <div class="col-md-12 mb-3">
             <label for="alamat" class="form-label">Address</label>
-            <textarea
-              id="alamat"
-              v-model="form.alamat"
-              class="form-control"
-              rows="3"
-              :class="{ 'is-invalid': $page?.props?.errors?.alamat }"
-              placeholder="Enter Address"
-            ></textarea>
+            <textarea id="alamat" v-model="form.alamat" class="form-control" rows="3"
+              :class="{ 'is-invalid': $page?.props?.errors?.alamat }" placeholder="Enter Address"></textarea>
             <span class="text-danger">{{ $page?.props?.errors?.alamat }}</span>
           </div>
 
           <!-- Phone -->
           <div class="col-md-6 mb-3">
             <label for="phone" class="form-label">Phone</label>
-            <input
-              type="text"
-              id="phone"
-              v-model="form.phone"
-              class="form-control"
-              :class="{ 'is-invalid': $page?.props?.errors?.phone }"
-              placeholder="Enter Phone Number"
-            />
+            <input type="text" id="phone" v-model="form.phone" class="form-control"
+              :class="{ 'is-invalid': $page?.props?.errors?.phone }" placeholder="Enter Phone Number" />
             <span class="text-danger">{{ $page?.props?.errors?.phone }}</span>
           </div>
 
           <!-- NPWP -->
           <div class="col-md-6 mb-3">
             <label for="npwp" class="form-label">NPWP</label>
-            <input
-              type="text"
-              id="npwp"
-              v-model="form.npwp"
-              class="form-control"
-              :class="{ 'is-invalid': $page?.props?.errors?.npwp }"
-              placeholder="Enter NPWP"
-            />
+            <input type="text" id="npwp" v-model="form.npwp" class="form-control"
+              :class="{ 'is-invalid': $page?.props?.errors?.npwp }" placeholder="Enter NPWP" />
             <span class="text-danger">{{ $page?.props?.errors?.npwp }}</span>
           </div>
 
           <!-- Salary Per Day -->
           <div class="col-md-6 mb-3">
-            <label for="salary_per_day" class="form-label"
-              >Salary Per Day</label
-            >
-            <input
-              type="number"
-              id="salary_per_day"
-              v-model="form.salary_per_day"
-              class="form-control"
-              :class="{ 'is-invalid': $page?.props?.errors?.salary_per_day }"
-              placeholder="Enter Salary Per Day"
-            />
+            <label for="salary_per_day" class="form-label">Salary Per Day</label>
+            <input type="number" id="salary_per_day" v-model="form.salary_per_day" class="form-control"
+              :class="{ 'is-invalid': $page?.props?.errors?.salary_per_day }" placeholder="Enter Salary Per Day" />
             <span class="text-danger">{{
               $page?.props?.errors?.salary_per_day
-            }}</span>
+              }}</span>
           </div>
 
           <!-- Salary Per Month -->
           <div class="col-md-6 mb-3">
-            <label for="salary_per_month" class="form-label"
-              >Salary Per Month</label
-            >
-            <input
-              type="number"
-              id="salary_per_month"
-              v-model="form.salary_per_month"
-              class="form-control"
-              :class="{ 'is-invalid': $page?.props?.errors?.salary_per_month }"
-              placeholder="Enter Salary Per Month"
-            />
+            <label for="salary_per_month" class="form-label">Salary Per Month</label>
+            <input type="number" id="salary_per_month" v-model="form.salary_per_month" class="form-control"
+              :class="{ 'is-invalid': $page?.props?.errors?.salary_per_month }" placeholder="Enter Salary Per Month" />
             <span class="text-danger">{{
               $page?.props?.errors?.salary_per_month
-            }}</span>
+              }}</span>
           </div>
 
           <!-- Join Date -->
           <div class="col-md-6 mb-3">
             <label for="join_date" class="form-label">Join Date</label>
-            <input
-              type="date"
-              id="join_date"
-              v-model="form.join_date"
-              class="form-control"
-              :class="{ 'is-invalid': $page?.props?.errors?.join_date }"
-            />
+            <input type="date" id="join_date" v-model="form.join_date" class="form-control"
+              :class="{ 'is-invalid': $page?.props?.errors?.join_date }" />
             <span class="text-danger">{{
               $page?.props?.errors?.join_date
-            }}</span>
+              }}</span>
           </div>
 
           <!-- Leader ID -->
           <div class="col-md-6 mb-3">
             <label for="leader_id" class="form-label">Leader ID</label>
-            <Multiselect
-              v-model="form.leader_id"
-              :options="karyawan"
-              track-by="id"
-              label="name"
-              @search-change="getDataUsers"
-              :internal-search="false"
-              :class="{ 'is-invalid': $page?.props?.errors?.leader_id }"
-            ></Multiselect>
+            <Multiselect v-model="form.leader_id" :options="karyawan" track-by="id" label="name"
+              @search-change="getDataUsers" :internal-search="false"
+              :class="{ 'is-invalid': $page?.props?.errors?.leader_id }"></Multiselect>
             <span class="text-danger">{{
               $page?.props?.errors?.leader_id
-            }}</span>
+              }}</span>
           </div>
 
           <!-- Store ID -->
           <div class="col-md-6 mb-3">
             <label for="toko_id" class="form-label">Store</label>
-            <Multiselect
-              v-model="form.toko_id"
-              :options="store"
-              track-by="id"
-              label="name"
-              @search-change="getDataStore"
-              :internal-search="false"
-              :class="{ 'is-invalid': $page?.props?.errors?.toko_id }"
-            ></Multiselect>
+            <Multiselect v-model="form.toko_id" :options="store" track-by="id" label="name"
+              @search-change="getDataStore" :internal-search="false"
+              :class="{ 'is-invalid': $page?.props?.errors?.toko_id }"></Multiselect>
             <span class="text-danger">{{ $page?.props?.errors?.toko_id }}</span>
           </div>
 
           <!-- Email -->
           <div class="col-md-6 mb-3">
             <label for="email" class="form-label">Email</label>
-            <input
-              type="email"
-              id="email"
-              v-model="form.email"
-              class="form-control"
-              :class="{ 'is-invalid': $page?.props?.errors?.email }"
-              placeholder="Enter Email"
-            />
+            <input type="email" id="email" v-model="form.email" class="form-control"
+              :class="{ 'is-invalid': $page?.props?.errors?.email }" placeholder="Enter Email" />
             <span class="text-danger">{{ $page?.props?.errors?.email }}</span>
           </div>
 
           <!-- Is Account -->
           <div class="col-md-6 mb-3">
             <div class="form-check">
-              <input
-                type="checkbox"
-                id="is_account"
-                v-model="form.is_account"
-                class="form-check-input"
-                :class="{ 'is-invalid': $page?.props?.errors?.is_account }"
-              />
-              <label for="is_account" class="form-check-label"
-                >Buatkan Akun?</label
-              >
+              <input type="checkbox" id="is_account" v-model="form.is_account" class="form-check-input"
+                :class="{ 'is-invalid': $page?.props?.errors?.is_account }" />
+              <label for="is_account" class="form-check-label">Buatkan Akun?</label>
             </div>
             <span class="text-danger">{{
               $page?.props?.errors?.is_account
-            }}</span>
+              }}</span>
           </div>
 
           <!-- Password -->
           <div class="col-md-6 mb-3 fade" :class="{ show: form.is_account }">
             <label for="password" class="form-label">Password</label>
-            <input
-              type="password"
-              id="password"
-              v-model="form.password"
-              class="form-control"
-              :class="{ 'is-invalid': $page?.props?.errors?.password }"
-              :placeholder="
-                form.account ? 'Change or Let it empty' : 'Enter Password'
-              "
-            />
+            <input type="password" id="password" v-model="form.password" class="form-control"
+              :class="{ 'is-invalid': $page?.props?.errors?.password }" :placeholder="form.account ? 'Change or Let it empty' : 'Enter Password'
+                " />
             <span class="text-danger">{{
               $page?.props?.errors?.password
-            }}</span>
+              }}</span>
           </div>
         </div>
       </form>
       <template #footer>
-        <button
-          type="button"
-          class="btn btn-primary"
-          :class="{ disabled: form.submit }"
-          @click="submitForm"
-        >
+        <button type="button" class="btn btn-primary" :class="{ disabled: form.submit }" @click="submitForm">
           <template v-if="form.submit">
-            <span
-              class="spinner-border spinner-border-sm"
-              role="status"
-              aria-hidden="true"
-            ></span>
+            <span class="spinner-border spinner-border-sm" role="status" aria-hidden="true"></span>
             <span class="bott">Loading</span>
           </template>
           <span v-else class="bott">Save</span>
@@ -415,8 +303,15 @@ export default {
     handleSelectedRows(selectedRows) {
       this.selectedIds = selectedRows;
     },
-    async deleteSelected(){
-      router.post(this.route('users.massDestroy'), {ids: this.selectedIds}, {
+    async deleteSelected() {
+      this.$confirm(
+        "You won't be able to revert this!",
+        () => this.deleteSelectedAction(),
+        false
+      );
+    },
+    async deleteSelectedAction() {
+      router.post(this.route('users.massDestroy'), { ids: this.selectedIds }, {
         preserveScroll: true,
         onSuccess: () => {
           this.$success("Data berhasil dihapus");
@@ -430,11 +325,11 @@ export default {
       });
     },
     async getDataUsers(val = "") {
-      let { data } = await axios.get(this.route("users.get", {name: val}));
+      let { data } = await axios.get(this.route("users.get", { name: val }));
       this.karyawan = data;
     },
     async getDataStore(val = "") {
-      let { data } = await axios.get(this.route("store.get", {name: val}));
+      let { data } = await axios.get(this.route("store.get", { name: val }));
       this.store = data;
     },
     async submitForm() {
@@ -527,7 +422,12 @@ export default {
 .fade-leave-active {
   transition: opacity 0.5s;
 }
-.fade-enter, .fade-leave-to /* .fade-leave-active in <2.1.8 */ {
+
+.fade-enter,
+.fade-leave-to
+
+/* .fade-leave-active in <2.1.8 */
+  {
   opacity: 0;
 }
 </style>
