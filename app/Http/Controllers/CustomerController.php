@@ -25,7 +25,7 @@ class CustomerController extends Controller
         $data = Customer::query()
             ->when($search, function ($q) use ($search) {
                 return $q->where(DB::raw('lower(name)'), 'like', "%$search%");
-            })->paginate(50);
+            })->limit(50)->get();
         return response()->json($data);
     }
 

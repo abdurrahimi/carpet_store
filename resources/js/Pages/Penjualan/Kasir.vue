@@ -16,6 +16,17 @@
                         <tbody>
                             <tr>
                                 <td colspan="5">
+                                    <div class="form-group">
+                                        <label for="customer" class="form-label">Customer</label>
+                                        <Multiselect v-model="form.customer" :options="customer" track-by="id"
+                                            placeholder="Pilih Customer" label="name" @search-change="getCustomers"
+                                            @select="addCustomer" :internal-search="false"
+                                            :class="{ 'is-invalid': $page?.props?.errors?.customer?.id }"/>
+                                    </div>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td colspan="5">
                                     <div class="col-md-12 row">
                                         <div v-for="(item, key) in form.data" class="col-xl-6 col-md-12">
                                             <div class="card mb-3 shadow-lg">
@@ -372,6 +383,7 @@ export default {
             },
             products: [],
             variant: null,
+            customer: [],
             store: [],
             preview: null,
             variants: [
@@ -385,6 +397,7 @@ export default {
     mounted() {
         this.resetForm();
         this.getProducts();
+        this.getCustomers();
     },
     methods: {
         async submitForm() {
@@ -590,7 +603,12 @@ export default {
             let total = this.form.data[key].variants.reduce((total, variant) => { return total + (variant.panjang * variant.jumlah) }, 0)
             this.form.data[key].qty = total;
             return total;
-        }
+        },
+        getCustomers(search) {
+            axios.get(this.route("customer.data", { search: search })).then((res) => {
+                this.customer = res.data;
+            });
+        },
     },
 };
 </script>
