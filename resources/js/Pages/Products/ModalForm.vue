@@ -166,6 +166,44 @@
                 </div>
 
                 <div class="col-md-6 mb-3">
+                    <label for="old_reseller_price" class="form-label"
+                        >Old Reseller Price</label
+                    >
+                    <input
+                        type="number"
+                        id="old_reseller_price"
+                        v-model="form.old_reseller_price"
+                        class="form-control"
+                        :class="{
+                            'is-invalid': $page?.props?.errors?.old_reseller_price,
+                        }"
+                        placeholder="Enter Old Reseller Price"
+                    />
+                    <span class="text-danger">{{
+                        $page?.props?.errors?.old_reseller_price
+                    }}</span>
+                </div>
+
+                <div class="col-md-6 mb-3">
+                    <label for="new_reseller_price" class="form-label"
+                        >New Reseller Price</label
+                    >
+                    <input
+                        type="number"
+                        id="new_reseller_price"
+                        v-model="form.new_reseller_price"
+                        class="form-control"
+                        :class="{
+                            'is-invalid': $page?.props?.errors?.new_reseller_price,
+                        }"
+                        placeholder="Enter New Reseller Price"
+                    />
+                    <span class="text-danger">{{
+                        $page?.props?.errors?.new_reseller_price
+                    }}</span>
+                </div>
+
+                <div class="col-md-6 mb-3">
                     <label for="color" class="form-label">Color</label>
                     <input
                         type="text"
@@ -431,20 +469,25 @@
             </div>
         </form>
         <div class="row" v-else>
-            <div class="col-md-6 mb-3">
-                    <img
-                        :src="preview"
-                        onerror="this.src='https://img.freepik.com/premium-vector/default-image-icon-vector-missing-picture-page-website-design-mobile-app-no-photo-available_87543-11093.jpg'"
-                        alt="Image Preview"
-                        class="img-fluid"
-                        style="max-width: 300px"
-                    />
-                </div>
+            <div class="col-md-12 mb-3">
+                <img
+                    :src="preview"
+                    onerror="this.src='https://img.freepik.com/premium-vector/default-image-icon-vector-missing-picture-page-website-design-mobile-app-no-photo-available_87543-11093.jpg'"
+                    alt="Image Preview"
+                    class="img-fluid"
+                    style="max-width: 300px"
+                />
+            </div>
 
             <div class="col-md-6 mb-3">
-                <strong>SKU:</strong>
+                <strong>ORI DESIGN SKU:</strong>
+                <p>{{ form.ori_sku }}</p>
+            </div>
+            <div class="col-md-6 mb-3">
+                <strong>NEW DESIGN SKU:</strong>
                 <p>{{ form.sku }}</p>
             </div>
+            
 
             <div class="col-md-6 mb-3">
                 <strong>Category:</strong>

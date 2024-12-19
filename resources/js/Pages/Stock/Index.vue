@@ -59,7 +59,7 @@
             <form ref="formStock" @submit.prevent="handleSubmit">
                 <div class="row">
                     <!-- Produk -->
-                    <div class="col-md-6 mb-3">
+                    <div class="col-md-12 mb-3">
                         <label for="product_id" class="form-label"
                             >Pilih Produk</label
                         >
@@ -67,7 +67,7 @@
                             v-model="form.product"
                             :options="products"
                             track-by="id"
-                            label="name"
+                            label="design_name"
                             @search-change="getProducts"
                             :internal-search="false"
                             :class="{
@@ -79,7 +79,7 @@
                         }}</span>
                     </div>
 
-                    <div class="col-md-6 mb-3">
+                    <div class="col-md-12 mb-3">
                         <label for="toko_id" class="form-label">Store</label>
                         <Multiselect
                             v-model="form.store"

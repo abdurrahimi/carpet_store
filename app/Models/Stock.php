@@ -10,7 +10,7 @@ use stdClass;
 class Stock extends Model
 {
     use HasFactory, SoftDeletes;
-    protected $table = 'stock';
+    protected $table = 'stock_history';
 
     public function approval()
     {

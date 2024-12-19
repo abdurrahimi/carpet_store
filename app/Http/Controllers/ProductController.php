@@ -101,6 +101,7 @@ class ProductController extends Controller
 
             $product = new Product();
             $product->sku = $request->input('sku');
+            $product->ori_sku = $request->input('ori_sku');
             $product->category = $request->input('category');
             $product->design_name = $request->input('design_name');
             $product->color = $request->input('color');
@@ -120,6 +121,8 @@ class ProductController extends Controller
             $product->thickness = $request->input('thickness', 0);
             $product->weight = $request->input('weight', 0);
             $product->lebar = $request->input('lebar', 0);
+            $product->new_reseller_price = $request->input('new_reseller_price', 0);
+            $product->old_reseller_price = $request->input('old_reseller_price', 0);
             $product->save();
 
             return redirect()->route('products.index')->with('success', 'Produk berhasil dibuat.');
