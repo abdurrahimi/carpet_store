@@ -127,7 +127,6 @@ class ProductController extends Controller
 
             return redirect()->route('products.index')->with('success', 'Produk berhasil dibuat.');
         } catch (\Exception $th) {
-            dd($th);
             return redirect()->route('products.index')->with('error', 'Produk gagal dibuat, hubungi administrator.');
         }
     }
@@ -167,6 +166,7 @@ class ProductController extends Controller
 
             $product = Product::findOrFail($id);
             $product->sku = $request->input('sku');
+            $product->ori_sku = $request->input('ori_sku');
             $product->category = $request->input('category');
             $product->design_name = $request->input('design_name');
             $product->color = $request->input('color');
