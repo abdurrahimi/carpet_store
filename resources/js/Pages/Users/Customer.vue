@@ -106,7 +106,7 @@
                 <option value="">Select Type</option>
                 <option value="1">Reseller Lama</option>
                 <option value="2">Reseller Baru</option>
-                <option value="9">Lainnya</option>
+                <option value="9">Retail</option>
               </select>
               <span class="text-danger">{{ $page?.props?.errors?.type }}</span>
             </div>
