@@ -32,7 +32,7 @@ class CustomerController extends Controller
     public function store(Request $request)
     {
         $request->validate([
-            'type' => 'nullable|integer|in:1,2',
+            'type' => 'nullable|integer|in:1,2,9',
             'name' => 'required|string|max:100',
             'phone' => 'nullable|string|max:20',
             'title' => 'nullable|string|max:50',
@@ -61,17 +61,17 @@ class CustomerController extends Controller
             $customer->save();
 
             DB::commit();
-            return redirect()->route('customers.index')->with('success', 'Customer berhasil ditambahkan.');
+            return redirect()->route('customer.index')->with('success', 'Customer berhasil ditambahkan.');
         } catch (\Exception $e) {
             DB::rollBack();
-            return redirect()->route('customers.index')->with('error', 'Customer gagal ditambahkan.');
+            return redirect()->route('customer.index')->with('error', 'Customer gagal ditambahkan.');
         }
     }
 
     public function update(Request $request, $id)
     {
         $request->validate([
-            'type' => 'nullable|integer|in:1,2',
+            'type' => 'nullable|integer|in:1,2,9',
             'name' => 'required|string|max:100',
             'phone' => 'nullable|string|max:20',
             'title' => 'nullable|string|max:50',
@@ -100,10 +100,10 @@ class CustomerController extends Controller
             $customer->save();
 
             DB::commit();
-            return redirect()->route('customers.index')->with('success', 'Customer berhasil diupdate.');
+            return redirect()->route('customer.index')->with('success', 'Customer berhasil diupdate.');
         } catch (\Exception $e) {
             DB::rollBack();
-            return redirect()->route('customers.index')->with('error', 'Customer gagal diupdate.');
+            return redirect()->route('customer.index')->with('error', 'Customer gagal diupdate.');
         }
     }
 
@@ -111,17 +111,13 @@ class CustomerController extends Controller
     {
         $request->validate([
             'ids' => 'required|array',
-            'ids.*' => 'integer|exists:customers,id',
+            'ids.*' => 'integer|exists:customer,id',
         ]);
-
-        DB::beginTransaction();
         try {
             Customer::whereIn('id', $request->ids)->delete();
-            DB::commit();
-            return redirect()->route('customers.index')->with('success', 'Customer berhasil dihapus.');
+            return redirect()->route('customer.index')->with('success', 'Customer berhasil dihapus.');
         } catch (\Exception $e) {
-            DB::rollBack();
-            return redirect()->route('customers.index')->with('error', 'Customer gagal dihapus.');
+            return redirect()->route('customer.index')->with('error', 'Customer gagal dihapus.');
         }
     }
 }

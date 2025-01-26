@@ -25,7 +25,7 @@
           <i class="fa fa-user"></i>&nbsp;Data Customer
         </h4>
       </div>
-      
+
       <Table :columns="table" :rows="data" @update:selectedRows="handleSelectedRows">
         <template #actions="{ row }">
           <button @click="editRow(row)" class="btn btn-warning btn-sm" title="Edit">
@@ -35,7 +35,7 @@
           </button>
         </template>
       </Table>
-      
+
       <Modal :show="modalShow" :title="modalTitle" id="modal-add">
         <form ref="formCustomer" @submit.prevent="submitForm">
           <div class="row">
@@ -98,22 +98,15 @@
               <span class="text-danger">{{ $page?.props?.errors?.id_img }}</span>
             </div>
 
-            <!-- Store -->
-            <div class="col-md-6 mb-3">
-              <label for="store_id" class="form-label">Store</label>
-              <Multiselect v-model="form.store_id" :options="stores" track-by="id" label="name"
-                @search-change="getDataStore" :internal-search="false" :class="{ 'is-invalid': $page?.props?.errors?.store_id }">
-              </Multiselect>
-              <span class="text-danger">{{ $page?.props?.errors?.store_id }}</span>
-            </div>
-
             <!-- Type -->
             <div class="col-md-6 mb-3">
               <label for="type" class="form-label">Customer Type</label>
-              <select id="type" v-model="form.type" class="form-control" :class="{ 'is-invalid': $page?.props?.errors?.type }">
+              <select id="type" v-model="form.type" class="form-control"
+                :class="{ 'is-invalid': $page?.props?.errors?.type }">
                 <option value="">Select Type</option>
                 <option value="1">Reseller Lama</option>
                 <option value="2">Reseller Baru</option>
+                <option value="9">Lainnya</option>
               </select>
               <span class="text-danger">{{ $page?.props?.errors?.type }}</span>
             </div>
@@ -125,10 +118,6 @@
                 :class="{ 'is-invalid': $page?.props?.errors?.email }" placeholder="Enter Email" />
               <span class="text-danger">{{ $page?.props?.errors?.email }}</span>
             </div>
-
-            <!-- Created By -->
-            <input type="hidden" v-model="form.created_by" />
-
           </div>
         </form>
 
@@ -189,29 +178,56 @@ export default {
       ],
       data: this.customer,
       selectedIds: [],
-      form: {
-        id: null,
-        name: '',
-        phone: '',
-        title: '',
-        address: '',
-        npwp: '',
-        id_no: '',
-        id_img: null,
-        store_id: null,
-        type: '',
-        email: '',
-        created_by: null,
-        submit: false,
-        errors: {}
-      },
+      form: {},
       stores: [],
+      modalShow: false,
+      modalTitle: "",
+      errors: {},
     }
   },
   mounted() {
 
   },
   methods: {
+    createUser() {
+      this.$page.props.errors = null;
+      this.resetForm();
+      this.modalTitle = "Tambah Data Pelanggan";
+      $("#modal-add").modal("show");
+    },
+    editRow(row) {
+      this.$page.props.errors = null;
+      this.resetForm(row);
+      this.modalTitle = "Ubah Data Pelanggan";
+      $("#modal-add").modal("show");
+    },
+    async submitForm() {
+      if (this.form.submit) {
+        return;
+      }
+
+      this.form.submit = true;
+      router.post(
+        this.form.id
+          ? this.route('customer.store')
+          : this.route('customer.update', this.form.id),
+        this.form,
+        {
+          preserveScroll: true,
+          onSuccess: () => {
+            this.form.submit = false;
+            $("#modal-add").modal("hide");
+            this.$success("Data berhasil dihapus");
+            router.visit(this.$page.url, {
+              only: ["users"],
+            });
+          },
+          onError: () => {
+            this.form.submit = false;
+            this.$error();
+          },
+        });
+    },
     deleteRow(row) {
       this.$confirm(
         "You won't be able to revert this!",
@@ -256,6 +272,20 @@ export default {
           this.$error();
         },
       });
+    },
+    resetForm(data = null) {
+      this.form = {
+        id: data?.id ?? "",
+        name: data?.name ?? "",
+        phone: data?.phone ?? "",
+        title: data?.title ?? "",
+        address: data?.address ?? "",
+        npwp: data?.npwp ?? "",
+        id_no: data?.id_no ?? "",
+        id_img: data?.id_img ?? "",
+        type: data?.type ?? "",
+        email: data?.email ?? "",
+      }
     }
   },
 };

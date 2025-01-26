@@ -121,13 +121,13 @@ class ProductController extends Controller
             $product->thickness = $request->input('thickness', 0);
             $product->weight = $request->input('weight', 0);
             $product->lebar = $request->input('lebar', 0);
-            $product->new_reseller_price = $request->input('new_reseller_price', 0);
-            $product->old_reseller_price = $request->input('old_reseller_price', 0);
+            $product->unit_reseller_baru_price = $request->input('new_reseller_price', 0);
+            $product->unit_reseller_lama_price = $request->input('old_reseller_price', 0);
             $product->save();
 
             return redirect()->route('products.index')->with('success', 'Produk berhasil dibuat.');
         } catch (\Exception $th) {
-
+            dd($th);
             return redirect()->route('products.index')->with('error', 'Produk gagal dibuat, hubungi administrator.');
         }
     }
@@ -186,6 +186,8 @@ class ProductController extends Controller
             $product->thickness = $request->input('thickness', 0);
             $product->weight = $request->input('weight', 0);
             $product->lebar = $request->input('lebar', 0);
+            $product->unit_reseller_baru_price = $request->input('new_reseller_price', 0);
+            $product->unit_reseller_lama_price = $request->input('old_reseller_price', 0);
             $product->save();
             return redirect()->route('products.index')->with('success', 'Produk berhasil diubah.');
         } catch (\Exception $th) {
