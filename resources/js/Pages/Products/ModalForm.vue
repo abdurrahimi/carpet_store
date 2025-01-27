@@ -559,14 +559,15 @@
                 <p>{{ form.deskripsi }}</p>
             </div>
         </div>
+        
         <template #footer v-if="edit">
             <button
                 type="button"
                 class="btn btn-primary"
-                :class="{ disabled: form.submit }"
+                :class="{ disabled: submit }"
                 @click="handleSubmit"
             >
-                <div v-if="form.submit">
+                <div v-if="submit">
                     <span
                         class="spinner-border spinner-border-sm"
                         role="status"
