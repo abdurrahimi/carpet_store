@@ -8,14 +8,9 @@ use Illuminate\Database\Eloquent\SoftDeletes;
 class ProductCategory extends Model
 {
     protected $table = 'product_category';
-    protected $fillable = [
-        'name',
-        'created_by',
-        'updated_by',
-    ];
 
-    public function products()
+    public function color()
     {
-        return $this->hasMany(Product::class, 'category_id');
+        return $this->hasMany(ProductCategoryColor::class, 'category_id');
     }
 }
