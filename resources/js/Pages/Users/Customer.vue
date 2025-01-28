@@ -209,15 +209,15 @@ export default {
       this.form.submit = true;
       router.post(
         this.form.id
-          ? this.route('customer.store')
-          : this.route('customer.update', this.form.id),
+          ? this.route('customer.update', this.form.id)
+          : this.route('customer.store'),
         this.form,
         {
           preserveScroll: true,
           onSuccess: () => {
             this.form.submit = false;
             $("#modal-add").modal("hide");
-            this.$success("Data berhasil dihapus");
+            this.$success("Data berhasil disimpan");
             router.visit(this.$page.url, {
               only: ["users"],
             });

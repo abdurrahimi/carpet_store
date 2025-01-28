@@ -1,5 +1,6 @@
 <?php
 
+use App\Http\Controllers\CategoryController;
 use App\Http\Controllers\CustomerController;
 use App\Http\Controllers\OrderController;
 use App\Http\Controllers\PenjualanController;
@@ -59,8 +60,16 @@ Route::middleware('auth')->group(function () {
     Route::get('/customer', [CustomerController::class, 'index'])->name('customer.index');
     Route::get('/customer/data', [CustomerController::class, 'getDataCustomer'])->name('customer.data');
     Route::post('/customer', [CustomerController::class, 'store'])->name('customer.store');
-    Route::put('/customer/{id}', [CustomerController::class, 'update'])->name('customer.update');
     Route::post('/customer/delete', [CustomerController::class, 'delete'])->name('customer.delete');
+    Route::post('/customer/{id}', [CustomerController::class, 'update'])->name('customer.update');
+
+    //Product Category
+    Route::get('/category', [CategoryController::class, 'index'])->name('category.index');
+    Route::get('/category/data', [CategoryController::class, 'getData'])->name('category.data');
+    Route::get('/category/color/{category_id}', [CategoryController::class, 'getDataColor'])->name('category.color');
+    Route::post('/category', [CategoryController::class, 'store'])->name('category.store');
+    Route::post('/category/delete', [CategoryController::class, 'delete'])->name('category.delete');
+    Route::post('/category/{id}', [CategoryController::class, 'update'])->name('category.update');
 
     Route::get('/products', [ProductController::class, 'index'])->name('products.index');
     Route::get('/products/data', [ProductController::class, 'getDataProduct'])->name('products.get');
