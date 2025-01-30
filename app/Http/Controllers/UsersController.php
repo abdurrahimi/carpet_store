@@ -7,6 +7,7 @@ use App\Models\Karyawan;
 use Illuminate\Support\Facades\Hash;
 use Inertia\Inertia;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Validation\Rule;
 use App\Models\User;
 
 class UsersController extends Controller
@@ -63,14 +64,19 @@ class UsersController extends Controller
         $request->validate([
             'name' => 'required|string|max:255',
             'nik' => 'nullable|string|max:100',
-            'email' => 'nullable|email|max:100',
+            'email' => [
+                'nullable',
+                'email',
+                'max:100',
+                Rule::unique('users')->whereNull('deleted_at')
+            ],
             'phone' => 'nullable|string|max:100',
             'npwp' => 'nullable|string|max:100',
             'join_date' => 'nullable|date',
-            'leader_id' => 'nullable',
-            'toko_id' => 'nullable',
-            'jabatan_id' => 'nullable',
-            'password' => 'nullable|min:6|max:16',
+            'leader_id' => 'nullable|integer|exists:users,id',
+            'toko_id' => 'nullable|integer|exists:tokos,id',
+            'jabatan_id' => 'nullable|integer|exists:jabatans,id',
+            'password' => 'nullable|string|min:6|max:16',
         ]);
 
         DB::beginTransaction();
@@ -108,14 +114,19 @@ class UsersController extends Controller
         $request->validate([
             'name' => 'required|string|max:255',
             'nik' => 'nullable|string|max:100',
-            'email' => 'nullable|email|max:100',
+            'email' => [
+                'nullable',
+                'email',
+                'max:100',
+                Rule::unique('users')->whereNull('deleted_at')
+            ],
             'phone' => 'nullable|string|max:100',
             'npwp' => 'nullable|string|max:100',
             'join_date' => 'nullable|date',
-            'leader_id' => 'nullable',
-            'toko_id' => 'nullable',
-            'jabatan_id' => 'nullable',
-            'password' => 'nullable|min:6|max:16',
+            'leader_id' => 'nullable|integer|exists:users,id',
+            'toko_id' => 'nullable|integer|exists:tokos,id',
+            'jabatan_id' => 'nullable|integer|exists:jabatans,id',
+            'password' => 'nullable|string|min:6|max:16',
         ]);
 
         DB::beginTransaction();
