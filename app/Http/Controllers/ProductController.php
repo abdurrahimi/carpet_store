@@ -88,9 +88,9 @@ class ProductController extends Controller
             'deskripsi' => 'nullable|string',
             'image' => 'nullable|string',
             'ori_barcode' => 'required|string',
-            'thickness' => 'nullable|integer',
-            'weight' => 'nullable|integer',
-            'lebar' => 'nullable|integer'
+            'thickness' => 'nullable',
+            'weight' => 'nullable',
+            'lebar' => 'nullable'
         ]);
 
         try {
@@ -123,6 +123,8 @@ class ProductController extends Controller
             $product->lebar = $request->input('lebar', 0);
             $product->unit_reseller_baru_price = $request->input('new_reseller_price', 0);
             $product->unit_reseller_lama_price = $request->input('old_reseller_price', 0);
+            $product->higher_price = $request->input('higher_price', 0);
+            $product->lowest_price = $request->input('lowest_price', 0);
             $product->save();
 
             return redirect()->route('products.index')->with('success', 'Produk berhasil dibuat.');
@@ -152,17 +154,21 @@ class ProductController extends Controller
             'deskripsi' => 'nullable|string',
             'image' => 'nullable|string',
             'ori_barcode' => 'required|string',
-            'thickness' => 'nullable|integer',
-            'weight' => 'nullable|integer',
-            'lebar' => 'nullable|integer',
+            'thickness' => 'nullable',
+            'weight' => 'nullable',
+            'lebar' => 'nullable',
         ]);
 
         try {
 
-            $fileData = base64_decode(preg_replace('/^data:image\/[a-zA-Z]+;base64,/', '', $request->input('image')));
-            $fileName = 'product-' . time() . '.png';
-            $filePath = "public/products/$fileName";
-            Storage::put($filePath, $fileData);
+            $patern = preg_replace('/^data:image\/[a-zA-Z]+;base64,/', '', $request->input('image'));
+            if ($this->isBase64($patern)) {
+                $fileData = base64_decode($patern);
+                $fileName = 'product-' . time() . '.png';
+                $filePath = "public/products/$fileName";
+                Storage::put($filePath, $fileData);
+            }
+
 
             $product = Product::findOrFail($id);
             $product->sku = $request->input('sku');
@@ -181,16 +187,23 @@ class ProductController extends Controller
             $product->manufacture_category = $request->input('manufacture_category');
             $product->supplier_id = $request->input('supplier_id');
             $product->deskripsi = $request->input('deskripsi');
-            $product->image = Storage::url("products/$fileName");
+
+            if ($this->isBase64($patern)) {
+                $product->image = Storage::url("products/$fileName");
+            }
+
             $product->ori_barcode = $request->input('ori_barcode', '');
             $product->thickness = $request->input('thickness', 0);
             $product->weight = $request->input('weight', 0);
             $product->lebar = $request->input('lebar', 0);
             $product->unit_reseller_baru_price = $request->input('new_reseller_price', 0);
             $product->unit_reseller_lama_price = $request->input('old_reseller_price', 0);
+            $product->higher_price = $request->input('higher_price', 0);
+            $product->lowest_price = $request->input('lowest_price', 0);
             $product->save();
             return redirect()->route('products.index')->with('success', 'Produk berhasil diubah.');
         } catch (\Exception $th) {
+            
             return redirect()->route('products.index')->with('error', 'Produk gagal diubah, hubungi administrator.');
         }
     }
@@ -278,5 +291,10 @@ class ProductController extends Controller
         }
 
         return redirect()->route('products.index')->with('success', 'Produk berhasil diupload.');
+    }
+
+    function isBase64($string)
+    {
+        return (bool) preg_match('/^[A-Za-z0-9+\/=]+$/', $string);
     }
 }
