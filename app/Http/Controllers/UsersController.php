@@ -116,7 +116,7 @@ class UsersController extends Controller
                 'nullable',
                 'email',
                 'max:100',
-                Rule::unique('users')->whereNull('deleted_at')
+                Rule::unique('users')->ignore($id)->whereNull('deleted_at'),
             ],
             'phone' => 'nullable|string|max:100',
             'npwp' => 'nullable|string|max:100',
