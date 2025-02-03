@@ -15,7 +15,7 @@ class Karyawan extends Model
 
     public function leader()
     {
-        return $this->belongsTo(User::class, 'leader_id');
+        return $this->belongsTo(Karyawan::class, 'leader_id', 'id');
     }
 
     public function creator()

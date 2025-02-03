@@ -73,7 +73,7 @@ class UsersController extends Controller
             'phone' => 'nullable|string|max:100',
             'npwp' => 'nullable|string|max:100',
             'join_date' => 'nullable|date',
-            'leader_id.id' => 'nullable|integer|exists:users,id',
+            'leader_id.id' => 'nullable|integer|exists:karyawan,id',
             'password' => 'nullable|string|min:6|max:16',
         ]);
 
@@ -109,7 +109,6 @@ class UsersController extends Controller
 
     public function update(Request $request, $id)
     {
-        dd($request->leader_id);
         $request->validate([
             'name' => 'required|string|max:255',
             'nik' => 'nullable|string|max:100',
