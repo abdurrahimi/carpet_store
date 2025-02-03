@@ -74,8 +74,6 @@ class UsersController extends Controller
             'npwp' => 'nullable|string|max:100',
             'join_date' => 'nullable|date',
             'leader_id' => 'nullable|integer|exists:users,id',
-            'toko_id.id' => 'nullable|integer|exists:tokos,id',
-            'jabatan.id' => 'nullable|integer|exists:jabatans,id',
             'password' => 'nullable|string|min:6|max:16',
         ]);
 
@@ -124,8 +122,6 @@ class UsersController extends Controller
             'npwp' => 'nullable|string|max:100',
             'join_date' => 'nullable|date',
             'leader_id' => 'nullable|integer|exists:users,id',
-            'toko_id.id' => 'nullable|integer|exists:tokos,id',
-            'jabatan.id' => 'nullable|integer|exists:jabatans,id',
             'password' => 'nullable|string|min:6|max:16',
         ]);
 
