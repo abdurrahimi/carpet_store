@@ -73,7 +73,7 @@ class UsersController extends Controller
             'phone' => 'nullable|string|max:100',
             'npwp' => 'nullable|string|max:100',
             'join_date' => 'nullable|date',
-            'leader_id' => 'nullable|integer|exists:users,id',
+            'leader_id.id' => 'nullable|integer|exists:users,id',
             'password' => 'nullable|string|min:6|max:16',
         ]);
 
@@ -121,7 +121,7 @@ class UsersController extends Controller
             'phone' => 'nullable|string|max:100',
             'npwp' => 'nullable|string|max:100',
             'join_date' => 'nullable|date',
-            'leader_id' => 'nullable|integer|exists:users,id',
+            'leader_id.id' => 'nullable|integer|exists:users,id',
             'password' => 'nullable|string|min:6|max:16',
         ]);
 
