@@ -79,7 +79,7 @@
         </div>
     </div>
     <ModalUpload/>
-    <ModalForm :modalTitle="modalTitle" :type="type" :editData="rowData" :toEdit="toEdit"/>
+    <ModalForm v-if="formStatus" :modalTitle="modalTitle" :type="type" :editData="rowData" :toEdit="toEdit" :categories="categories"/>
 </template>
 <script lang="jsx">
 import AuthenticatedLayout from "@/Layouts/AuthenticatedLayout.vue";
@@ -114,7 +114,7 @@ export default {
                 },
                 {
                     title: "PRODUCT CATEGORY",
-                    data: "category",
+                    data: "category.name",
                 },
                 {
                     title: "DESIGN NAME",
@@ -122,7 +122,7 @@ export default {
                 },
                 {
                     title: "COLOR",
-                    data: "color",
+                    data: "color.name",
                 },
                 {
                     title: "PATTERN",
@@ -150,6 +150,7 @@ export default {
             modalTitle: "",
             type: "create",
             rowData: {},
+            formStatus: false,
         };
     },
     methods: {
@@ -157,6 +158,7 @@ export default {
             this.selectedIds = row
         },
         createProduct() {
+            this.formStatus = true;
             this.rowData = {}
             this.toEdit = true;
             this.modalTitle = "Tambah Data Product";
@@ -166,12 +168,14 @@ export default {
             $("#modal-product-upload").modal("show");
         },
         detailRow(row) {
+            this.formStatus = true;
             this.rowData = row
             this.toEdit = false;
             this.modalTitle = "Detail Data Product";
             $("#modal-product-index").modal("show");
         },
         editRow(row) {
+            this.formStatus = true;
             this.rowData = row
             this.toEdit = true;
             this.modalTitle = "Ubah Data Product";

@@ -16,7 +16,7 @@
                         :class="{ 'is-invalid': $page?.props?.errors?.image }" />
                     <span class="text-danger">{{
                         $page?.props?.errors?.image
-                    }}</span>
+                        }}</span>
                 </div>
 
                 <div class="col-md-6 mb-3">
@@ -25,7 +25,7 @@
                         :class="{ 'is-invalid': $page?.props?.errors?.ori_sku }" placeholder="Enter Ori SKU" required />
                     <span class="text-danger">{{
                         $page?.props?.errors?.ori_sku
-                    }}</span>
+                        }}</span>
                 </div>
 
                 <div class="col-md-6 mb-3">
@@ -34,7 +34,7 @@
                         :class="{ 'is-invalid': $page?.props?.errors?.sku }" placeholder="Enter New SKU" required />
                     <span class="text-danger">{{
                         $page?.props?.errors?.sku
-                    }}</span>
+                        }}</span>
                 </div>
 
                 <div class="col-md-6 mb-3">
@@ -44,18 +44,21 @@
                         required />
                     <span class="text-danger">{{
                         $page?.props?.errors?.ori_barcode
-                    }}</span>
+                        }}</span>
                 </div>
 
-                <div class="col-md-6 mb-3">
+                <div class="col-md-6 mb-3" :class="{ 'is-invalid': $page?.props?.errors?.categories }">
                     <label for="category" class="form-label">Category</label>
-                    <input type="text" id="category" v-model="form.category" class="form-control" :class="{
-                        'is-invalid': $page?.props?.errors?.category,
-                    }" placeholder="Enter Category" />
+                    <Multiselect v-model="form.category" :options="categories" track-by="id" label="name" id="category"
+                        @select="getDataColor" :internal-search="true" :class="{
+                            'is-invalid': $page?.props?.errors?.categories,
+                        }">
+                    </Multiselect>
                     <span class="text-danger">{{
-                        $page?.props?.errors?.category
-                    }}</span>
+                        $page?.props?.errors?.categories
+                        }}</span>
                 </div>
+
                 <div class="col-md-6 mb-3">
                     <label for="design_name" class="form-label">Design Name</label>
                     <input type="text" id="design_name" v-model="form.design_name" class="form-control" :class="{
@@ -63,15 +66,27 @@
                     }" placeholder="Enter Design Name" />
                     <span class="text-danger">{{
                         $page?.props?.errors?.design_name
-                    }}</span>
+                        }}</span>
                 </div>
-                <div class="col-md-6 mb-3">
+                <!-- <div class="col-md-6 mb-3">
                     <label for="color" class="form-label">Color</label>
                     <input type="text" id="color" v-model="form.color" class="form-control"
                         :class="{ 'is-invalid': $page?.props?.errors?.color }" placeholder="Enter Color" />
                     <span class="text-danger">{{
                         $page?.props?.errors?.color
                     }}</span>
+                </div> -->
+
+                <div class="col-md-6 mb-3" :class="{ 'is-invalid': $page?.props?.errors?.color }">
+                    <label for="color" class="form-label">Color</label>
+                    <Multiselect v-model="form.color" :options="color" track-by="id" label="name" id="color"
+                        :disabled="form.category == null" :internal-search="true" :class="{
+                            'is-invalid': $page?.props?.errors?.color,
+                        }">
+                    </Multiselect>
+                    <span class="text-danger">{{
+                        $page?.props?.errors?.color
+                        }}</span>
                 </div>
 
                 <div class="col-md-6 mb-3">
@@ -80,7 +95,7 @@
                         :class="{ 'is-invalid': $page?.props?.errors?.pattern }" placeholder="Enter Pattern" />
                     <span class="text-danger">{{
                         $page?.props?.errors?.pattern
-                    }}</span>
+                        }}</span>
                 </div>
 
                 <div class="col-md-6 mb-3">
@@ -92,7 +107,7 @@
                         }" placeholder="Enter Panjang per Roll" />
                     <span class="text-danger">{{
                         $page?.props?.errors?.panjang_per_roll
-                    }}</span>
+                        }}</span>
                 </div>
 
                 <div class="col-md-6 mb-3">
@@ -103,7 +118,7 @@
                     }" placeholder="Enter Panjang per Roll" />
                     <span class="text-danger">{{
                         $page?.props?.errors?.thickness
-                    }}</span>
+                        }}</span>
                 </div>
 
                 <div class="col-md-6 mb-3">
@@ -114,7 +129,7 @@
                     }" placeholder="Enter Panjang per Roll" />
                     <span class="text-danger">{{
                         $page?.props?.errors?.weight
-                    }}</span>
+                        }}</span>
                 </div>
 
                 <div class="col-md-6 mb-3">
@@ -125,7 +140,7 @@
                     }" placeholder="Enter Panjang per Roll" />
                     <span class="text-danger">{{
                         $page?.props?.errors?.lebar
-                    }}</span>
+                        }}</span>
                 </div>
 
                 <div class="col-md-6 mb-3">
@@ -134,18 +149,18 @@
                         :class="{ 'is-invalid': $page?.props?.errors?.tipe }" placeholder="Enter Tipe" />
                     <span class="text-danger">{{
                         $page?.props?.errors?.tipe
-                    }}</span>
+                        }}</span>
                 </div>
 
                 <div class="col-md-6 mb-3">
-                    <label for="supp_id" class="form-label">Origin</label>
-                    <select class="form-control">
+                    <label for="origin" class="form-label">Origin</label>
+                    <select class="form-control" id="origin">
                         <option value="1">Import</option>
                         <option value="2">Lokal</option>
                     </select>
                     <span class="text-danger">{{
                         $page?.props?.errors?.supp?.id
-                    }}</span>
+                        }}</span>
                 </div>
 
                 <div class="col-md-6 mb-3">
@@ -154,7 +169,7 @@
                         :class="{ 'is-invalid': $page?.props?.errors?.backing }" placeholder="Enter Backing" />
                     <span class="text-danger">{{
                         $page?.props?.errors?.backing
-                    }}</span>
+                        }}</span>
                 </div>
 
                 <div class="col-md-6 mb-3">
@@ -164,7 +179,7 @@
                     }" placeholder="Enter Kode Benang" />
                     <span class="text-danger">{{
                         $page?.props?.errors?.kode_benang
-                    }}</span>
+                        }}</span>
                 </div>
 
                 <div class="col-md-6 mb-3">
@@ -174,7 +189,7 @@
                     }" placeholder="Enter Reorder Level" />
                     <span class="text-danger">{{
                         $page?.props?.errors?.reorder_level
-                    }}</span>
+                        }}</span>
                 </div>
 
                 <div class="col-md-6 mb-3">
@@ -184,7 +199,7 @@
                     }" placeholder="Enter Manufacture ID" />
                     <span class="text-danger">{{
                         $page?.props?.errors?.manufacture_id
-                    }}</span>
+                        }}</span>
                 </div>
 
                 <div class="col-md-6 mb-3">
@@ -196,19 +211,19 @@
                         }" placeholder="Enter Manufacture Category" />
                     <span class="text-danger">{{
                         $page?.props?.errors?.manufacture_category
-                    }}</span>
+                        }}</span>
                 </div>
 
                 <div class="col-md-6 mb-3">
                     <label for="supplier_id" class="form-label">Supplier ID</label>
-                    <Multiselect v-model="form.supplier" :options="suppliers" track-by="id" label="name"
+                    <Multiselect v-model="form.supplier" :options="suppliers" track-by="id" id="supplier_id" label="name"
                         :internal-search="true" :class="{
                             'is-invalid': $page?.props?.errors?.supplier_id,
                         }">
                     </Multiselect>
                     <span class="text-danger">{{
                         $page?.props?.errors?.supplier_id
-                    }}</span>
+                        }}</span>
                 </div>
 
                 <div class="col-md-12 mb-3">
@@ -218,7 +233,7 @@
                     }" placeholder="Enter Description"></textarea>
                     <span class="text-danger">{{
                         $page?.props?.errors?.deskripsi
-                    }}</span>
+                        }}</span>
                 </div>
 
                 <div class="col-md-12 mb-3">
@@ -230,7 +245,7 @@
                         :class="{ 'is-invalid': $page?.props?.errors?.cost }" placeholder="Enter Cost" />
                     <span class="text-danger">{{
                         $page?.props?.errors?.cost
-                    }}</span>
+                        }}</span>
                 </div>
                 <div class="col-md-6 mb-3">
                     <label for="lowest_price" class="form-label">Lowest Price</label>
@@ -239,7 +254,7 @@
                     }" placeholder="Enter Lowest Price" />
                     <span class="text-danger">{{
                         $page?.props?.errors?.lowest_price
-                    }}</span>
+                        }}</span>
                 </div>
 
                 <div class="col-md-6 mb-3">
@@ -249,7 +264,7 @@
                     }" placeholder="Enter Higher Price" />
                     <span class="text-danger">{{
                         $page?.props?.errors?.higher_price
-                    }}</span>
+                        }}</span>
                 </div>
 
                 <div class="col-md-6 mb-3">
@@ -260,7 +275,7 @@
                         }" placeholder="Enter Old Reseller Price" />
                     <span class="text-danger">{{
                         $page?.props?.errors?.old_reseller_price
-                    }}</span>
+                        }}</span>
                 </div>
 
                 <div class="col-md-6 mb-3">
@@ -271,7 +286,7 @@
                         }" placeholder="Enter New Reseller Price" />
                     <span class="text-danger">{{
                         $page?.props?.errors?.new_reseller_price
-                    }}</span>
+                        }}</span>
                 </div>
             </div>
         </form>
@@ -296,7 +311,7 @@
             </div>
             <div class="col-md-6 mb-3">
                 <strong>Category:</strong>
-                <p>{{ form.category }}</p>
+                <p>{{ form.category?.name }}</p>
             </div>
             <div class="col-md-6 mb-3">
                 <strong>Design Name:</strong>
@@ -304,7 +319,7 @@
             </div>
             <div class="col-md-6 mb-3">
                 <strong>Color:</strong>
-                <p>{{ form.color }}</p>
+                <p>{{ form.color?.name }}</p>
             </div>
             <div class="col-md-6 mb-3">
                 <strong>Pattern:</strong>
@@ -400,7 +415,7 @@ export default {
         Modal,
         Multiselect,
     },
-    props: ["modalTitle", "editData", "toEdit"],
+    props: ["modalTitle", "editData", "toEdit", "categories"],
     watch: {
         editData() {
             this.id = this.editData.id;
@@ -434,7 +449,9 @@ export default {
             };
         },
         toEdit() {
+            console.log("okok")
             this.edit = this.toEdit;
+            this.getDataColor()
         },
     },
     data() {
@@ -442,6 +459,7 @@ export default {
             id: null,
             form: {},
             suppliers: [],
+            color: [],
             preview: null,
             submit: false,
             edit: true,
@@ -561,6 +579,13 @@ export default {
                 minimumFractionDigits: 0,
             }).format(value);
         },
+        async getDataColor() {
+            if (this.form.category.id == null) return false;
+            let { data } = await axios.get(
+                this.route("category.color", this.form.category.id)
+            );
+            this.color = data;
+        }
     },
 };
 </script>

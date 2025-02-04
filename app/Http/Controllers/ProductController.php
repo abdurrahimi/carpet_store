@@ -20,6 +20,14 @@ class ProductController extends Controller
         $supplier_name = $request->get('store', '');
 
         $products = Product::query()
+            ->with([
+                'category' => function($q){
+                    return $q->select('id', 'name');
+                },
+                'color' => function($q){
+                    return $q->select('id', 'name');
+                },
+            ])
             ->when($name, function ($query, $name) {
                 $query->where(DB::raw('lower(design_name)'), 'like', "%" . strtolower($name) . "%");
             })
@@ -72,9 +80,9 @@ class ProductController extends Controller
         // Validasi input
         $validatedData = $request->validate([
             'sku' => 'required|string|max:100',
-            'category' => 'nullable|string|max:100',
+            'category.id' => 'nullable|int|exists:product_category,id',
             'design_name' => 'nullable|string|max:100',
-            'color' => 'nullable|string|max:100',
+            'color.id' => 'int|nullable|exists:product_category_color,id',
             'pattern' => 'nullable|string|max:100',
             'panjang_per_roll' => 'nullable|integer',
             'tipe' => 'nullable|string|max:100',
@@ -102,9 +110,9 @@ class ProductController extends Controller
             $product = new Product();
             $product->sku = $request->input('sku');
             $product->ori_sku = $request->input('ori_sku');
-            $product->category = $request->input('category');
+            $product->category_id = $request->input('category')['id'];
             $product->design_name = $request->input('design_name');
-            $product->color = $request->input('color');
+            $product->color_id = $request->input('color')['id'];
             $product->pattern = $request->input('pattern');
             $product->panjang_per_roll = $request->input('panjang_per_roll');
             $product->tipe = $request->input('tipe');
@@ -138,9 +146,9 @@ class ProductController extends Controller
 
         $validatedData = $request->validate([
             'sku' => 'required|string|max:100',
-            'category' => 'nullable|string|max:100',
+            'category.id' => 'nullable|int|exists:product_category,id',
             'design_name' => 'nullable|string|max:100',
-            'color' => 'nullable|string|max:100',
+            'color.id' => 'int|nullable|exists:product_category_color,id',
             'pattern' => 'nullable|string|max:100',
             'panjang_per_roll' => 'nullable|integer',
             'tipe' => 'nullable|string|max:100',
@@ -173,9 +181,9 @@ class ProductController extends Controller
             $product = Product::findOrFail($id);
             $product->sku = $request->input('sku');
             $product->ori_sku = $request->input('ori_sku');
-            $product->category = $request->input('category');
+            $product->category_id = $request->input('category')['id'];
             $product->design_name = $request->input('design_name');
-            $product->color = $request->input('color');
+            $product->color_id = $request->input('color')['id'];
             $product->pattern = $request->input('pattern');
             $product->panjang_per_roll = $request->input('panjang_per_roll');
             $product->tipe = $request->input('tipe');

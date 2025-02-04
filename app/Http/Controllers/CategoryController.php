@@ -44,6 +44,7 @@ class CategoryController extends Controller
             ->when($search, function ($q) use ($search) {
                 return $q->where(DB::raw('lower(name)'), 'like', "%$search%");
             })->limit(50)->get();
+
         return response()->json($data);
     }
 
@@ -54,7 +55,7 @@ class CategoryController extends Controller
             'tipe_penjualan' => 'nullable|integer|in:1,2', //1 = satuan, 2 = meteran
             'color.*.name' => 'required|string|max:20'
         ]);
-        dd("salah");
+        
         DB::beginTransaction();
         try {
             $model = new ProductCategory();
