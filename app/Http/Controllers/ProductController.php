@@ -114,9 +114,9 @@ class ProductController extends Controller
             $product = new Product();
             $product->sku = $request->input('sku');
             $product->ori_sku = $request->input('ori_sku');
-            $product->category_id = $request->input('category')['id'];
+            $product->category_id = $request->input('category')['id'] ?? null;
             $product->design_name = $request->input('design_name');
-            $product->color_id = $request->input('color')['id'];
+            $product->color_id = $request->input('color')['id'] ?? null;
             $product->pattern = $request->input('pattern');
             $product->panjang_per_roll = $request->input('panjang_per_roll');
             $product->tipe = $request->input('tipe');
@@ -139,10 +139,12 @@ class ProductController extends Controller
             $product->unit_reseller_lama_price = $request->input('old_reseller_price', 0);
             $product->higher_price = $request->input('higher_price', 0);
             $product->lowest_price = $request->input('lowest_price', 0);
+            $product->cost = $request->input('cost', 0);
             $product->save();
 
             return redirect()->route('products.index')->with('success', 'Produk berhasil dibuat.');
         } catch (\Exception $th) {
+            dd($th);
             return redirect()->route('products.index')->with('error', 'Produk gagal dibuat, hubungi administrator.');
         }
     }
@@ -187,9 +189,9 @@ class ProductController extends Controller
             $product = Product::findOrFail($id);
             $product->sku = $request->input('sku');
             $product->ori_sku = $request->input('ori_sku');
-            $product->category_id = $request->input('category')['id'];
+            $product->category_id = $request->input('category')['id'] ?? null;
             $product->design_name = $request->input('design_name');
-            $product->color_id = $request->input('color')['id'];
+            $product->color_id = $request->input('color')['id'] ?? null;
             $product->pattern = $request->input('pattern');
             $product->panjang_per_roll = $request->input('panjang_per_roll');
             $product->tipe = $request->input('tipe');
@@ -214,10 +216,11 @@ class ProductController extends Controller
             $product->unit_reseller_lama_price = $request->input('old_reseller_price', 0);
             $product->higher_price = $request->input('higher_price', 0);
             $product->lowest_price = $request->input('lowest_price', 0);
+            $product->cost = $request->input('cost', 0);
             $product->save();
             return redirect()->route('products.index')->with('success', 'Produk berhasil diubah.');
         } catch (\Exception $th) {
-
+            dd($th);
             return redirect()->route('products.index')->with('error', 'Produk gagal diubah, hubungi administrator.');
         }
     }

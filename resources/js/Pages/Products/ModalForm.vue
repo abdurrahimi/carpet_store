@@ -418,6 +418,7 @@ export default {
     props: ["modalTitle", "editData", "toEdit", "categories"],
     watch: {
         editData() {
+            console.log(this.editData);
             this.id = this.editData.id;
             this.preview = this.editData.image != null ? this.editData.image : 'https://img.freepik.com/premium-vector/default-image-icon-vector-missing-picture-page-website-design-mobile-app-no-photo-available_87543-11093.jpg'
             this.form = {
@@ -446,10 +447,10 @@ export default {
                 higher_price: this.editData.higher_price ?? 0,
                 old_reseller_price: this.editData.unit_reseller_lama_price ?? 0,
                 new_reseller_price: this.editData.unit_reseller_baru_price ?? 0,
+                cost: this.editData.cost ?? 0,
             };
         },
         toEdit() {
-            console.log("okok")
             this.edit = this.toEdit;
             this.getDataColor()
         },

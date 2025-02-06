@@ -1,44 +1,26 @@
 <template>
     <div>
+
         <Head title="Products" />
         <div class="text-right">
             <transition name="fade">
-                <button
-                    :class="selectedIds.length > 0 ? 'show' : ''"
-                    @click="deleteSelected"
-                    class="btn btn-danger mr-2 mb-2 fade"
-                >
+                <button :class="selectedIds.length > 0 ? 'show' : ''" @click="deleteSelected"
+                    class="btn btn-danger mr-2 mb-2 fade">
                     <i class="fa fa-trash"></i>&nbsp;Delete Bulk
                 </button>
             </transition>
-            <button
-                class="btn btn-primary mb-2"
-                type="button"
-                @click="createProduct"
-            >
+            <button class="btn btn-primary mb-2" type="button" @click="createProduct">
                 + Data Baru
             </button>
             &nbsp;
-            <button
-                class="btn btn-success mb-2"
-                type="button"
-                @click="uploadProduct"
-            >
+            <button class="btn btn-success mb-2" type="button" @click="uploadProduct">
                 + Upload
             </button>
         </div>
-        <div
-            v-if="$page.props.flash.success"
-            class="alert alert-success"
-            role="alert"
-        >
+        <div v-if="$page.props.flash.success" class="alert alert-success" role="alert">
             {{ $page.props.flash.success }}
         </div>
-        <div
-            v-if="$page.props.flash.error"
-            class="alert alert-danger"
-            role="alert"
-        >
+        <div v-if="$page.props.flash.error" class="alert alert-danger" role="alert">
             {{ $page.props.flash.error }}
         </div>
         <div class="card shadow">
@@ -47,39 +29,23 @@
                     <i class="fa fa-box"></i>&nbsp;Data Product
                 </h4>
             </div>
-            <Table
-                :columns="table"
-                :rows="data"
-                @update:selectedRows="handleSelectedRows"
-            >
+            <Table :columns="table" :rows="data" @update:selectedRows="handleSelectedRows">
                 <template #actions="{ row }">
-                    <button
-                        @click="detailRow(row)"
-                        class="btn btn-info btn-sm"
-                        title="Detail"
-                    >
+                    <button @click="detailRow(row)" class="btn btn-info btn-sm" title="Detail">
                         Detail
                     </button>&nbsp;
-                    <button
-                        @click="editRow(row)"
-                        class="btn btn-warning btn-sm"
-                        title="Edit"
-                    >
-                        Edit</button
-                    >&nbsp;
-                    <button
-                        @click="deleteRow(row)"
-                        class="btn btn-danger btn-sm"
-                        title="Delete"
-                    >
+                    <button @click="editRow(row)" class="btn btn-warning btn-sm" title="Edit">
+                        Edit</button>&nbsp;
+                    <button @click="deleteRow(row)" class="btn btn-danger btn-sm" title="Delete">
                         Delete
                     </button>
                 </template>
             </Table>
         </div>
     </div>
-    <ModalUpload/>
-    <ModalForm v-if="formStatus" :modalTitle="modalTitle" :type="type" :editData="rowData" :toEdit="toEdit" :categories="categories"/>
+    <ModalUpload />
+    <ModalForm ref="modalForm" v-if="formStatus" :modalTitle="modalTitle" :type="type" :editData="rowData"
+        :toEdit="toEdit" :categories="categories" />
 </template>
 <script lang="jsx">
 import AuthenticatedLayout from "@/Layouts/AuthenticatedLayout.vue";
@@ -153,8 +119,11 @@ export default {
             formStatus: false,
         };
     },
+    mounted() {
+
+    },
     methods: {
-        handleSelectedRows(row){
+        handleSelectedRows(row) {
             this.selectedIds = row
         },
         createProduct() {
@@ -169,17 +138,28 @@ export default {
         },
         detailRow(row) {
             this.formStatus = true;
-            this.rowData = row
-            this.toEdit = false;
-            this.modalTitle = "Detail Data Product";
-            $("#modal-product-index").modal("show");
+            $('#modal-product-index').on('hidden.bs.modal', () => {
+                this.formStatus = false;
+            });
+            setTimeout(() => {
+                this.rowData = row
+                this.toEdit = false;
+                this.modalTitle = "Detail Data Product";
+                $("#modal-product-index").modal("show");
+            }, 300)
         },
         editRow(row) {
             this.formStatus = true;
-            this.rowData = row
-            this.toEdit = true;
-            this.modalTitle = "Ubah Data Product";
-            $("#modal-product-index").modal("show");
+
+            $('#modal-product-index').on('hidden.bs.modal', () => {
+                this.formStatus = false;
+            });
+            setTimeout(() => {
+                this.rowData = row
+                this.toEdit = true;
+                this.modalTitle = "Ubah Data Product";
+                $("#modal-product-index").modal("show");
+            }, 300);
         },
         deleteRow(row) {
             this.$confirm(
@@ -210,7 +190,7 @@ export default {
             );
         },
         deleteSelectedAction() {
-            router.post(this.route("products.deleteBulk"),{id: this.selectedIds}, {
+            router.post(this.route("products.deleteBulk"), { id: this.selectedIds }, {
                 preserveScroll: true,
                 onSuccess: () => {
                     this.$success("Data berhasil dihapus");
