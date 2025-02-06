@@ -21,10 +21,10 @@ class ProductController extends Controller
 
         $products = Product::query()
             ->with([
-                'category' => function($q){
+                'category' => function ($q) {
                     return $q->select('id', 'name');
                 },
-                'color' => function($q){
+                'color' => function ($q) {
                     return $q->select('id', 'name');
                 },
             ])
@@ -102,10 +102,14 @@ class ProductController extends Controller
         ]);
 
         try {
-            $fileData = base64_decode(preg_replace('/^data:image\/[a-zA-Z]+;base64,/', '', $request->input('image')));
-            $fileName = 'product-' . time() . '.png';
-            $filePath = "public/products/$fileName";
-            Storage::put($filePath, $fileData);
+            $patern = preg_replace('/^data:image\/[a-zA-Z]+;base64,/', '', $request->input('image'));
+            if ($this->isBase64($patern)) {
+
+                $fileData = base64_decode(preg_replace('/^data:image\/[a-zA-Z]+;base64,/', '', $request->input('image')));
+                $fileName = 'product-' . time() . '.png';
+                $filePath = "public/products/$fileName";
+                Storage::put($filePath, $fileData);
+            }
 
             $product = new Product();
             $product->sku = $request->input('sku');
@@ -124,7 +128,9 @@ class ProductController extends Controller
             $product->manufacture_category = $request->input('manufacture_category');
             $product->supplier_id = $request->input('supplier_id');
             $product->deskripsi = $request->input('deskripsi');
-            $product->image = Storage::url("products/$fileName");
+            if ($this->isBase64($patern)) {
+                $product->image = Storage::url("products/$fileName");
+            }
             $product->ori_barcode = $request->input('ori_barcode', '');
             $product->thickness = $request->input('thickness', 0);
             $product->weight = $request->input('weight', 0);
@@ -211,7 +217,7 @@ class ProductController extends Controller
             $product->save();
             return redirect()->route('products.index')->with('success', 'Produk berhasil diubah.');
         } catch (\Exception $th) {
-            
+
             return redirect()->route('products.index')->with('error', 'Produk gagal diubah, hubungi administrator.');
         }
     }
