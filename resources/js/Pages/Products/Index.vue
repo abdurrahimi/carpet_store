@@ -128,16 +128,23 @@ export default {
         },
         createProduct() {
             this.formStatus = true;
-            this.rowData = {}
-            this.toEdit = true;
-            this.modalTitle = "Tambah Data Product";
-            $("#modal-product-index").modal("show");
+            $('#modal-product-index').on('hidden.bs.modal', () => {
+                this.formStatus = false;
+            });
+            setTimeout(() => {
+                this.rowData = {}
+                this.toEdit = true;
+                this.modalTitle = "Tambah Data Product";
+
+                $("#modal-product-index").modal("show");
+            });
         },
         uploadProduct() {
             $("#modal-product-upload").modal("show");
         },
         detailRow(row) {
             this.formStatus = true;
+            this.rowData = {}
             $('#modal-product-index').on('hidden.bs.modal', () => {
                 this.formStatus = false;
             });
@@ -146,11 +153,11 @@ export default {
                 this.toEdit = false;
                 this.modalTitle = "Detail Data Product";
                 $("#modal-product-index").modal("show");
-            }, 300)
+            }, 500)
         },
         editRow(row) {
             this.formStatus = true;
-
+            this.rowData = {}
             $('#modal-product-index').on('hidden.bs.modal', () => {
                 this.formStatus = false;
             });
@@ -159,7 +166,7 @@ export default {
                 this.toEdit = true;
                 this.modalTitle = "Ubah Data Product";
                 $("#modal-product-index").modal("show");
-            }, 300);
+            }, 500);
         },
         deleteRow(row) {
             this.$confirm(

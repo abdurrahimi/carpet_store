@@ -392,7 +392,7 @@ export default {
     props: ["modalTitle", "editData", "toEdit", "categories"],
     watch: {
         editData() {
-            console.log(this.editData);
+           
             this.id = this.editData.id;
             this.preview = this.editData.image != null ? this.editData.image : 'https://img.freepik.com/premium-vector/default-image-icon-vector-missing-picture-page-website-design-mobile-app-no-photo-available_87543-11093.jpg'
             this.form = {
@@ -439,7 +439,14 @@ export default {
         };
     },
     mounted() {
-        this.resetForm();
+        this.fullReset();
+        setTimeout(() => {
+            //this.suppliers = this.$page.props.supplier;
+            this.resetForm();
+        }, 300);
+    },
+    beforeDestroy() {
+        this.fullReset();
     },
     methods: {
         handleSubmit() {
@@ -528,6 +535,38 @@ export default {
                 thickness: this.editData.thickness ?? 0,
                 weight: this.editData.weight ?? 0,
                 lebar: this.editData.lebar ?? 0,
+                lowest_price: this.editData.lowest_price ?? 0,
+                higher_price: this.editData.higher_price ?? 0,
+                old_reseller_price: this.editData.unit_reseller_lama_price ?? 0,
+                new_reseller_price: this.editData.unit_reseller_baru_price ?? 0,
+                cost: this.editData.cost ?? 0
+            };
+        },
+        fullReset(){
+            this.form = {
+                sku: "",
+                category: "",
+                design_name: "",
+                color: "",
+                pattern: "",
+                panjang_per_roll: "",
+                tipe: "",
+                origin: "",
+                backing: "",
+                kode_benang: "",
+                reorder_level: "",
+                supplier: null,
+                deskripsi: "",
+                image: null,
+                ori_barcode: "",
+                thickness: 0,
+                weight: 0,
+                lebar: 0,
+                lowest_price: 0,
+                higher_price: 0,
+                old_reseller_price: 0,
+                new_reseller_price: 0,
+                cost: 0
             };
         },
         editButtonHandler() {
