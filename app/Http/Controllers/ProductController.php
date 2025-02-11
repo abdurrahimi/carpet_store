@@ -90,8 +90,6 @@ class ProductController extends Controller
             'backing' => 'nullable|string|max:100',
             'kode_benang' => 'nullable|string|max:100',
             'reorder_level' => 'nullable|string|max:100',
-            'manufacture_id' => 'nullable|string|max:100',
-            'manufacture_category' => 'nullable|string|max:100',
             'supplier_id' => 'nullable|string|max:100',
             'deskripsi' => 'nullable|string',
             'image' => 'nullable|string',
@@ -124,8 +122,6 @@ class ProductController extends Controller
             $product->backing = $request->input('backing');
             $product->kode_benang = $request->input('kode_benang');
             $product->reorder_level = $request->input('reorder_level');
-            $product->manufacture_id = $request->input('manufacture_id');
-            $product->manufacture_category = $request->input('manufacture_category');
             $product->supplier_id = $request->input('supplier_id');
             $product->deskripsi = $request->input('deskripsi');
             if ($this->isBase64($patern)) {
@@ -164,8 +160,6 @@ class ProductController extends Controller
             'backing' => 'nullable|string|max:100',
             'kode_benang' => 'nullable|string|max:100',
             'reorder_level' => 'nullable|string|max:100',
-            'manufacture_id' => 'nullable|string|max:100',
-            'manufacture_category' => 'nullable|string|max:100',
             'supplier.id' => 'nullable|number|max:100',
             'deskripsi' => 'nullable|string',
             'image' => 'nullable|string',
@@ -199,8 +193,6 @@ class ProductController extends Controller
             $product->backing = $request->input('backing');
             $product->kode_benang = $request->input('kode_benang');
             $product->reorder_level = $request->input('reorder_level');
-            $product->manufacture_id = $request->input('manufacture_id');
-            $product->manufacture_category = $request->input('manufacture_category');
             $product->supplier_id = $request->input('supplier_id');
             $product->deskripsi = $request->input('deskripsi');
 
@@ -278,8 +270,6 @@ class ProductController extends Controller
                 'backing' => $row[8],
                 'kode_benang' => $row[9],
                 'reorder_level' => $row[10],
-                'manufacture_id' => $row[11],
-                'manufacture_category' => $row[12],
                 'supplier_id' => $row[13],
                 'deskripsi' => $row[14]
             ];
@@ -299,8 +289,6 @@ class ProductController extends Controller
                     'backing',
                     'kode_benang',
                     'reorder_level',
-                    'manufacture_id',
-                    'manufacture_category',
                     'supplier_id',
                     'deskripsi'
                 ]

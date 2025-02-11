@@ -193,28 +193,6 @@
                 </div>
 
                 <div class="col-md-6 mb-3">
-                    <label for="manufacture_id" class="form-label">Manufacture ID</label>
-                    <input type="text" id="manufacture_id" v-model="form.manufacture_id" class="form-control" :class="{
-                        'is-invalid': $page?.props?.errors?.manufacture_id,
-                    }" placeholder="Enter Manufacture ID" />
-                    <span class="text-danger">{{
-                        $page?.props?.errors?.manufacture_id
-                        }}</span>
-                </div>
-
-                <div class="col-md-6 mb-3">
-                    <label for="manufacture_category" class="form-label">Manufacture Category</label>
-                    <input type="text" id="manufacture_category" v-model="form.manufacture_category"
-                        class="form-control" :class="{
-                            'is-invalid':
-                                $page?.props?.errors?.manufacture_category,
-                        }" placeholder="Enter Manufacture Category" />
-                    <span class="text-danger">{{
-                        $page?.props?.errors?.manufacture_category
-                        }}</span>
-                </div>
-
-                <div class="col-md-6 mb-3">
                     <label for="supplier_id" class="form-label">Supplier ID</label>
                     <Multiselect v-model="form.supplier" :options="suppliers" track-by="id" id="supplier_id" label="name"
                         :internal-search="true" :class="{
@@ -358,10 +336,6 @@
                 <p>{{ form.reorder_level }}</p>
             </div>
             <div class="col-md-6 mb-3">
-                <strong>Manufacture ID:</strong>
-                <p>{{ form.manufacture_id }}</p>
-            </div>
-            <div class="col-md-6 mb-3">
                 <strong>Supplier:</strong>
                 <p>{{ form.supplier?.name || 'N/A' }}</p>
             </div>
@@ -434,8 +408,6 @@ export default {
                 backing: this.editData.backing ?? "",
                 kode_benang: this.editData.kode_benang ?? "",
                 reorder_level: this.editData.reorder_level ?? "",
-                manufacture_id: this.editData.manufacture_id ?? "",
-                manufacture_category: this.editData.manufacture_category ?? "",
                 supplier: this.editData.supplier ?? null,
                 deskripsi: this.editData.deskripsi ?? "",
                 image: this.editData.image ?? null,
@@ -549,8 +521,6 @@ export default {
                 backing: this.editData.backing ?? "",
                 kode_benang: this.editData.kode_benang ?? "",
                 reorder_level: this.editData.reorder_level ?? "",
-                manufacture_id: this.editData.manufacture_id ?? "",
-                manufacture_category: this.editData.manufacture_category ?? "",
                 supplier: this.editData.supplier ?? null,
                 deskripsi: this.editData.deskripsi ?? "",
                 image: this.editData.image ?? null,
