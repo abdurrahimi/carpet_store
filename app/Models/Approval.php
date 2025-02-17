@@ -9,4 +9,14 @@ class Approval extends Model
 {
     use HasFactory;
     protected $table = 'approval';
+
+    public function requestor()
+    {
+        return $this->belongsTo(User::class, 'requestor_id', 'id');
+    }
+
+    public function approver()
+    {
+        return $this->belongsTo(User::class, 'approver_id', 'id');
+    }
 }

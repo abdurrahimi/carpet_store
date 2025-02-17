@@ -1,5 +1,6 @@
 <?php
 
+use App\Http\Controllers\ApprovalController;
 use App\Http\Controllers\CategoryController;
 use App\Http\Controllers\CustomerController;
 use App\Http\Controllers\OrderController;
@@ -98,6 +99,10 @@ Route::middleware('auth')->group(function () {
 
     //order
     Route::post('/order', [OrderController::class, 'order'])->name('order.create');
+
+
+    //Approval
+    Route::get('/approval', [ApprovalController::class, 'index'])->name('approval.index');
 
 
     Route::get('/temp', function(){
