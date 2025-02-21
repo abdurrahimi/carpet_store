@@ -68,6 +68,8 @@ class StockController extends Controller
             'supplier.id' => 'required|integer|exists:supplier',
             'product_type' => 'required|integer|in:1,2',
             'store.id' => 'required|integer|exists:store',
+            'type' => 'required|in:IN,OUT,REJECT',
+            'panjang' => 'nullable|integer',
             'total' => 'required|integer'
         ]);
         DB::beginTransaction();
