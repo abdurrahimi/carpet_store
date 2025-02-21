@@ -28,7 +28,7 @@ class ApprovalService
         $data = Approval::find($approvalId);
         $data->status = $type;
         $data->save();
-        
+
         if ($data->type == 'stock') {
             $this->approveStockAdd($approvalId);
         }
@@ -41,11 +41,11 @@ class ApprovalService
         //stock type 1 = baru , 2 = bekas
         if ($stock->type == 'IN' && $stock->stock_type == '1') {
             $product = Product::find($stock->product_id);
-            $product->stock += $stock->quantity;
+            $product->stock_new += $stock->total;
             $product->save();
         } else if ($stock->type == 'OUT' && $stock->stock_type == '1') {
             $product = Product::find($stock->product_id);
-            $product->stock -= $stock->quantity;
+            $product->stock_new -= $stock->total;
             $product->save();
         } else if ($stock->type == 'IN' && $stock->stock_type == '2') {
             $stock2 = new StockBekas();
@@ -55,7 +55,7 @@ class ApprovalService
             $stock2->save();
         } else if ($stock->type == 'OUT' && $stock->stock_type == '2') {
             $product = StockBekas::where('code', $stock->code)->first();
-            $product->panjang -= $stock->quantity;
+            $product->panjang -= $stock->panjang;
             $product->save();
         }
     }

@@ -85,6 +85,7 @@ class StockController extends Controller
             $approval->title = 'Stock Approval';
             $supplier = Supplier::find($validatedData['supplier']['id']);
             $product = Product::find($validatedData['product']['id']);
+            $store = Store::find($validatedData['store']['id']);
 
             $prefix = '';
             if($request->type == 'IN') {
@@ -103,7 +104,7 @@ class StockController extends Controller
                 $prefix = $prefix . ' Bekas';
             }
 
-            $approval->detail = $prefix . ' produk '.$product->design_name.' dari supplier '.$supplier->name.' sebanyak '.$request->total.', ditambahkan oleh user '. Auth::user()->name;
+            $approval->detail = $prefix . ' produk '.$product->design_name.' di '.$store->name.' dari supplier '.$supplier->name.' sebanyak '.$request->total.', ditambahkan oleh user '. Auth::user()->name;
             $approval->save();
 
             //create stock

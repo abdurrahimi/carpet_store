@@ -1,36 +1,22 @@
 <template>
     <div>
+
         <Head title="Data Stok" />
         <div class="text-right">
             <transition name="fade">
-                <button
-                    :class="selectedIds.length > 0 ? 'show' : ''"
-                    @click="deleteSelected"
-                    class="btn btn-danger mr-2 mb-2 fade"
-                >
+                <button :class="selectedIds.length > 0 ? 'show' : ''" @click="deleteSelected"
+                    class="btn btn-danger mr-2 mb-2 fade">
                     <i class="fa fa-trash"></i>&nbsp;Hapus Pilihan
                 </button>
             </transition>
-            <button
-                class="btn btn-primary mb-2"
-                type="button"
-                @click="createStock"
-            >
+            <button class="btn btn-primary mb-2" type="button" @click="createStock">
                 + Stok Baru
             </button>
         </div>
-        <div
-            v-if="$page.props.flash.success"
-            class="alert alert-success"
-            role="alert"
-        >
+        <div v-if="$page.props.flash.success" class="alert alert-success" role="alert">
             {{ $page.props.flash.success }}
         </div>
-        <div
-            v-if="$page.props.flash.error"
-            class="alert alert-danger"
-            role="alert"
-        >
+        <div v-if="$page.props.flash.error" class="alert alert-danger" role="alert">
             {{ $page.props.flash.error }}
         </div>
         <div class="card shadow">
@@ -39,19 +25,10 @@
                     <i class="fa fa-box"></i>&nbsp;Data Stok
                 </h4>
             </div>
-            <Table
-                :columns="table"
-                :rows="data"
-                @update:selectedRows="handleSelectedRows"
-            >
+            <Table :columns="table" :rows="data" @update:selectedRows="handleSelectedRows">
                 <template #actions="{ row }">
-                    <button
-                        @click="deleteRow(row)"
-                        class="btn btn-danger btn-sm"
-                        title="Delete"
-                    >
-                        Delete</button
-                    >&nbsp;
+                    <button @click="deleteRow(row)" class="btn btn-danger btn-sm" title="Delete">
+                        Delete</button>&nbsp;
                 </template>
             </Table>
         </div>
@@ -60,81 +37,48 @@
                 <div class="row">
                     <!-- Produk -->
                     <div class="col-md-12 mb-3">
-                        <label for="product_id" class="form-label"
-                            >Pilih Produk</label
-                        >
-                        <Multiselect
-                            v-model="form.product"
-                            :options="products"
-                            track-by="id"
-                            label="design_name"
-                            @search-change="getProducts"
-                            :internal-search="false"
-                            :class="{
+                        <label for="product_id" class="form-label">Pilih Produk</label>
+                        <Multiselect v-model="form.product" :options="products" track-by="id" label="design_name"
+                            @search-change="getProducts" :internal-search="false" :class="{
                                 'is-invalid': $page?.props?.errors?.product?.id,
-                            }"
-                        ></Multiselect>
+                            }"></Multiselect>
                         <span class="text-danger">{{
                             $page?.props?.errors?.product?.id
-                        }}</span>
+                            }}</span>
                     </div>
 
                     <div class="col-md-12 mb-3">
                         <label for="toko_id" class="form-label">Store</label>
-                        <Multiselect
-                            v-model="form.store"
-                            :options="store"
-                            track-by="id"
-                            label="name"
-                            @search-change="getDataStore"
-                            :internal-search="false"
-                            :class="{
+                        <Multiselect v-model="form.store" :options="store" track-by="id" label="name"
+                            @search-change="getDataStore" :internal-search="false" :class="{
                                 'is-invalid': $page?.props?.errors?.store?.id,
-                            }"
-                        ></Multiselect>
+                            }"></Multiselect>
                         <span class="text-danger">{{
                             $page?.props?.errors?.store?.id
-                        }}</span>
+                            }}</span>
                     </div>
 
                     <!-- Supplier -->
                     <div class="col-md-6 mb-3">
                         <label for="toko_id" class="form-label">Supplier</label>
-                        <Multiselect
-                            v-model="form.supplier"
-                            :options="supplier"
-                            track-by="id"
-                            label="name"
-                            @search-change="getDataSupplier"
-                            :internal-search="false"
-                            :class="{
+                        <Multiselect v-model="form.supplier" :options="supplier" track-by="id" label="name"
+                            @search-change="getDataSupplier" :internal-search="false" :class="{
                                 'is-invalid':
                                     $page?.props?.errors?.supplier?.id,
-                            }"
-                        ></Multiselect>
+                            }"></Multiselect>
                         <span class="text-danger">{{
                             $page?.props?.errors?.supplier?.id
-                        }}</span>
+                            }}</span>
                     </div>
 
                     <!-- Jumlah -->
                     <div class="col-md-6 mb-3">
                         <div class="form-group">
                             <label for="total">Jumlah</label>
-                            <input
-                                type="number"
-                                v-model="form.total"
-                                class="form-control"
-                                id="total"
-                                :class="{
-                                    'is-invalid': $page?.props?.errors?.total,
-                                }"
-                                required
-                            />
-                            <div
-                                v-if="$page?.props?.errors?.total"
-                                class="invalid-feedback"
-                            >
+                            <input type="number" v-model="form.total" class="form-control" id="total" :class="{
+                                'is-invalid': $page?.props?.errors?.total,
+                            }" required />
+                            <div v-if="$page?.props?.errors?.total" class="invalid-feedback">
                                 {{ $page?.props?.errors?.total }}
                             </div>
                         </div>
@@ -144,23 +88,15 @@
                     <div class="col-md-6 mb-3">
                         <div class="form-group">
                             <label for="type">Tipe</label>
-                            <select
-                                v-model="form.type"
-                                class="form-control"
-                                id="type"
-                                :class="{
-                                    'is-invalid':
-                                        $page?.props?.errors?.type,
-                                }"
-                            >
+                            <select v-model="form.type" class="form-control" id="type" :class="{
+                                'is-invalid':
+                                    $page?.props?.errors?.type,
+                            }">
                                 <option value="IN">STOCK MASUK</option>
                                 <option value="OUT">STOCK KELUAR</option>
                                 <option value="REJECT">STOCK REJECT</option>
                             </select>
-                            <div
-                                v-if="$page?.props?.errors?.type"
-                                class="invalid-feedback"
-                            >
+                            <div v-if="$page?.props?.errors?.type" class="invalid-feedback">
                                 {{ $page?.props?.errors?.type }}
                             </div>
                         </div>
@@ -170,22 +106,14 @@
                     <div class="col-md-6 mb-3">
                         <div class="form-group">
                             <label for="product_type">Tipe Produk</label>
-                            <select
-                                v-model="form.product_type"
-                                class="form-control"
-                                id="product_type"
-                                :class="{
-                                    'is-invalid':
-                                        $page?.props?.errors?.product_type,
-                                }"
-                            >
+                            <select v-model="form.product_type" class="form-control" id="product_type" :class="{
+                                'is-invalid':
+                                    $page?.props?.errors?.product_type,
+                            }">
                                 <option value="1">Baru</option>
                                 <option value="2">Bekas</option>
                             </select>
-                            <div
-                                v-if="$page?.props?.errors?.product_type"
-                                class="invalid-feedback"
-                            >
+                            <div v-if="$page?.props?.errors?.product_type" class="invalid-feedback">
                                 {{ $page?.props?.errors?.product_type }}
                             </div>
                         </div>
@@ -195,20 +123,10 @@
                     <div class="col-md-6 mb-3" v-if="form.product_type == 2">
                         <div class="form-group">
                             <label for="value">Sisa Panjang(Meter)</label>
-                            <input
-                                type="number"
-                                v-model="form.panjang"
-                                class="form-control"
-                                id="value"
-                                :class="{
-                                    'is-invalid': $page?.props?.errors?.panjang,
-                                }"
-                                required
-                            />
-                            <div
-                                v-if="$page?.props?.errors?.panjang"
-                                class="invalid-feedback"
-                            >
+                            <input type="number" v-model="form.panjang" class="form-control" id="value" :class="{
+                                'is-invalid': $page?.props?.errors?.panjang,
+                            }" required />
+                            <div v-if="$page?.props?.errors?.panjang" class="invalid-feedback">
                                 {{ $page?.props?.errors?.panjang }}
                             </div>
                         </div>
@@ -216,18 +134,9 @@
                 </div>
             </form>
             <template #footer>
-                <button
-                    type="button"
-                    class="btn btn-primary"
-                    :class="{ disabled: form.submit }"
-                    @click="submitForm"
-                >
+                <button type="button" class="btn btn-primary" :class="{ disabled: form.submit }" @click="submitForm">
                     <div v-if="form.submit">
-                        <span
-                            class="spinner-border spinner-border-sm"
-                            role="status"
-                            aria-hidden="true"
-                        ></span>
+                        <span class="spinner-border spinner-border-sm" role="status" aria-hidden="true"></span>
                         <span class="bott">Loading</span>
                     </div>
                     <span v-else class="bott">Simpan</span>
@@ -285,35 +194,15 @@ export default {
                     title: "Status",
                     data: "approval.status",
                     render: (row) => {
-                        switch (row.status) {
+                        switch (row.approval.status) {
                             case 0:
-                                return (
-                                    <span class="badge badge-warning">
-                                        Pending
-                                    </span>
-                                );
-                                break;
+                                return <span class={"badge badge-warning"}>Waiting for Approval</span>;
                             case 1:
-                                return (
-                                    <span class="badge badge-primary">
-                                        Disetujui
-                                    </span>
-                                );
-                                break;
+                                return <span class={"badge badge-success"}>Approved</span>;
                             case 2:
-                                return (
-                                    <span class="badge badge-danger">
-                                        Ditolak
-                                    </span>
-                                );
-                                break;
+                                return <span class={"badge badge-danger"}>Rejected</span>;
                             default:
-                                return (
-                                    <span class="badge badge-warning">
-                                        Pending
-                                    </span>
-                                );
-                                break;
+                                return <span>Unknown</span>;
                         }
                     },
                 },
@@ -387,7 +276,7 @@ export default {
                             router.visit(this.$page.url, {
                                 only: ["stock"],
                             });
-                            
+
                         },
                         onError: () => {
                             this.form.submit = false;
