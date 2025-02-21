@@ -38,7 +38,7 @@ class ApprovalController extends Controller
 
         //validate requestor
         $validate = $this->service->validateApproval($request->id);
-        //if(!$validate) return redirect()->route('approval.index')->with('error', 'Anda tidak memiliki akses untuk menyetujui data ini');
+        if(!$validate) return redirect()->route('approval.index')->with('error', 'Approval tidak valid!');
 
         $this->service->approve($request->id, $request->type);
         return redirect()->route('approval.index')->with('success', $request->type == 0 ? 'Data berhasil Di Reject' : 'Data berhasil Di Approve');

@@ -16,10 +16,10 @@ class ApprovalService
         $data = Approval::find($approvalId)->where('status', 0)->first();
         if(empty($data)) return false;
 
-        $user = User::find($data->requestor_id);
+        /* $user = User::find($data->requestor_id);
         $karyawan = Karyawan::find($user->karyawan_id);
         if ($karyawan->leader_id != auth()->user()->karyawan_id) return false;
-        return true;
+        return true; */
     }
 
     public function approve($approvalId, $type)
