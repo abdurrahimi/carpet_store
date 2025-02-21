@@ -21,15 +21,29 @@
                 </template>
             </Table>
         </div>
-        <Modal :show="modalShow" title="Data Approval" id="modal-add">
+        <Modal :show="modalShow" title="Data Approval" id="modal-approval">
+            <div class="bg-gray-100 p-4">
+                <h2>{{ form.title }}</h2>
+                <i>Waktu Permintaan : {{ localDate(form.created_at) }}</i><br><br>
+                <p>{{ form.detail }}</p>
+            
+            </div>
             <template #footer>
                 <button type="button" class="btn btn-primary"
-                    :class="{ disabled: form.submit, disabled: form.status != 0 }" @click="approveData">
+                    :class="{ disabled: form.submit, disabled: form.status != 0 }" @click="approveData(1)">
                     <template v-if="form.submit">
                         <span class="spinner-border spinner-border-sm" role="status" aria-hidden="true"></span>
                         <span class="bott">Loading</span>
                     </template>
                     <span v-else class="bott">Approve</span>
+                </button>
+                <button type="button" class="btn btn-danger"
+                    :class="{ disabled: form.submit, disabled: form.status != 0 }" @click="approveData(0)">
+                    <template v-if="form.submit">
+                        <span class="spinner-border spinner-border-sm" role="status" aria-hidden="true"></span>
+                        <span class="bott">Loading</span>
+                    </template>
+                    <span v-else class="bott">Reject</span>
                 </button>
             </template>
         </Modal>
@@ -58,20 +72,16 @@ export default {
                     data: "requestor.name",
                 },
                 {
-                    title: "Detail",
-                    data: "detail",
-                },
-                {
                     title: "Status",
                     data: "status",
                     render: (row) => {
                         switch (row.status) {
                             case 0:
-                                return <span>Pending</span>;
+                                return <span class={"badge badge-warning"}>Waiting for Approval</span>;
                             case 1:
-                                return <span>Approved</span>;
+                                return <span class={"badge badge-success"}>Approved</span>;
                             case 2:
-                                return <span>Rejected</span>;
+                                return <span class={"badge badge-danger"}>Rejected</span>;
                             default:
                                 return <span>Unknown</span>;
                         }
@@ -98,27 +108,28 @@ export default {
     },
     methods: {
         detail(row) {
-
+            this.form = row;
+            $("#modal-approval").modal("show");
         },
-        async approveData() {
+        async approveData(type) {
             if (this.form.submit) {
                 return;
             }
 
+            this.form.type = type;
+
             this.form.submit = true;
             router.post(
-                this.form.id
-                    ? this.route('category.update', this.form.id)
-                    : this.route('category.store'),
+                this.route('approval.action'),
                 this.form,
                 {
                     preserveScroll: true,
                     onSuccess: () => {
                         this.form.submit = false;
-                        $("#modal-add").modal("hide");
+                        $("#modal-approval").modal("hide");
                         this.$success("Data berhasil disimpan");
                         router.visit(this.$page.url, {
-                            only: ["users"],
+                            only: ["approval"],
                         });
                     },
                     onError: () => {
@@ -137,6 +148,9 @@ export default {
                 submit: false,
             };
             this.errors = {};
+        },
+        localDate(date){
+            return new Date(date).toLocaleString();
         }
     },
 };
@@ -151,7 +165,16 @@ export default {
 .fade-leave-to
 
 /* .fade-leave-active in <2.1.8 */
-    {
+{
     opacity: 0;
+}
+
+h2{
+    font-size: 1.5rem;
+    font-weight: 600;
+    color: black;
+}
+p{
+    color: black;
 }
 </style>

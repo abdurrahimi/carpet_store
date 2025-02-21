@@ -103,6 +103,7 @@ Route::middleware('auth')->group(function () {
 
     //Approval
     Route::get('/approval', [ApprovalController::class, 'index'])->name('approval.index');
+    Route::post('/approval', [ApprovalController::class, 'approvalAction'])->name('approval.action');
 
 
     Route::get('/temp', function(){
