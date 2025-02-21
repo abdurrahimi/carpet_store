@@ -143,6 +143,32 @@
                     <!-- Tipe Produk -->
                     <div class="col-md-6 mb-3">
                         <div class="form-group">
+                            <label for="type">Tipe</label>
+                            <select
+                                v-model="form.type"
+                                class="form-control"
+                                id="type"
+                                :class="{
+                                    'is-invalid':
+                                        $page?.props?.errors?.type,
+                                }"
+                            >
+                                <option value="IN">STOCK MASUK</option>
+                                <option value="OUT">STOCK KELUAR</option>
+                                <option value="REJECT">STOCK REJECT</option>
+                            </select>
+                            <div
+                                v-if="$page?.props?.errors?.type"
+                                class="invalid-feedback"
+                            >
+                                {{ $page?.props?.errors?.type }}
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Tipe Produk -->
+                    <div class="col-md-6 mb-3">
+                        <div class="form-group">
                             <label for="product_type">Tipe Produk</label>
                             <select
                                 v-model="form.product_type"
@@ -356,11 +382,12 @@ export default {
                         preserveScroll: true,
                         onSuccess: () => {
                             this.$success("Data berhasil disimpan");
+                            this.form.submit = false;
+                            $("#modal-stock-index").modal("hide");
                             router.visit(this.$page.url, {
                                 only: ["stock"],
                             });
-                            this.form.submit = false;
-                            $("#modal-stock-index").modal("hide");
+                            
                         },
                         onError: () => {
                             this.form.submit = false;
@@ -375,11 +402,11 @@ export default {
                             preserveScroll: true,
                             onSuccess: () => {
                                 this.$success("Data berhasil disimpan");
+                                this.form.submit = false;
+                                $("#modal-stock-index").modal("hide");
                                 router.visit(this.$page.url, {
                                     only: ["stock"],
                                 });
-                                this.form.submit = false;
-                                $("#modal-stock-index").modal("hide");
                             },
                             onError: () => {
                                 this.form.submit = false;

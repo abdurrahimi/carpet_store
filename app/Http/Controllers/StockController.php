@@ -3,8 +3,10 @@
 namespace App\Http\Controllers;
 
 use App\Models\Approval;
+use App\Models\Product;
 use App\Models\Stock;
 use App\Models\Store;
+use App\Models\Supplier;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
@@ -77,6 +79,29 @@ class StockController extends Controller
             $approval->status = 0;
             $approval->requestor_id = Auth::user()->id;
             $approval->approver_id = $manajer;
+            $approval->type = 'stock';
+            $approval->title = 'Stock Approval';
+            $supplier = Supplier::find($validatedData['supplier']['id']);
+            $product = Product::find($validatedData['product']['id']);
+
+            $prefix = '';
+            if($request->type == 'IN') {
+                $prefix = 'Stock Masuk';
+            }
+
+            if($request->type == 'OUT') {
+                $prefix = 'Stock Keluar';
+            }
+
+            if($request->stock_type == 1) {
+                $prefix = $prefix . ' Baru';
+            }
+
+            if($request->stock_type == 2) {
+                $prefix = $prefix . ' Bekas';
+            }
+
+            $approval->detail = $prefix . ' produk '.$product->design_name.' dari supplier '.$supplier->name.' sebanyak '.$request->total.', ditambahkan oleh user '. Auth::user()->name;
             $approval->save();
 
             //create stock
@@ -88,7 +113,8 @@ class StockController extends Controller
             $stock->approval_id = $approval->id;
             $stock->total = $validatedData['total'];
             $stock->stock_type = $validatedData['product_type'];
-            $stock->type = 'IN';
+            $stock->type = $request->type;
+            $stock->panjang = $request->panjang ?? 0;
             $stock->created_by = Auth::user()->id;
             $stock->updated_by = Auth::user()->id;
             $stock->save();
