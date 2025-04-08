@@ -109,6 +109,11 @@ class UsersController extends Controller
 
     public function update(Request $request, $id)
     {
+        $karyawan = Karyawan::findOrFail($id);
+        if(!$karyawan){
+            return redirect()->route('users.index')->with('error', 'Karyawan tidak ditemukan.');
+        }
+        
         $request->validate([
             'name' => 'required|string|max:255',
             'nik' => 'nullable|string|max:100',
@@ -116,7 +121,7 @@ class UsersController extends Controller
                 'nullable',
                 'email',
                 'max:100',
-                Rule::unique('users')->ignore($id)->whereNull('deleted_at'),
+                Rule::unique('karyawan')->ignore($id)->whereNull('deleted_at'),
             ],
             'phone' => 'nullable|string|max:100',
             'npwp' => 'nullable|string|max:100',
@@ -141,9 +146,12 @@ class UsersController extends Controller
 
             if($request->is_account){
                 $user = User::where('karyawan_id', $karyawan->id)->first();
-
                 if(!$user){
                     $user = new User();
+                }
+                $checkEmail = User::where('email', $request->email)->where('karyawan_id', '!=', $karyawan->id)->first();
+                if($checkEmail){
+                    return redirect()->route('users.index')->with('error', 'Email sudah digunakan oleh karyawan lain.');
                 }
 
                 $user->name = $request->name;
