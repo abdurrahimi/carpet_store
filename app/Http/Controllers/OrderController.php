@@ -2,14 +2,17 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\Approval;
 use App\Models\Order;
 use App\Models\OrderAdditional;
 use App\Models\OrderDetail;
 use App\Models\OrderVariant;
 use App\Models\Product;
+use DBConstanst;
 use Exception;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Log;
 use PhpParser\Node\Expr\Throw_;
 
 class OrderController extends Controller
@@ -25,8 +28,8 @@ class OrderController extends Controller
             'data.*.discount_percentage' => 'nullable|numeric|between:0,100',
 
             'data.*.variants' => 'nullable|array',
-            'data.*.variants.*.panjang' => 'required|numeric',
-            'data.*.variants.*.jumlah' => 'required|integer',
+            'data.*.variants.*.panjang' => 'required|numeric|in:6,12,18,24,30',
+            'data.*.variants.*.jumlah' => 'required|integer|min:1',
             'data.*.unit_price' => 'required|numeric',
             
             //'customer' => 'nullable|integer|exists:customer',
@@ -103,7 +106,8 @@ class OrderController extends Controller
                 $orderDetail->order_id              = $orderId;
                 $orderDetail->selling_total_price   = ($item['qty'] / 6) * $item['unit_price'] - $item['discount_price'];
                 $orderDetail->save();
-
+                
+                //TODO: update stock
                 //$totalPrice += ($item['qty'] / 6) * $item['unit_price'] - $item['discount_price'];
 
                 foreach($item['variants'] as $variant) {
@@ -116,7 +120,11 @@ class OrderController extends Controller
             }    
             
             if($approval) {
-                //TODO: create approval
+                $approval = new Approval();
+                $approval->order_id = $orderId;
+                $approval->requestor = auth()->user()->id;
+
+                $approval->save();
             }
 
             foreach($request->input('additional') as $additional) {
@@ -125,9 +133,8 @@ class OrderController extends Controller
                 $orderAdditional->detail = $additional['name'];
                 $orderAdditional->price = $additional['total'];
                 $orderAdditional->save();
-
-                /* $totalAdditionalPrice += $additional['total']; */
             }
+            
 
             DB::commit();
             return response()->json([
@@ -136,8 +143,31 @@ class OrderController extends Controller
             ]);
         } catch (Exception $e) {
             DB::rollBack();
+            Log::error('Failed to create order: ' . $e->getMessage());
             return redirect()->route('penjualan.kasir')->with('error', 'Transaksi gagal ditambahkan.');
         }
         
+    }
+
+    public function approveArMoney(Request $request, $id)
+    {
+        DB::beginTransaction();
+        try {
+            $order = Order::where('id',$id)
+                    ->where('status', DBConstanst::ORDER_STATUS_PENDING)
+                    ->firstOrFail();
+            $order->status = DBConstanst::ORDER_STATUS_AR_APPROVED;
+            $order->save();
+
+            DB::commit();
+            return response()->json([
+                'message' => 'success',
+                'order_id' => $order->id,
+            ]);
+        } catch (Exception $e) {
+            DB::rollBack();
+            Log::error('Failed to approve ar order: ' . $e->getMessage());
+            return response()->json(['message' => 'failed'], 500);
+        }
     }
 }

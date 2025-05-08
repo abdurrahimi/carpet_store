@@ -21,7 +21,7 @@
                                         <Multiselect v-model="form.customer" :options="customer" track-by="id"
                                             placeholder="Pilih Customer" label="name" @search-change="getCustomers"
                                             @select="addCustomer" :internal-search="false"
-                                            :class="{ 'is-invalid': $page?.props?.errors?.customer?.id }"/>
+                                            :class="{ 'is-invalid': $page?.props?.errors?.customer?.id }" />
                                     </div>
                                 </td>
                             </tr>
@@ -155,7 +155,7 @@
                                                                         </div>
                                                                         <span class="text-danger">{{
                                                                             $page?.props?.errors?.discount_percentage
-                                                                        }}</span>
+                                                                            }}</span>
                                                                     </div>
                                                                 </div>
                                                                 <div class="col-md-4">
@@ -174,7 +174,7 @@
                                                                         </div>
                                                                         <span class="text-danger">{{
                                                                             $page?.props?.errors?.discount_price
-                                                                        }}</span>
+                                                                            }}</span>
                                                                     </div>
                                                                 </div>
                                                                 <div class="col-md-4">
@@ -488,7 +488,7 @@ export default {
             return new Intl.NumberFormat("id-ID", {
                 style: "currency",
                 currency: "IDR",
-            }).format(value);
+            }).format(isNaN(value) ? 0 : value);
         },
         tambahVariants(key) {
             if (!this.form.data[key].product) {
