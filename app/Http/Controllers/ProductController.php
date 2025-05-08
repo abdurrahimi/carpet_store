@@ -2,12 +2,14 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\Stocks;
 use App\Models\Supplier;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 use Inertia\Inertia;
 use App\Models\Product;
 use App\Models\ProductCategory;
+use Illuminate\Support\Facades\Log;
 use PhpOffice\PhpSpreadsheet\IOFactory;
 use Illuminate\Support\Facades\Storage;
 
@@ -78,7 +80,7 @@ class ProductController extends Controller
     public function store(Request $request)
     {
         // Validasi input
-        $validatedData = $request->validate([
+        $request->validate([
             'sku' => 'required|string|max:100',
             'category.id' => 'nullable|int|exists:product_category,id',
             'design_name' => 'nullable|string|max:100',
@@ -98,6 +100,8 @@ class ProductController extends Controller
             'weight' => 'nullable',
             'lebar' => 'nullable'
         ]);
+
+        DB::beginTransaction();
 
         try {
             $patern = preg_replace('/^data:image\/[a-zA-Z]+;base64,/', '', $request->input('image'));
@@ -138,9 +142,15 @@ class ProductController extends Controller
             $product->cost = $request->input('cost', 0);
             $product->save();
 
+            $stock = new Stocks();
+            $stock->product_id = $product->id;
+            $stock->save();
+
+            DB::commit();
             return redirect()->route('products.index')->with('success', 'Produk berhasil dibuat.');
         } catch (\Exception $th) {
-            dd($th);
+            DB::rollBack();
+            Log::error('Error creating product: ' . $th->getMessage());
             return redirect()->route('products.index')->with('error', 'Produk gagal dibuat, hubungi administrator.');
         }
     }
@@ -148,7 +158,7 @@ class ProductController extends Controller
     public function update($id, Request $request)
     {
 
-        $validatedData = $request->validate([
+        $request->validate([
             'sku' => 'required|string|max:100',
             'category.id' => 'nullable|int|exists:product_category,id',
             'design_name' => 'nullable|string|max:100',
@@ -212,7 +222,6 @@ class ProductController extends Controller
             $product->save();
             return redirect()->route('products.index')->with('success', 'Produk berhasil diubah.');
         } catch (\Exception $th) {
-            dd($th);
             return redirect()->route('products.index')->with('error', 'Produk gagal diubah, hubungi administrator.');
         }
     }
