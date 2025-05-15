@@ -2,9 +2,9 @@
   <div>
     <Head title="Data History Penjualan" />
     <div class="text-right">
-      <button class="btn btn-primary mb-2" type="button" @click="createStock">
+      <!-- <button class="btn btn-primary mb-2" type="button" @click="createStock">
         + Stok Baru
-      </button>
+      </button> -->
     </div>
     <div v-if="$page.props.flash.success" class="alert alert-success" role="alert">
       {{ $page.props.flash.success }}
@@ -16,7 +16,7 @@
       <div class="card-header">
         <h4 class="card-title"><i class="fa fa-box"></i>&nbsp;Data History Penjualan</h4>
       </div>
-      <Table :columns="table" :rows="data" @update:selectedRows="handleSelectedRows">
+      <Table :columns="table" :rows="penjualan" @update:selectedRows="handleSelectedRows">
         <template #actions="{ row }">
           <button @click="deleteRow(row)" class="btn btn-danger btn-sm" title="Delete">
             Delete</button
@@ -59,7 +59,7 @@ import "vue-multiselect/dist/vue-multiselect.css";
 
 export default {
   layout: AuthenticatedLayout,
-  props: ["data"],
+  props: ["penjualan"],
   components: {
     Head,
     Modal,

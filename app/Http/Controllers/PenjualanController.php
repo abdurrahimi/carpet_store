@@ -14,14 +14,11 @@ class PenjualanController extends Controller
     public function index(Request $request)
     {
         $pageSize = (int) $request->get('limit', 10);
-        $data = Penjualan::query()->with('creator');
-        if(Auth::user()->store_id){
-            $data = $data->where('store_id', Auth::user()->store_id);
-        }
+        $data = Order::query()->with('store');
         $data = $data->orderBy('created_at', 'desc')->paginate($pageSize );
 
         return Inertia::render('Penjualan/History', [
-            'data' => $data
+            'penjualan' => $data
         ]);
 
     }

@@ -11,6 +11,7 @@ use App\Models\Product;
 use DBConstanst;
 use Exception;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Log;
 use PhpParser\Node\Expr\Throw_;
@@ -72,7 +73,7 @@ class OrderController extends Controller
             $order->total_additional_price = $totalAdditional;
             $order->total_price_before_disc = $totalItemPriceBeforeDisc; //harga sebelum diskon global
             $order->final_price = $totalItemPriceBeforeDisc + $totalAdditional - (int)str_replace('.','', $request->discount); //harga setelah diskon global
-            
+            $order->store_id = Auth::user()->store_id;
             $order->approval_id = 0;
             $order->save();
 

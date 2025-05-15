@@ -13,4 +13,14 @@ class Order extends Model
     {
         return $this->hasOne(User::class, 'created_by');
     }
+
+    public function store()
+    {
+        return $this->hasOne(Store::class, 'id', 'store_id');
+    }
+
+    public function orderDetails()
+    {
+        return $this->hasMany(OrderDetail::class);
+    }
 }
