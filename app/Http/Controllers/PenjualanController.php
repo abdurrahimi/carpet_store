@@ -4,15 +4,18 @@ namespace App\Http\Controllers;
 
 use App\Models\Order;
 use App\Models\Penjualan;
+use App\Models\User;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Inertia\Inertia;
+use Spatie\Permission\Models\Role;
 
 class PenjualanController extends Controller
 {
     public function index(Request $request)
     {
+
         $pageSize = (int) $request->get('limit', 10);
         $data = Order::query()->with('store');
         $data = $data->orderBy('created_at', 'desc')->paginate($pageSize );

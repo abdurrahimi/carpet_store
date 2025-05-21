@@ -1,6 +1,11 @@
 <script setup>
 import AuthenticatedLayout from '@/Layouts/AuthenticatedLayout.vue';
 import { Head } from '@inertiajs/vue3';
+import { usePage } from '@inertiajs/vue3';
+
+const page = usePage();
+const role = page.props.auth.role;
+
 </script>
 <template>
     <div>
