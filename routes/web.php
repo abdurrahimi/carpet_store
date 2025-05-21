@@ -99,6 +99,7 @@ Route::middleware('auth')->group(function () {
 
     //order
     Route::post('/order', [OrderController::class, 'order'])->name('order.create');
+    Route::get('/order-status-history', [OrderController::class, 'getStatusHistory'])->name('order.getStatusHistory');
 
 
     //Approval

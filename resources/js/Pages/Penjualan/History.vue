@@ -15,6 +15,12 @@ switch (role) {
     btn2 = "Reject";
     break;
 }
+
+const status = [
+  'Menunggu Persetujuan dari ',
+  'Permintaan Disetujui Oleh ',
+  'Permintaan Ditolak Oleh '
+]
 </script>
 <template>
   <div>
@@ -63,11 +69,13 @@ switch (role) {
             <tr>
               <th>Catatan</th>
               <th>Waktu</th>
-              <th>Status</th>
             </tr>
           </thead>
           <tbody>
-            
+            <tr v-for="(item, index) in approval.data" :key="index">
+              <td>{{ status[item.status] }}{{ item.detail }}</td>
+              <td>{{ item.created_at }}</td>
+            </tr>
           </tbody>
         </table>
       </form>
@@ -99,6 +107,7 @@ import Modal from "@/Components/Modal.vue";
 import { Head, router } from "@inertiajs/vue3";
 import Multiselect from "vue-multiselect";
 import "vue-multiselect/dist/vue-multiselect.css";
+import axios from 'axios';
 
 export default {
   layout: AuthenticatedLayout,
@@ -158,6 +167,7 @@ export default {
       approval: {
         id: null,
         status: null,
+        data: [],
         submit: false,
       },
       supplier: [
@@ -176,7 +186,7 @@ export default {
       this.approval.submit = true;
       this.approval.status = isApproved ? 1 : 0;
 
-      router.post("/order-approval" + this.approval.id , this.approval.formData, {
+      router.post("/order-approval" + this.approval.id, this.approval.formData, {
         onSuccess: () => {
           this.modalShowStatus = false;
           this.approval.submit = false;
@@ -187,11 +197,13 @@ export default {
         },
       });
     },
-    statusLog(row) {
+    async statusLog(row) {
       this.modalTitle = "Status Log";
       this.modalShowStatus = true;
       this.approval.id = row.id;
       this.approval.status = row.status;
+      const data = await axios.get(route('order.getStatusHistory', { order_id: row.id }));
+      this.approval.data = data.data.data;
       this.approval.formData = {
         id: row.id,
         status: row.status,
