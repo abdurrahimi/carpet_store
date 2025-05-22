@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Constant\DBConstanst;
 use App\Models\Approval;
 use App\Models\Order;
 use App\Models\OrderAdditional;
@@ -10,13 +11,11 @@ use App\Models\OrderDetail;
 use App\Models\OrderVariant;
 use App\Models\Product;
 use Carbon\Carbon;
-use DBConstanst;
 use Exception;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Log;
-use PhpParser\Node\Expr\Throw_;
 
 class OrderController extends Controller
 {
@@ -138,6 +137,13 @@ class OrderController extends Controller
                 $orderAdditional->save();
             }
 
+            OrderApprovalLog::create([
+                'user_id' => auth()->id(),
+                'order_id' => $orderId,
+                'detail' => 'AR Approval Telah Disetujui, Menunggu Pemeriksaan Stock',
+                'status' => 1,
+            ]);
+
 
             DB::commit();
             return response()->json([
@@ -151,25 +157,153 @@ class OrderController extends Controller
         }
     }
 
-    public function approveArMoney(Request $request, $id)
+    public function approve(Request $request, $id)
     {
         DB::beginTransaction();
         try {
             $order = Order::where('id', $id)
-                ->where('status', DBConstanst::ORDER_STATUS_PENDING)
-                ->firstOrFail();
-            $order->status = DBConstanst::ORDER_STATUS_AR_APPROVED;
+                ->whereNotIn('status', [DBConstanst::ORDER_STATUS_SENT_TO_CUSTOMER, DBConstanst::ORDER_STATUS_REJECTED])
+                ->firstOrFail()->lockForUpdate();
+
+            switch ($order->status) {
+                case DBConstanst::ORDER_STATUS_PENDING:
+                    if ($order->payment_method == DBConstanst::PAYMENT_METHOD_AR) {
+                        // Owner approve saldo untuk metode AR
+                        $order->status = DBConstanst::ORDER_STATUS_AR_APPROVED;
+                        OrderApprovalLog::create([
+                            'user_id' => auth()->id(),
+                            'order_id' => $id,
+                            'detail' => 'AR Approval Telah Disetujui, Menunggu Pemeriksaan Stock',
+                            'status' => 1,
+                        ]);
+                    } else {
+                        // Pembayaran Cash langsung dianggap diterima
+                        $order->status = DBConstanst::ORDER_STATUS_PAYMENT_APPROVED;
+                        OrderApprovalLog::create([
+                            'user_id' => auth()->id(),
+                            'order_id' => $id,
+                            'detail' => 'Pembayaran Telah Disetujui, Menunggu Pemeriksaan Stock',
+                            'status' => 1,
+                        ]);
+                    }
+                    break;
+
+                case DBConstanst::ORDER_STATUS_AR_APPROVED:
+                case DBConstanst::ORDER_STATUS_PAYMENT_APPROVED:
+                    $order->status = DBConstanst::ORDER_STATUS_STOCK_AVAILABLE;
+                    OrderApprovalLog::create([
+                        'user_id' => auth()->id(),
+                        'order_id' => $id,
+                        'detail' => 'Stock Telah Diperiksa dan Tersedia, Menunggu Surat Jalan',
+                        'status' => 1,
+                    ]);
+                    break;
+                default:
+                    throw new Exception('Invalid order status');
+            }
+
             $order->save();
 
             DB::commit();
-            return response()->json([
-                'message' => 'success',
-                'order_id' => $order->id,
-            ]);
+            return redirect()->route('penjualan.index')->with('success', 'Approval berhasil');
         } catch (Exception $e) {
             DB::rollBack();
-            Log::error('Failed to approve ar order: ' . $e->getMessage());
-            return response()->json(['message' => 'failed'], 500);
+            Log::error('Failed to approve order: ' . $e->getMessage());
+            return response()->json(['message' => 'Approval Gagal.'], 422);
+        }
+    }
+
+    public function reject(Request $request, $id)
+    {
+        DB::beginTransaction();
+        try {
+            $order = Order::where('id', $id)
+                ->whereNotIn('status', [
+                    DBConstanst::ORDER_STATUS_SENT_TO_CUSTOMER,
+                    DBConstanst::ORDER_STATUS_REJECTED,
+                    DBConstanst::ORDER_STATUS_CANCELED
+                ])
+                ->firstOrFail();
+
+            // Hanya order dengan status PENDING atau AR_APPROVED yang bisa direject
+            if (
+                $order->status == DBConstanst::ORDER_STATUS_PENDING
+            ) {
+                $order->status = DBConstanst::ORDER_STATUS_REJECTED;
+                $order->save();
+                OrderApprovalLog::create([
+                    'user_id' => auth()->id(),
+                    'order_id' => $id,
+                    'detail' => 'Order telah direject, Alasan: ' . $request->reason,
+                    'status' => 2,
+                ]);
+
+                DB::commit();
+                return response()->json([
+                    'message' => 'Berhasil diupdate',
+                    'order_id' => $order->id,
+                ]);
+            }
+
+            if (DBConstanst::ORDER_STATUS_AR_APPROVED || DBConstanst::ORDER_STATUS_PAYMENT_APPROVED) {
+                $order->status = DBConstanst::ORDER_STATUS_STOCK_UNAVAILABLE;
+                $order->save();
+                OrderApprovalLog::create([
+                    'user_id' => auth()->id(),
+                    'order_id' => $id,
+                    'detail' => 'Stock telah diperiksa dan tidak tersedia, Menunggu Pengiriman Dokumen ke Supplier',
+                    'status' => 2,
+                ]);
+
+                DB::commit();
+                return response()->json([
+                    'message' => 'Berhasil diupdate',
+                    'order_id' => $order->id,
+                ]);
+            }
+
+            return response()->json([
+                'message' => 'Gagal diupdate',
+            ], 500);
+        } catch (Exception $e) {
+            DB::rollBack();
+            Log::error('Failed to reject order: ' . $e->getMessage());
+            return response()->json([
+                'message' => 'Gagal diupdate',
+            ], 500);
+        }
+    }
+
+    public function addAttachment(Request $request, $id)
+    {
+        $request->validate([
+            'attachment' => 'required|file|mimes:pdf,jpg,jpeg,png|max:10240', // Maksimal 10MB
+            'description' => 'nullable|string|max:255',
+        ]);
+
+        try {
+            $order = Order::findOrFail($id);
+            $attachment = $request->file('attachment');
+            $filename = time() . '_' . $attachment->getClientOriginalName();
+            $attachment->storeAs('attachments', $filename, 'public');
+
+            // Simpan nama file ke database
+            $logs = new OrderApprovalLog();
+            $logs->attachment = $filename;
+            $logs->detail = 'Attachment telah ditambahkan';
+            $logs->user_id = auth()->id();
+            $logs->order_id = $id;
+            $logs->description = $request->description;
+            $logs->status = 1;
+            $order->save();
+
+            return response()->json([
+                'message' => 'Attachment added successfully',
+                'attachment' => $filename,
+            ]);
+        } catch (Exception $e) {
+            Log::error('Failed to add attachment: ' . $e->getMessage());
+            return response()->json(['message' => 'Failed to add attachment'], 500);
         }
     }
 
@@ -181,7 +315,7 @@ class OrderController extends Controller
         ]);
 
         // Ambil data dari database
-        $logs = OrderApprovalLog::where('order_id', $validated['order_id'])->get();
+        $logs = OrderApprovalLog::with('user')->where('order_id', $validated['order_id'])->get();
 
         // Ubah format datetime agar lebih enak dibaca
         $logs = $logs->map(function ($log) {
@@ -189,6 +323,8 @@ class OrderController extends Controller
                 'id' => $log->id,
                 'order_id' => $log->order_id,
                 'status' => $log->status,
+                'detail' => $log->detail,
+                'user' => $log->user->name ?? null,
                 'created_at' => Carbon::parse($log->created_at)
                     ->timezone('Asia/Jakarta')
                     ->format('Y-m-d H:i:s'),

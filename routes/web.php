@@ -96,10 +96,13 @@ Route::middleware('auth')->group(function () {
 
     Route::get('/penjualan', [PenjualanController::class, 'index'])->name('penjualan.index');
     Route::get('/kasir', [PenjualanController::class, 'kasir'])->name('penjualan.kasir');
-
+    
     //order
     Route::post('/order', [OrderController::class, 'order'])->name('order.create');
     Route::get('/order-status-history', [OrderController::class, 'getStatusHistory'])->name('order.getStatusHistory');
+    Route::post('/order-approval/{id}', [OrderController::class, 'approve'])->name('order.approve');
+    Route::post('/order-reject/{id}', [OrderController::class, 'reject'])->name('order.reject');
+    Route::post('/order-attachment/{id}', [OrderController::class, 'addAttachment'])->name('order.addAttachment');
 
 
     //Approval

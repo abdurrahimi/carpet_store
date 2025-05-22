@@ -64,17 +64,17 @@ const status = [
     </Modal>
     <Modal :show="modalShowStatus" :title="modalTitle" id="modal-status-index">
       <form ref="formStatus" @submit.prevent="handleSubmit">
+        <Step :currentStep="currentStep" />
         <table class="table table-bordered">
           <thead>
             <tr>
               <th>Catatan</th>
-              <th>Waktu</th>
             </tr>
           </thead>
           <tbody>
             <tr v-for="(item, index) in approval.data" :key="index">
-              <td>{{ status[item.status] }}{{ item.detail }}</td>
-              <td>{{ item.created_at }}</td>
+              <td><span style="font-size: 10px; font-style: italic;">{{ item.created_at }}</span><br>{{ item.detail }}
+                (<i>{{ item.user }}</i>)</td>
             </tr>
           </tbody>
         </table>
@@ -89,7 +89,7 @@ const status = [
           <span v-else class="bott">{{ btn }}</span>
         </button>
         <button type="button" class="btn btn-danger" :class="{ disabled: approval.submit }"
-          @click="submitApproval(false)">
+          @click="rejectApproval(false)">
           <div v-if="approval.submit">
             <span class="spinner-border spinner-border-sm" role="status" aria-hidden="true"></span>
             <span class="bott">Loading</span>
@@ -104,10 +104,12 @@ const status = [
 <script lang="jsx">
 import AuthenticatedLayout from "@/Layouts/AuthenticatedLayout.vue";
 import Modal from "@/Components/Modal.vue";
+
 import { Head, router } from "@inertiajs/vue3";
 import Multiselect from "vue-multiselect";
 import "vue-multiselect/dist/vue-multiselect.css";
 import axios from 'axios';
+import Step from '@/Components/Step.vue';
 
 export default {
   layout: AuthenticatedLayout,
@@ -157,6 +159,7 @@ export default {
           }
         }
       ],
+      btnTextApprove: ['Setujui Pembayaran', 'Stock Tersedia', 'Barang Terkirim'],
       modalTitle: "",
       modalShow: false,
       selectedIds: [],
@@ -164,6 +167,7 @@ export default {
       data: this.data,
       products: [],
       store: [],
+      modalShowStatus: false,
       approval: {
         id: null,
         status: null,
@@ -178,24 +182,113 @@ export default {
       ],
     };
   },
+  computed: {
+    currentStep() {
+      switch (this.approval.status) {
+        case 0:
+          return 0;
+        case 1:
+        case 2:
+          return 1;
+        case 3:
+        case 4:
+        case 5:
+        case 6:
+          return 2;
+        case 7:
+          return 3;
+        default:
+          return 0;
+      }
+    }
+  },
   mounted() {
 
   },
   methods: {
-    submitApproval(isApproved) {
+    async submitApproval(isApproved) {
+      if(this.approval.submit){
+        return
+      }
       this.approval.submit = true;
-      this.approval.status = isApproved ? 1 : 0;
 
-      router.post("/order-approval" + this.approval.id, this.approval.formData, {
-        onSuccess: () => {
-          this.modalShowStatus = false;
-          this.approval.submit = false;
-          this.$inertia.reload();
-        },
-        onError: () => {
-          this.approval.submit = false;
-        },
-      });
+      try {
+        console.log("Submitting approval:");
+
+        axios.post(route('order.approve', this.approval.id), this.approval.formData)
+          .then((response) => {
+            console.log("success", response.data);
+
+            if (response.data.success === false) {
+              this.$error(response.data.message || "Approval gagal");
+            } else {
+              this.$success("Berhasil mengupdate status");
+            }
+
+            this.modalShowStatus = false;
+            this.approval.submit = false;
+            $("#modal-status-index").modal("hide");
+            router.visit(this.$page.url, {
+              only: ["penjualan"],
+            });
+          })
+          .catch((error) => {
+            console.log("error", error);
+            this.approval.submit = false;
+            this.$error("Gagal mengupdate status");
+          })
+          .finally(() => {
+
+            this.approval.submit = false;
+          });
+
+      } catch (error) {
+        console.error("Error submitting approval:", error);
+        this.approval.submit = false;
+        this.$error("Gagal mengupdate status");
+      }
+
+    },
+    async rejectApproval() {
+      if(this.approval.submit){
+        return
+      }
+      this.approval.submit = true;
+      try {
+        console.log("Submitting approval:");
+
+        axios.post(route('order.reject', this.approval.id), this.approval.formData)
+          .then((response) => {
+            console.log("success", response.data);
+
+            if (response.data.success === false) {
+              this.$error(response.data.message || "Approval gagal");
+            } else {
+              this.$success("Berhasil mengupdate status");
+            }
+
+            this.modalShowStatus = false;
+            this.approval.submit = false;
+            $("#modal-status-index").modal("hide");
+            router.visit(this.$page.url, {
+              only: ["penjualan"],
+            });
+          })
+          .catch((error) => {
+            console.log("error", error);
+            this.approval.submit = false;
+            this.$error("Gagal mengupdate status");
+          })
+          .finally(() => {
+
+            this.approval.submit = false;
+          });
+
+      } catch (error) {
+        console.error("Error submitting approval:", error);
+        this.approval.submit = false;
+        this.$error("Gagal mengupdate status");
+      }
     },
     async statusLog(row) {
       this.modalTitle = "Status Log";
@@ -209,7 +302,10 @@ export default {
         status: row.status,
       };
       $("#modal-status-index").modal("show");
-    }
+    },
+    async handleSelectedRows(selectedRows) {
+      this.selectedIds = selectedRows.map((row) => row.id);
+    },
   },
 };
 </script>
