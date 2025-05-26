@@ -75,6 +75,7 @@ class UsersController extends Controller
             'join_date' => 'nullable|date',
             'leader_id.id' => 'nullable|integer|exists:karyawan,id',
             'password' => 'nullable|string|min:6|max:16',
+            'role' => 'required|string|exists:roles,name',
         ]);
 
         DB::beginTransaction();
@@ -98,6 +99,7 @@ class UsersController extends Controller
                 $user->email = $request->email;
                 $user->password = Hash::make($request->password);
                 $user->save();
+                $user->assignRole($request->role);
             }
             DB::commit();
             return redirect()->route('users.index')->with('success', 'Karyawan berhasil ditambahkan.');
@@ -128,6 +130,7 @@ class UsersController extends Controller
             'join_date' => 'nullable|date',
             'leader_id.id' => 'nullable|integer|exists:karyawan,id',
             'password' => 'nullable|string|min:6|max:16',
+            'role' => 'required|string|exists:roles,name',
         ]);
 
         DB::beginTransaction();
@@ -161,6 +164,8 @@ class UsersController extends Controller
                     $user->password = Hash::make($request->password);
                 }
                 $user->save();
+
+                $user->assignRole($request->role);
             }
             DB::commit();
             return redirect()->route('users.index')->with('success', 'Karyawan berhasil diperbarui.');

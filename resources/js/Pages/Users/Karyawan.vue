@@ -161,6 +161,15 @@
               $page?.props?.errors?.password
               }}</span>
           </div>
+          <div class="col-md-6 mb-3 fade" :class="{ show: form.is_account }">
+            <label for="role" class="form-label">Role</label>
+            <input type="role" id="role" v-model="form.role" class="form-control"
+              :class="{ 'is-invalid': $page?.props?.errors?.role }" :placeholder="form.account ? 'Change or Let it empty' : 'Enter role'
+                " />
+            <span class="text-danger">{{
+              $page?.props?.errors?.role
+              }}</span>
+          </div>
         </div>
       </form>
       <template #footer>
@@ -393,6 +402,7 @@ export default {
         leader_id: "",
         is_account: false,
         password: "",
+        role: "",
         submit: false,
         edit: false,
       };
@@ -412,6 +422,7 @@ export default {
       this.form.leader_id = data.leader || null;
       this.form.toko_id = data.store || null;
       this.form.email = data.email || "";
+      this.form.role = data.role || "";
       this.form.is_account = !!data.account;
     },
   },
