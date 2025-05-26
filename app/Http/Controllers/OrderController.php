@@ -6,6 +6,7 @@ use App\Constant\DBConstanst;
 use App\Models\Approval;
 use App\Models\Order;
 use App\Models\OrderAdditional;
+use App\Models\OrderApprovalComments;
 use App\Models\OrderApprovalLog;
 use App\Models\OrderDetail;
 use App\Models\OrderVariant;
@@ -167,13 +168,17 @@ class OrderController extends Controller
 
             switch ($order->status) {
                 case DBConstanst::ORDER_STATUS_PENDING:
+                    if (Auth::user()->role !== 'finance' || Auth::user()->role !== 'admin') {
+                        return redirect()->route('penjualan.index')->with('error', 'Role Anda tidak memiliki akses untuk melakukan approval pada order ini.');
+                    }
+
                     if ($order->payment_method == DBConstanst::PAYMENT_METHOD_AR) {
                         // Owner approve saldo untuk metode AR
-                        $order->status = DBConstanst::ORDER_STATUS_AR_APPROVED;
+                        $order->status = DBConstanst::ORDER_STATUS_AR_CHECKED;
                         OrderApprovalLog::create([
                             'user_id' => auth()->id(),
                             'order_id' => $id,
-                            'detail' => 'AR Approval Telah Disetujui, Menunggu Pemeriksaan Stock',
+                            'detail' => 'AR telah diperiksa, Menunggu Approval',
                             'status' => 1,
                         ]);
                     } else {
@@ -187,9 +192,26 @@ class OrderController extends Controller
                         ]);
                     }
                     break;
+                case DBConstanst::ORDER_STATUS_AR_CHECKED:
+                    if (Auth::user()->role !== 'owner' || Auth::user()->role !== 'admin') {
+                        return redirect()->route('penjualan.index')->with('error', 'Role Anda tidak memiliki akses untuk melakukan approval pada order ini.');
+                    }
 
+                    $order->status = DBConstanst::ORDER_STATUS_AR_APPROVED;
+                    OrderApprovalLog::create([
+                        'user_id' => auth()->id(),
+                        'order_id' => $id,
+                        'detail' => 'AR telah distujui, Menunggu Pemeriksaan Stock',
+                        'status' => 1,
+                    ]);
+
+                    break;
                 case DBConstanst::ORDER_STATUS_AR_APPROVED:
                 case DBConstanst::ORDER_STATUS_PAYMENT_APPROVED:
+                    if (Auth::user()->role !== 'warehouse' || Auth::user()->role !== 'admin') {
+                        return redirect()->route('penjualan.index')->with('error', 'Role Anda tidak memiliki akses untuk melakukan approval pada order ini.');
+                    }
+
                     $order->status = DBConstanst::ORDER_STATUS_STOCK_AVAILABLE;
                     OrderApprovalLog::create([
                         'user_id' => auth()->id(),
@@ -226,9 +248,10 @@ class OrderController extends Controller
                 ->firstOrFail();
 
             // Hanya order dengan status PENDING atau AR_APPROVED yang bisa direject
-            if (
-                $order->status == DBConstanst::ORDER_STATUS_PENDING
-            ) {
+            if ($order->status == DBConstanst::ORDER_STATUS_PENDING) {
+                if (Auth::user()->role !== 'finance' || Auth::user()->role !== 'admin') {
+                    return redirect()->route('penjualan.index')->with('error', 'Role Anda tidak memiliki akses untuk melakukan approval pada order ini.');
+                }
                 $order->status = DBConstanst::ORDER_STATUS_REJECTED;
                 $order->save();
                 OrderApprovalLog::create([
@@ -274,28 +297,31 @@ class OrderController extends Controller
         }
     }
 
-    public function addAttachment(Request $request, $id)
+    public function addComments(Request $request, $id)
     {
         $request->validate([
-            'attachment' => 'required|file|mimes:pdf,jpg,jpeg,png|max:10240', // Maksimal 10MB
+            'attachment' => 'nullable|file|mimes:pdf,jpg,jpeg,png|max:10240', // Maks 10MB
             'description' => 'nullable|string|max:255',
         ]);
 
         try {
             $order = Order::findOrFail($id);
-            $attachment = $request->file('attachment');
-            $filename = time() . '_' . $attachment->getClientOriginalName();
-            $attachment->storeAs('attachments', $filename, 'public');
 
-            // Simpan nama file ke database
-            $logs = new OrderApprovalLog();
-            $logs->attachment = $filename;
-            $logs->detail = 'Attachment telah ditambahkan';
-            $logs->user_id = auth()->id();
-            $logs->order_id = $id;
-            $logs->description = $request->description;
+            $filename = null;
+            if ($request->hasFile('attachment')) {
+                $attachment = $request->file('attachment');
+                $filename = time() . '_' . $attachment->getClientOriginalName();
+                $attachment->storeAs('attachments', $filename, 'public');
+            }
+
+            // Simpan ke database
+            $logs = new OrderApprovalComments();
+            $logs->attachments = $filename;
+            $logs->comments = $request->description ?? ''; // Sesuai nama field di form
+            $logs->created_by = auth()->id();
+            $logs->order_id = $order->id;
             $logs->status = 1;
-            $order->save();
+            $logs->save(); // <- ini penting
 
             return response()->json([
                 'message' => 'Attachment added successfully',

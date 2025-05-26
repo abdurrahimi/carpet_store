@@ -207,7 +207,7 @@ export default {
   },
   methods: {
     async submitApproval(isApproved) {
-      if(this.approval.submit){
+      if (this.approval.submit) {
         return
       }
       this.approval.submit = true;
@@ -250,7 +250,7 @@ export default {
 
     },
     async rejectApproval() {
-      if(this.approval.submit){
+      if (this.approval.submit) {
         return
       }
       this.approval.submit = true;
@@ -306,6 +306,28 @@ export default {
     async handleSelectedRows(selectedRows) {
       this.selectedIds = selectedRows.map((row) => row.id);
     },
+    async handleFile(e) {
+      this.form.attachment = e.target.files[0]
+    },
+    async submitComments(orderId) {
+      const formData = new FormData()
+      formData.append('description', this.form.description)
+      if (form.attachment) {
+        formData.append('attachment', this.form.attachment)
+      }
+
+      router.post(`/orders/${orderId}/comments`, formData, {
+        forceFormData: true, // wajib agar dikirim sebagai multipart/form-data
+        onSuccess: () => {
+          this.$success('Komentar berhasil dikirim')
+          form.reset()
+        },
+        onError: (errors) => {
+          this.$error()
+          console.error(errors)
+        }
+      })
+    }
   },
 };
 </script>

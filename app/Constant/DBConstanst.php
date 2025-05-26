@@ -5,6 +5,7 @@ class DBConstanst
 {
     //order
     public const ORDER_STATUS_PENDING = 0;
+    public const ORDER_STATUS_AR_CHECKED = -1;
     public const ORDER_STATUS_AR_APPROVED = 1;
     public const ORDER_STATUS_PAYMENT_APPROVED = 2;
     public const ORDER_STATUS_STOCK_AVAILABLE = 3;
