@@ -103,6 +103,7 @@ Route::middleware('auth')->group(function () {
     Route::post('/order-approval/{id}', [OrderController::class, 'approve'])->name('order.approve');
     Route::post('/order-reject/{id}', [OrderController::class, 'reject'])->name('order.reject');
     Route::post('/order-attachment/{id}', [OrderController::class, 'addAttachment'])->name('order.addAttachment');
+    Route::get('/order/detail/{id}', [PenjualanController::class, 'getDetailPenjualan'])->name('order.detail');
 
 
     //Approval

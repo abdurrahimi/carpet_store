@@ -45,4 +45,19 @@ class PenjualanController extends Controller
             'data' => $data
         ]);
     }
+
+    public function getDetailPenjualan(Request $request, $id)
+    {
+        $penjualan = Order::query()
+            ->with(['orderDetails', 'products', 'orderAdditional', 'customer'])
+            ->findOrFail($id);
+
+        $penjualan->created_at = Carbon::parse($penjualan->created_at)
+            ->timezone('Asia/Jakarta')
+            ->format('Y-m-d H:i:s');
+
+        return response()->json([
+            'penjualan' => $penjualan,
+        ]);
+    }
 }

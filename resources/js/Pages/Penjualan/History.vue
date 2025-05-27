@@ -43,27 +43,84 @@ const status = [
       </div>
       <Table :columns="table" :rows="penjualan" @update:selectedRows="handleSelectedRows">
         <template #actions="{ row }">
-          <button @click="statusLog(row)" class="btn btn-info btn-sm" title="Delete">
+          <button @click="statusLog(row)" class="btn btn-info btn-sm" title="Status Log">
+            <i class="fa fa-history"></i>&nbsp;
             Status Log</button>&nbsp;
+          <button @click="detailTransaksi(row)" class="btn btn-warning btn-sm" title="Detail Transaksi">
+            <i class="fa fa-eye"></i>&nbsp;
+            Detail Transaksi</button>&nbsp;
         </template>
       </Table>
     </div>
-    <Modal :show="modalShow" :title="modalTitle" id="modal-stock-index">
-      <form ref="formStock" @submit.prevent="handleSubmit">
-        <div class="row"></div>
-      </form>
-      <template #footer>
-        <button type="button" class="btn btn-primary" :class="{ disabled: form.submit }" @click="submitForm">
-          <div v-if="form.submit">
-            <span class="spinner-border spinner-border-sm" role="status" aria-hidden="true"></span>
-            <span class="bott">Loading</span>
-          </div>
-          <span v-else class="bott">Simpan</span>
-        </button>
-      </template>
+    <Modal :show="modalShow" :title="modalTitle" id="modal-detail-index">
+      <div class="col-md-12">
+        <table class="table table-bordered">
+          <thead>
+            <tr>
+              <th>Nama Pelanggan</th>
+              <td>{{ detail?.customer?.name ?? "" }}</td>
+            </tr>
+            <tr>
+              <th>Tanggal</th>
+              <td>{{ detail?.created_at ?? "" }}</td>
+            </tr>
+            <tr>
+              <th>Toko</th>
+              <td>{{ detail?.store?.name ?? "" }}</td>
+            </tr>
+            <tr>
+              <th>Jumlah</th>
+              <td>{{ formatMoney(detail?.final_price ?? 0) }}</td>
+            </tr>
+            <tr>
+              <th>Metode Pembayaran</th>
+              <td>{{ detail?.payment_method?.name ?? "" }}</td>
+            </tr>
+            <tr>
+              <th>Metode Pengiriman</th>
+              <td>{{ detail?.shipping_method?.name }}</td>
+            </tr>
+            <tr>
+              <th>Status</th>
+              <td>
+                <span class="badge" :class="{
+                  'badge-secondary': detail?.status === 0,
+                  'badge-info': detail?.status === 1,
+                  'badge-primary': detail?.status === 2,
+                  'badge-success': detail?.status === 3,
+                  'badge-warning': detail?.status === 4,
+                  'badge-dark': detail?.status === 5,
+                  'badge-success': detail?.status === 6,
+                  'badge-danger': [99, 100, 101].includes(detail?.status)
+                }">
+                  {{ detail?.status_text }}
+                </span>
+              </td>
+            </tr>
+          </thead>
+        </table>
+        <table class="table">
+          <thead>
+            <tr>
+              <th>Produk</th>
+              <th>Jumlah</th>
+              <th>Discount</th>
+              <th>Total</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr v-for="(item, index) in detail?.order_details" :key="index">
+              <td>{{ item.product_name }}</td>
+              <td>{{ item.qty }} meter</td>
+              <td>{{ item.discount }}</td>
+              <td>{{ formatMoney(item.unit_selling_price) }}</td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
     </Modal>
     <Modal :show="modalShowStatus" :title="modalTitle" id="modal-status-index">
-      <form ref="formStatus" @submit.prevent="handleSubmit">
+      <form ref="formStatus" @submit.prevent="submitApproval">
         <Step :currentStep="currentStep" />
         <table class="table table-bordered">
           <thead>
@@ -180,6 +237,7 @@ export default {
           name: "xx",
         },
       ],
+      detail: {},
     };
   },
   computed: {
@@ -327,7 +385,29 @@ export default {
           console.error(errors)
         }
       })
-    }
+    },
+    async detailTransaksi(row) {
+      this.modalTitle = "Detail Transaksi";
+      this.modalShow = true;
+      this.form = row;
+      this.modalShowStatus = false;
+
+      try {
+        const response = await axios.get(route('order.detail', row.id));
+        this.detail = response.data.penjualan;
+      } catch (error) {
+        console.error("Error fetching order details:", error);
+        this.$error("Gagal mengambil detail transaksi");
+      }
+
+      $("#modal-detail-index").modal("show");
+    },
+    formatMoney(value) {
+      return new Intl.NumberFormat("id-ID", {
+        style: "currency",
+        currency: "IDR",
+      }).format(isNaN(value) ? 0 : value);
+    },
   },
 };
 </script>
