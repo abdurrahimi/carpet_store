@@ -104,6 +104,7 @@ const status = [
             <tr>
               <th>Produk</th>
               <th>Jumlah</th>
+              <th>Harga / 6Meter</th>
               <th>Discount</th>
               <th>Total</th>
             </tr>
@@ -112,6 +113,7 @@ const status = [
             <tr v-for="(item, index) in detail?.order_details" :key="index">
               <td>{{ item.product_name }}</td>
               <td>{{ item.qty }} meter</td>
+              <td>{{ formatMoney(item.unit_selling_price) }}</td>
               <td>{{ item.discount }}</td>
               <td>{{ formatMoney(item.unit_selling_price) }}</td>
             </tr>
