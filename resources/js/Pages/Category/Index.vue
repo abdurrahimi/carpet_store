@@ -67,10 +67,12 @@
                                 <input type="text" id="name" v-model="form.color[key].name" class="form-control"
                                     :class="{ 'is-invalid': $page?.props?.errors?.color[key]?.name }"
                                     placeholder="Enter Name" required />
-                                    <a href="#" @click="form.color.splice(key, 1)" class="text-danger">Remove</a>
-                                <span class="text-danger float-right">{{ $page?.props?.errors?.color[key]?.name }}</span>
+                                <a href="#" @click="form.color.splice(key, 1)" class="text-danger">Remove</a>
+                                <span class="text-danger float-right">{{ $page?.props?.errors?.color[key]?.name
+                                    }}</span>
                             </div>
-                            <button type="button" class="btn btn-primary ml-2 btn-sm" @click="form.color.push({ id: null, name: '' })">Add
+                            <button type="button" class="btn btn-primary ml-2 btn-sm"
+                                @click="form.color.push({ id: null, name: '' })">Add
                                 Color</button>
                         </div>
                     </div>
@@ -129,6 +131,7 @@ export default {
                 {
                     title: "Created At",
                     data: "created_at",
+                    render: (row) => <span>{this.$timeFormat(row.created_at)}</span>
                 },
                 {
                     title: "Created By",
@@ -238,7 +241,7 @@ export default {
                 id: data?.id ?? "",
                 name: data?.name ?? "",
                 tipe_penjualan: data?.tipe_penjualan ?? 1,
-                color: data?.color ?? [{id: null, name: ""}],
+                color: data?.color ?? [{ id: null, name: "" }],
             }
         }
     },

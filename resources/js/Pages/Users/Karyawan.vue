@@ -140,7 +140,7 @@
           </div>
 
           <!-- Is Account -->
-          <div class="col-md-6 mb-3">
+          <div class="col-md-12 mb-3">
             <div class="form-check">
               <input type="checkbox" id="is_account" v-model="form.is_account" class="form-check-input"
                 :class="{ 'is-invalid': $page?.props?.errors?.is_account }" />
@@ -163,12 +163,19 @@
           </div>
           <div class="col-md-6 mb-3 fade" :class="{ show: form.is_account }">
             <label for="role" class="form-label">Role</label>
-            <input type="role" id="role" v-model="form.role" class="form-control"
-              :class="{ 'is-invalid': $page?.props?.errors?.role }" :placeholder="form.account ? 'Change or Let it empty' : 'Enter role'
-                " />
+            <select id="role" v-model="form.role" class="form-control form-select"
+              :class="{ 'is-invalid': $page?.props?.errors?.role }">
+              <option value="" disabled selected>Select Role</option>
+              <option value="super_admin">Super Admin</option>
+              <option value="admin">Admin</option>
+              <option value="owner">Owner</option>
+              <option value="warehouse">Warehouse Staff</option>
+              <option value="finance">Finance Staff</option>
+              <option value="sales">Sales Staff</option>
+            </select>
             <span class="text-danger">{{
               $page?.props?.errors?.role
-              }}</span>
+            }}</span>
           </div>
         </div>
       </form>
@@ -422,7 +429,7 @@ export default {
       this.form.leader_id = data.leader || null;
       this.form.toko_id = data.store || null;
       this.form.email = data.email || "";
-      this.form.role = data.role || "";
+      this.form.role = data?.account?.roles[0]?.name || "";
       this.form.is_account = !!data.account;
     },
   },

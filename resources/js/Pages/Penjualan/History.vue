@@ -2,24 +2,14 @@
 import { usePage } from '@inertiajs/vue3';
 
 const page = usePage();
-const role = page.props.auth.role;
-let btn, btn2;
+const role = page.props.auth?.role[0] || 'guest';
 
-switch (role) {
-  case 'warehouse':
-    btn = "Confirm Available";
-    btn2 = "Confirm Not Available";
-    break;
-  default:
-    btn = "Approve";
-    btn2 = "Reject";
-    break;
-}
-
-const status = [
-  'Menunggu Persetujuan dari ',
-  'Permintaan Disetujui Oleh ',
-  'Permintaan Ditolak Oleh '
+const metodePembayaran = [
+  'Cash',
+  'AR',
+  'Transfer Bank',
+  'Kartu Kredit',
+  'Lainnya'
 ]
 </script>
 <template>
@@ -52,7 +42,7 @@ const status = [
         </template>
       </Table>
     </div>
-    <Modal :show="modalShow" :title="modalTitle" id="modal-detail-index">
+    <Modal :show="modalShow" title="Detail Transaksi" id="modal-detail-index">
       <div class="col-md-12">
         <table class="table table-bordered">
           <thead>
@@ -62,7 +52,7 @@ const status = [
             </tr>
             <tr>
               <th>Tanggal</th>
-              <td>{{ detail?.created_at ?? "" }}</td>
+              <td>{{ $timeFormat(detail?.created_at ?? false) }}</td>
             </tr>
             <tr>
               <th>Toko</th>
@@ -74,7 +64,7 @@ const status = [
             </tr>
             <tr>
               <th>Metode Pembayaran</th>
-              <td>{{ detail?.payment_method?.name ?? "" }}</td>
+              <td>{{ metodePembayaran[detail?.payment_method] || "N/A" }}</td>
             </tr>
             <tr>
               <th>Metode Pengiriman</th>
@@ -83,18 +73,23 @@ const status = [
             <tr>
               <th>Status</th>
               <td>
-                <span class="badge" :class="{
-                  'badge-secondary': detail?.status === 0,
-                  'badge-info': detail?.status === 1,
-                  'badge-primary': detail?.status === 2,
-                  'badge-success': detail?.status === 3,
-                  'badge-warning': detail?.status === 4,
-                  'badge-dark': detail?.status === 5,
-                  'badge-success': detail?.status === 6,
-                  'badge-danger': [99, 100, 101].includes(detail?.status)
-                }">
-                  {{ detail?.status_text }}
-                </span>
+                <div class="d-flex justify-content-between">
+                  <span class="badge" :class="{
+                    'badge-secondary': detail?.status === 0,
+                    'badge-info': detail?.status === 1 || detail?.status,
+                    'badge-primary': detail?.status === 2,
+                    'badge-success': detail?.status === 3,
+                    'badge-warning': detail?.status === 4,
+                    'badge-dark': detail?.status === 5,
+                    'badge-success': detail?.status === 6,
+                    'badge-danger': [99, 100, 101].includes(detail?.status)
+                  }">
+                    {{ status[detail?.status?.toString()] ?? "N/A" }}
+                  </span>
+                  <button @click="statusLog(detail)" class="btn btn-info btn-sm" title="Status Log">
+                    <i class="fa fa-history"></i>&nbsp;
+                    Status Log</button>
+                </div>
               </td>
             </tr>
           </thead>
@@ -121,7 +116,7 @@ const status = [
         </table>
       </div>
     </Modal>
-    <Modal :show="modalShowStatus" :title="modalTitle" id="modal-status-index">
+    <Modal :show="modalShowStatus" title="Log Status Transaksi" id="modal-status-index">
       <form ref="formStatus" @submit.prevent="submitApproval">
         <Step :currentStep="currentStep" />
         <table class="table table-bordered">
@@ -132,28 +127,45 @@ const status = [
           </thead>
           <tbody>
             <tr v-for="(item, index) in approval.data" :key="index">
-              <td><span style="font-size: 10px; font-style: italic;">{{ item.created_at }}</span><br>{{ item.detail }}
+              <td><span style="font-size: 10px; font-style: italic;">{{ $timeFormat(item.created_at) }}</span><br>{{
+                item.detail }}
                 (<i>{{ item.user }}</i>)</td>
             </tr>
           </tbody>
         </table>
       </form>
       <template #footer>
-        <button type="button" class="btn btn-primary" :class="{ disabled: approval.submit }"
+        <button v-if="approval.status == 3 || approval.status > 5" type="button" class="btn btn-warning" :class="{ disabled: approval.submit }"
+          @click="PrintSuratJalan(true)">
+          <div v-if="approval.submit">
+            <span class="spinner-border spinner-border-sm" role="status" aria-hidden="true"></span>
+            <span class="bott">Loading</span>
+          </div>
+          <span v-else class="bott">Cetak Surat Jalan</span>
+        </button>
+        <button v-if="approval.status == 4 || approval.status == 5" type="button" class="btn btn-danger" :class="{ disabled: approval.submit }"
+          @click="PrintSuratJalan(true)">
+          <div v-if="approval.submit">
+            <span class="spinner-border spinner-border-sm" role="status" aria-hidden="true"></span>
+            <span class="bott">Loading</span>
+          </div>
+          <span v-else class="bott">Cetak Dokumen Supplier</span>
+        </button>
+        <button v-if="approval.showApprove" type="button" class="btn btn-primary" :class="{ disabled: approval.submit }"
           @click="submitApproval(true)">
           <div v-if="approval.submit">
             <span class="spinner-border spinner-border-sm" role="status" aria-hidden="true"></span>
             <span class="bott">Loading</span>
           </div>
-          <span v-else class="bott">{{ btn }}</span>
+          <span v-else class="bott">{{ btn1Text(approval?.status ?? 0) }}</span>
         </button>
-        <button type="button" class="btn btn-danger" :class="{ disabled: approval.submit }"
+        <button v-if="approval.showReject" type="button" class="btn btn-danger" :class="{ disabled: approval.submit }"
           @click="rejectApproval(false)">
           <div v-if="approval.submit">
             <span class="spinner-border spinner-border-sm" role="status" aria-hidden="true"></span>
             <span class="bott">Loading</span>
           </div>
-          <span v-else class="bott">{{ btn2 }}</span>
+          <span v-else class="bott">{{ btn2Text(approval?.status ?? 0) }}</span>
         </button>
       </template>
     </Modal>
@@ -182,10 +194,27 @@ export default {
     return {
       table: [
         { title: "Nama Pelanggan", data: "customer.name" },
-        { title: "Tanggal", data: "created_at" },
+        {
+          title: "Tanggal",
+          data: "created_at",
+          render: (row) => <span>{this.$timeFormat(row.created_at)}</span>
+        },
         { title: "Toko", data: "store.name" },
         { title: "Jumlah", data: "total" },
-        { title: "Metode Pembayaran", data: "payment_method.name" },
+        {
+          title: "Metode Pembayaran",
+          data: "payment_method.name",
+          render: (row) => {
+            const metodePembayaran = [
+              'Cash',
+              'AR',
+              'Transfer Bank',
+              'Kartu Kredit',
+              'Lainnya'
+            ]
+            return <span>{metodePembayaran[row?.payment_method] || "N/A"}</span>;
+          }
+        },
         { title: "Metode Pengiriman", data: "shipping_method.name" },
         {
           title: "Status",
@@ -193,19 +222,23 @@ export default {
           render: (row) => {
             switch (row.status) {
               case 0:
-                return <span class="badge badge-secondary">Pending</span>;
+                return <span class="badge badge-info">Pending</span>;
               case 1:
-                return <span class="badge badge-info">AR Approved</span>;
+                return <span class="badge badge-primary">AR Disetujui</span>;
+              case -1:
+                return <span class="badge badge-info">AR Sedang Diperiksa</span>;
               case 2:
-                return <span class="badge badge-primary">Payment Approved</span>;
+                return <span class="badge badge-primary">Pembayaran Disetujui</span>;
               case 3:
-                return <span class="badge badge-success">Stock Available</span>;
+                return <span class="badge badge-primary">Stock Available Di Warehouse</span>;
               case 4:
-                return <span class="badge badge-warning">Stock Unavailable</span>;
+                return <span class="badge badge-warning">Stock Tidak Available Di Warehouse</span>;
               case 5:
-                return <span class="badge badge-dark">Requested to Supplier</span>;
+                return <span class="badge badge-info">Permintaan Barang ke Supplier</span>;
               case 6:
-                return <span class="badge badge-success">Sent to Customer</span>;
+                return <span class="badge badge-info">Pengiriman Barang ke Customer</span>;
+              case 7:
+                return <span class="badge badge-success">Barang Sudah Diterima Customer</span>;
               case 99:
                 return <span class="badge badge-danger">Rejected</span>;
               case 100:
@@ -231,6 +264,8 @@ export default {
         id: null,
         status: null,
         data: [],
+        showApprove: false,
+        showReject: false,
         submit: false,
       },
       supplier: [
@@ -240,6 +275,20 @@ export default {
         },
       ],
       detail: {},
+      status: {
+        "0": "Menunggu Persetujuan",
+        "-1": "AR Sedang Diperiksa",
+        "1": "Permintaan AR Disetujui",
+        "2": "Pembayaran Disetujui",
+        "3": "Stok Tersedia di Warehouse",
+        "4": "Stok Tidak Tersedia di Warehouse",
+        "5": "Permintaan Barang ke Supplier",
+        "6": "Barang Sedang Dikirim ke Pelanggan",
+        "7": "Barang Sudah Diterima Pelanggan",
+        "99": "Ditolak",
+        "100": "Dibatalkan",
+        "101": "Invoiced (Pembayaran Tidak Disetujui)",
+      }
     };
   },
   computed: {
@@ -258,12 +307,9 @@ export default {
         case 7:
           return 3;
         default:
-          return 0;
+          return 99;
       }
-    }
-  },
-  mounted() {
-
+    },
   },
   methods: {
     async submitApproval(isApproved) {
@@ -351,7 +397,6 @@ export default {
       }
     },
     async statusLog(row) {
-      this.modalTitle = "Status Log";
       this.modalShowStatus = true;
       this.approval.id = row.id;
       this.approval.status = row.status;
@@ -361,6 +406,7 @@ export default {
         id: row.id,
         status: row.status,
       };
+      this.handleShowButton(row.status);
       $("#modal-status-index").modal("show");
     },
     async handleSelectedRows(selectedRows) {
@@ -389,7 +435,6 @@ export default {
       })
     },
     async detailTransaksi(row) {
-      this.modalTitle = "Detail Transaksi";
       this.modalShow = true;
       this.form = row;
       this.modalShowStatus = false;
@@ -410,6 +455,86 @@ export default {
         currency: "IDR",
       }).format(isNaN(value) ? 0 : value);
     },
+    btn1Text(status) {
+      switch (status.toString()) {
+        case "0":
+          return "Setujui Permintaan";
+        case "-1":
+          return "Setujui Permintaan AR";
+        case "1":
+        case "2":
+          return "Tandai Stock Tersedia";
+        case "3":
+          return "Tandai Sedang Dikirim";
+        case "4":
+          return "Tandai Proses Permintaan ke Supplier";
+        case "5":
+        case "6":
+          return "Tandai Sudah Diterima";
+        default:
+          return "Approve";
+      }
+    },
+    btn2Text(status) {
+      switch (status.toString()) {
+        case "0":
+          return "Tolak Permintaan";
+        case "-1":
+          return "Tolak Permintaan AR";
+        case "1":
+        case "2":
+          return "Stock Tidak Tersedia";
+        default:
+          return "Reject";
+      }
+    },
+    handleShowButton(status) {
+      const role = this.$page.props.auth?.role[0] || 'guest';
+      this.approval.showApprove = false;
+      this.approval.showReject = false;
+      switch (status.toString()) {
+        case "0":
+          if (role == "finance" || role == "super_admin") {
+            this.approval.showApprove = true;
+            this.approval.showReject = true;
+          }
+          return "Setujui Permintaan";
+        case "-1":
+          if (role == "owner" || role == "super_admin") {
+            this.approval.showApprove = true;
+            this.approval.showReject = true;
+          }
+          return "Setujui Permintaan AR";
+        case "1":
+        case "2":
+          if (role == "warehouse" || role == "super_admin") {
+            this.approval.showApprove = true;
+            this.approval.showReject = true;
+          }
+          return "Stock Tersedia";
+        case "3":
+          console.log("role", role);
+          console.log("status", status);
+          if (role == "admin" || role == "super_admin") {
+            console.log("showApprove");
+            this.approval.showApprove = true;
+          }
+          return "Tandai Sedang Dikirim";
+        case "4":
+          if (role == "admin" || role == "super_admin") {
+            this.approval.showApprove = true;
+          }
+          return "Tandai Sedang Proses Supplier";
+        case "5":
+        case "6":
+          if (role == "admin" || role == "super_admin") {
+            this.approval.showApprove = true;
+          }
+          return "Tandai Sudah Diterima";
+        default:
+          return "Approve";
+      }
+    }
   },
 };
 </script>

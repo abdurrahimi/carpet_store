@@ -17,20 +17,12 @@ class UsersController extends Controller
         $page_size = $request->get('page_size', 10);
         $search = $request->get('search', '');
         $users = Karyawan::with([
-            'leader' => function($q){
-                //return $q;
-                return $q->select('id', 'name');
-            },
-            'creator' => function($q){
-                //return $q;
-                return $q->select('id', 'name');
-            },
+            'leader:id,name',
+            'creator:id,name',
             'account' => function($q){
-                return $q->select('id', 'karyawan_id','email');
+                return $q->select('id', 'karyawan_id','email')->with('roles:id,name');
             },
-            'store' => function($q){
-                return $q->select('id', 'name');
-            }
+            'store:id,name'
         ]);
 
         if($search){
@@ -99,7 +91,7 @@ class UsersController extends Controller
                 $user->email = $request->email;
                 $user->password = Hash::make($request->password);
                 $user->save();
-                $user->assignRole($request->role);
+                $user->syncRoles($request->role);
             }
             DB::commit();
             return redirect()->route('users.index')->with('success', 'Karyawan berhasil ditambahkan.');
@@ -165,7 +157,7 @@ class UsersController extends Controller
                 }
                 $user->save();
 
-                $user->assignRole($request->role);
+                $user->syncRoles($request->role);
             }
             DB::commit();
             return redirect()->route('users.index')->with('success', 'Karyawan berhasil diperbarui.');

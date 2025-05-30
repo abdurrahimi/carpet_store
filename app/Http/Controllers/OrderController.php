@@ -20,6 +20,7 @@ use Illuminate\Support\Facades\Log;
 
 class OrderController extends Controller
 {
+
     public function order(Request $request)
     {
         $request->validate([
@@ -163,18 +164,21 @@ class OrderController extends Controller
         DB::beginTransaction();
         try {
             $order = Order::where('id', $id)
-                ->whereNotIn('status', [DBConstanst::ORDER_STATUS_SENT_TO_CUSTOMER, DBConstanst::ORDER_STATUS_REJECTED])
-                ->firstOrFail()->lockForUpdate();
-
+                ->whereNotIn('status', [DBConstanst::ORDER_STATUS_DELIVERED, DBConstanst::ORDER_STATUS_REJECTED])
+                ->firstOrFail();
+            
             switch ($order->status) {
                 case DBConstanst::ORDER_STATUS_PENDING:
-                    if (Auth::user()->role !== 'finance' || Auth::user()->role !== 'admin') {
+                    if (Auth::user()->role !== 'finance' && Auth::user()->role !== 'super_admin') {
+                        DB::rollBack();
                         return redirect()->route('penjualan.index')->with('error', 'Role Anda tidak memiliki akses untuk melakukan approval pada order ini.');
                     }
 
                     if ($order->payment_method == DBConstanst::PAYMENT_METHOD_AR) {
                         // Owner approve saldo untuk metode AR
                         $order->status = DBConstanst::ORDER_STATUS_AR_CHECKED;
+                        $order->save();
+
                         OrderApprovalLog::create([
                             'user_id' => auth()->id(),
                             'order_id' => $id,
@@ -184,6 +188,8 @@ class OrderController extends Controller
                     } else {
                         // Pembayaran Cash langsung dianggap diterima
                         $order->status = DBConstanst::ORDER_STATUS_PAYMENT_APPROVED;
+                        $order->save();
+
                         OrderApprovalLog::create([
                             'user_id' => auth()->id(),
                             'order_id' => $id,
@@ -193,11 +199,14 @@ class OrderController extends Controller
                     }
                     break;
                 case DBConstanst::ORDER_STATUS_AR_CHECKED:
-                    if (Auth::user()->role !== 'owner' || Auth::user()->role !== 'admin') {
+                    if (Auth::user()->role !== 'owner' && Auth::user()->role !== 'super_admin') {
+                        DB::rollBack();
                         return redirect()->route('penjualan.index')->with('error', 'Role Anda tidak memiliki akses untuk melakukan approval pada order ini.');
                     }
 
                     $order->status = DBConstanst::ORDER_STATUS_AR_APPROVED;
+                    $order->save();
+
                     OrderApprovalLog::create([
                         'user_id' => auth()->id(),
                         'order_id' => $id,
@@ -208,11 +217,14 @@ class OrderController extends Controller
                     break;
                 case DBConstanst::ORDER_STATUS_AR_APPROVED:
                 case DBConstanst::ORDER_STATUS_PAYMENT_APPROVED:
-                    if (Auth::user()->role !== 'warehouse' || Auth::user()->role !== 'admin') {
+                    if (Auth::user()->role !== 'warehouse' && Auth::user()->role !== 'super_admin') {
+                        DB::rollBack();
                         return redirect()->route('penjualan.index')->with('error', 'Role Anda tidak memiliki akses untuk melakukan approval pada order ini.');
                     }
 
                     $order->status = DBConstanst::ORDER_STATUS_STOCK_AVAILABLE;
+                    $order->save();
+
                     OrderApprovalLog::create([
                         'user_id' => auth()->id(),
                         'order_id' => $id,
@@ -220,18 +232,68 @@ class OrderController extends Controller
                         'status' => 1,
                     ]);
                     break;
+                case DBConstanst::ORDER_STATUS_STOCK_AVAILABLE:
+                    if (Auth::user()->role !== 'admin' && Auth::user()->role !== 'super_admin') {
+                        DB::rollBack();
+                        return redirect()->route('penjualan.index')->with('error', 'Role Anda tidak memiliki akses untuk melakukan approval pada order ini.');
+                    }
+
+                    $order->status = DBConstanst::ORDER_STATUS_SENT_TO_CUSTOMER;
+                    $order->save();
+
+                    OrderApprovalLog::create([
+                        'user_id' => auth()->id(),
+                        'order_id' => $id,
+                        'detail' => 'Order Dalam Pengiriman Ke Customer',
+                        'status' => 1,
+                    ]);
+                    
+                    break;
+                case DBConstanst::ORDER_STATUS_STOCK_UNAVAILABLE:
+                    if (Auth::user()->role !== 'admin' && Auth::user()->role !== 'super_admin') {
+                        DB::rollBack();
+                        return redirect()->route('penjualan.index')->with('error', 'Role Anda tidak memiliki akses untuk melakukan approval pada order ini.');
+                    }
+
+                    $order->status = DBConstanst::ORDER_STATUS_REQUESTED_TO_SUPPLIER;
+                    $order->save();
+
+                    OrderApprovalLog::create([
+                        'user_id' => auth()->id(),
+                        'order_id' => $id,
+                        'detail' => 'Stock Telah Direquest ke Supplier',
+                        'status' => 1,
+                    ]);
+                    break;
+                case DBConstanst::ORDER_STATUS_REQUESTED_TO_SUPPLIER:
+                case DBConstanst::ORDER_STATUS_SENT_TO_CUSTOMER:
+                    if (Auth::user()->role !== 'admin' && Auth::user()->role !== 'super_admin') {
+                        DB::rollBack();
+                        return redirect()->route('penjualan.index')->with('error', 'Role Anda tidak memiliki akses untuk melakukan approval pada order ini.');
+                    }
+
+                    $order->status = DBConstanst::ORDER_STATUS_DELIVERED;
+                    $order->save();
+
+                    OrderApprovalLog::create([
+                        'user_id' => auth()->id(),
+                        'order_id' => $id,
+                        'detail' => 'Order Telah Dikirim Ke Customer',
+                        'status' => 1,
+                    ]);
+                    break;
                 default:
+                    DB::rollBack();
                     throw new Exception('Invalid order status');
             }
-
-            $order->save();
 
             DB::commit();
             return redirect()->route('penjualan.index')->with('success', 'Approval berhasil');
         } catch (Exception $e) {
             DB::rollBack();
+            dd($e);
             Log::error('Failed to approve order: ' . $e->getMessage());
-            return response()->json(['message' => 'Approval Gagal.'], 422);
+            return response()->json(['message' => 'Approval Gagal.'], 500);
         }
     }
 
@@ -249,7 +311,7 @@ class OrderController extends Controller
 
             // Hanya order dengan status PENDING atau AR_APPROVED yang bisa direject
             if ($order->status == DBConstanst::ORDER_STATUS_PENDING) {
-                if (Auth::user()->role !== 'finance' || Auth::user()->role !== 'admin') {
+                if (Auth::user()->role !== 'finance' && Auth::user()->role !== 'admin') {
                     return redirect()->route('penjualan.index')->with('error', 'Role Anda tidak memiliki akses untuk melakukan approval pada order ini.');
                 }
                 $order->status = DBConstanst::ORDER_STATUS_REJECTED;
@@ -268,7 +330,7 @@ class OrderController extends Controller
                 ]);
             }
 
-            if (DBConstanst::ORDER_STATUS_AR_APPROVED || DBConstanst::ORDER_STATUS_PAYMENT_APPROVED) {
+            if (DBConstanst::ORDER_STATUS_AR_APPROVED && DBConstanst::ORDER_STATUS_PAYMENT_APPROVED) {
                 $order->status = DBConstanst::ORDER_STATUS_STOCK_UNAVAILABLE;
                 $order->save();
                 OrderApprovalLog::create([

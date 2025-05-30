@@ -7,6 +7,7 @@ import { resolvePageComponent } from 'laravel-vite-plugin/inertia-helpers';
 import { ZiggyVue } from '../../vendor/tightenco/ziggy';
 import { confirmAlert, errorAlert, successAlert } from './Plugins/swal';
 import Table from './Components/Table.vue';
+import { formatDate } from './Plugins/formatDate';
 
 const appName = import.meta.env.VITE_APP_NAME || 'Laravel';
 
@@ -22,6 +23,7 @@ createInertiaApp({
         app.config.globalProperties.$confirm = confirmAlert;
         app.config.globalProperties.$success = successAlert;
         app.config.globalProperties.$error = errorAlert;
+        app.config.globalProperties.$timeFormat = formatDate;
         app.directive("money", {
             beforeMount(el, binding) {
                 const formatValue = (value) => {

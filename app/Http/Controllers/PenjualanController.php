@@ -55,7 +55,7 @@ class PenjualanController extends Controller
         $penjualan->created_at = Carbon::parse($penjualan->created_at)
             ->timezone('Asia/Jakarta')
             ->format('Y-m-d H:i:s');
-
+        
         return response()->json([
             'penjualan' => $penjualan,
         ]);
