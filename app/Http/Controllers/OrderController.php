@@ -21,8 +21,10 @@ use Illuminate\Support\Facades\Log;
 class OrderController extends Controller
 {
 
-    public function order(Request $request)
+    public function order(Request $requests)
     {
+        $request = json_decode($requests->data, true);
+        $request = new Request($request);
         $request->validate([
             'data' => 'required|array|min:1',
             'data.*.product' => 'required|array',
@@ -45,7 +47,7 @@ class OrderController extends Controller
             'additional.*.name' => 'nullable|string|max:255',
             'additional.*.total' => 'nullable|numeric',
         ]);
-        //dd($request->all());
+
         DB::beginTransaction();
         try {
             $product_ids = collect($request->input('data'))
@@ -68,6 +70,17 @@ class OrderController extends Controller
                 $totalItemPriceBeforeDisc += (int)str_replace('.', '', $produx['unit_price']) * ((int) str_replace('.', '', $produx['qty']) / 6);
             }
 
+            $attachments = [];
+            if ($requests->file('attachments')) {
+                foreach ($requests->file('attachments') as $file) {
+                    $path = $file->store('uploads/attachments', 'public');
+                    $attachments[] = [
+                        'path' => $path,
+                        'name' => $file->getClientOriginalName(),
+                    ];
+                }
+            }
+
             //create new temporary order
             $order = new Order();
             $order->customer_id = $request->input('customer.id', 0);
@@ -78,6 +91,10 @@ class OrderController extends Controller
             $order->final_price = $totalItemPriceBeforeDisc + $totalAdditional - (int)str_replace('.', '', $request->discount); //harga setelah diskon global
             $order->store_id = Auth::user()->store_id;
             $order->approval_id = 0;
+            $order->attachments = isset($attachments) ? json_encode($attachments) : null;
+            $order->status = DBConstanst::ORDER_STATUS_PENDING;
+            $order->payment_method = $request->input('payment_method', 0);
+            $order->shipping_method = strtolower($request->input('shipping_method', ''));
             $order->save();
 
             $orderId = $order->id;
@@ -142,19 +159,21 @@ class OrderController extends Controller
             OrderApprovalLog::create([
                 'user_id' => auth()->id(),
                 'order_id' => $orderId,
-                'detail' => 'AR Approval Telah Disetujui, Menunggu Pemeriksaan Stock',
+                'detail' => 'Order telah dibuat, Menunggu Approval',
                 'status' => 1,
             ]);
 
 
             DB::commit();
-            return response()->json([
-                'message' => 'success',
-                'order_id' => $order->id,
-            ]);
+            return redirect()->route('penjualan.kasir')->with('success', 'Transaksi berhasil ditambahkan.');
         } catch (Exception $e) {
             DB::rollBack();
-            Log::error('Failed to create order: ' . $e->getMessage());
+            Log::error('Failed to create order: ', [
+                'message' => $e->getMessage(),
+                'request' => $request->all(),
+                'user_id' => Auth::id(),
+                'stack' => $e->getTraceAsString(),
+            ]);
             return redirect()->route('penjualan.kasir')->with('error', 'Transaksi gagal ditambahkan.');
         }
     }
@@ -166,7 +185,7 @@ class OrderController extends Controller
             $order = Order::where('id', $id)
                 ->whereNotIn('status', [DBConstanst::ORDER_STATUS_DELIVERED, DBConstanst::ORDER_STATUS_REJECTED])
                 ->firstOrFail();
-            
+
             switch ($order->status) {
                 case DBConstanst::ORDER_STATUS_PENDING:
                     if (Auth::user()->role !== 'finance' && Auth::user()->role !== 'super_admin') {
@@ -247,7 +266,7 @@ class OrderController extends Controller
                         'detail' => 'Order Dalam Pengiriman Ke Customer',
                         'status' => 1,
                     ]);
-                    
+
                     break;
                 case DBConstanst::ORDER_STATUS_STOCK_UNAVAILABLE:
                     if (Auth::user()->role !== 'admin' && Auth::user()->role !== 'super_admin') {
@@ -377,18 +396,15 @@ class OrderController extends Controller
             }
 
             // Simpan ke database
-            $logs = new OrderApprovalComments();
-            $logs->attachments = $filename;
-            $logs->comments = $request->description ?? ''; // Sesuai nama field di form
-            $logs->created_by = auth()->id();
-            $logs->order_id = $order->id;
-            $logs->status = 1;
-            $logs->save(); // <- ini penting
-
-            return response()->json([
-                'message' => 'Attachment added successfully',
+            OrderApprovalLog::create([
+                'user_id' => auth()->id(),
+                'order_id' => $id,
+                'detail' => $request->input('description', 'No description provided'),
                 'attachment' => $filename,
+                'status' => 1,
             ]);
+
+            return redirect()->route('penjualan.index')->with('success', 'Attachment berhasil ditambahkan.');
         } catch (Exception $e) {
             Log::error('Failed to add attachment: ' . $e->getMessage());
             return response()->json(['message' => 'Failed to add attachment'], 500);

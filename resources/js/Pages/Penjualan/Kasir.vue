@@ -10,7 +10,7 @@
         </div>
         <div class="card shadow mb-5">
             <div class="card-body">
-                <form id="form-kasir">
+                <form id="form-kasir" enctype="multipart/form-data" @submit.prevent="submitForm">
                     <table class="table">
                         <thead></thead>
                         <tbody>
@@ -285,6 +285,47 @@
                                 <td></td>
                             </tr>
                             <tr>
+                                <td colspan="3">Metode Pembayaran</td>
+                                <td>
+                                    <div class="form-group">
+                                        <select class="form-control" v-model="form.payment_method">
+                                            <option value="0">Tunai</option>
+                                            <option value="1">AR</option>
+                                            <option value="2">Transfer</option>
+                                            <option value="3">Kartu Kredit</option>
+                                            <option value="4">Lainnya</option>
+                                        </select>
+                                    </div>
+                                </td>
+                                <td></td>
+                            </tr>
+                            <tr>
+                                <td colspan="3">Metode Pengiriman</td>
+                                <td>
+                                    <div class="form-group">
+                                        <input type="text" class="form-control" v-model="form.shipping_method"
+                                            :disabled="form.data[0]?.product ? false : true" />
+                                    </div>
+                                </td>
+                                <td></td>
+                            </tr>
+                            <tr>
+                                <td colspan="3">Lampiran</td>
+                                <td>
+                                    <div class="form-group">
+                                        <input type="file" class="form-control" accept=".pdf,image/*" multiple
+                                            @change="handleFileUpload"
+                                            :disabled="form.data[0]?.product ? false : false" />
+                                        <ul class="mt-2 border p-2 bg-dark-200">
+                                            <li v-for="(file, index) in form.attachment" :key="index">
+                                                <b>*</b> {{ file.name }}
+                                            </li>
+                                        </ul>
+                                    </div>
+                                </td>
+                                <td><!-- <button type="button" class="btn btn-primary btn-sm">+</button> --></td>
+                            </tr>
+                            <tr>
                                 <td colspan="3">Kasir</td>
                                 <td>
                                     <div class="form-group">
@@ -379,6 +420,9 @@ export default {
                     },
                 ],
                 total: 0,
+                payment_method: 0,
+                shipping_method: "",
+                attachment: [],
                 submit: false,
             },
             products: [],
@@ -401,6 +445,33 @@ export default {
     },
     methods: {
         async submitForm() {
+
+            const formData = new FormData();
+
+            // append data JSON sebagai string
+            formData.append('data', JSON.stringify(this.form));
+
+            // append file-file attachment
+            this.form.attachment.forEach(file => {
+                formData.append('attachments[]', file);
+            });
+            return router.post(this.route('order.create'), formData, {
+                preserveScroll: true,
+                onSuccess: () => {
+                    this.form.submit = false;
+                    $("#modal-add").modal("hide");
+                    this.$success("Data berhasil disimpan");
+                    router.visit(this.$page.url, {
+                        only: ["users"],
+                    });
+                },
+                onError: () => {
+                    this.form.submit = false;
+                    this.$error();
+                },
+            });
+
+            return;
             try {
                 if (this.form.submit) {
                     return;
@@ -426,6 +497,14 @@ export default {
 
             } catch (e) {
                 this.form.submit = false;
+            }
+        },
+        handleFileUpload(e) {
+            const files = e.target.files;
+            this.form.attachment = [];
+            for (let i = 0; i < files.length; i++) {
+                const file = files[i];
+                this.form.attachment.push(file);
             }
         },
         totalPriceBeforeDisc() {
@@ -544,6 +623,7 @@ export default {
                     },
                 ],
                 total: 0,
+                payment_method: 0,
                 submit: false,
             };
         },

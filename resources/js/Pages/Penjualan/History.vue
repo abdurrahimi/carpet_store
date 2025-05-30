@@ -92,6 +92,16 @@ const metodePembayaran = [
                 </div>
               </td>
             </tr>
+            <tr>
+              <th>Attachment</th>
+              <td>
+                <ul v-if="detail?.attachments?.length > 0">
+                  <li v-for="(item, index) in detail?.attachments" :key="index">
+                    <a :href="`/storage/${item.path}`" target="_blank">{{ item.name }}</a>
+                  </li>
+                </ul>
+              </td>
+            </tr>
           </thead>
         </table>
         <table class="table">
@@ -131,20 +141,32 @@ const metodePembayaran = [
                 item.detail }}
                 (<i>{{ item.user }}</i>)</td>
             </tr>
+            <tr>
+              <td v-if="lampirkan">
+                <form enctype="multipart/form-data" @submit.prevent="submitComments(approval.id)">
+                  <textarea v-model="lamiran.description" class="form-control" rows="3"
+                    placeholder="Tambahkan catatan..."></textarea>
+                  <input type="file" class="form-control mt-2" @change="handleFileLampiran" />
+                  <button type="submit" class="btn btn-primary mt-2">Kirim</button>
+                </form>
+              </td>
+            </tr>
           </tbody>
         </table>
+        <button class="btn" :class="[lampirkan ? 'btn-warning' : 'btn-info',]" type="button"
+          @click="() => lampirkan = !lampirkan">{{ !lampirkan ? 'Tambah Lampiran' : 'Batalkan' }}</button>
       </form>
       <template #footer>
-        <button v-if="approval.status == 3 || approval.status > 5" type="button" class="btn btn-warning" :class="{ disabled: approval.submit }"
-          @click="PrintSuratJalan(true)">
+        <button v-if="approval.status == 3 || approval.status > 5" type="button" class="btn btn-warning"
+          :class="{ disabled: approval.submit }" @click="PrintSuratJalan(true)">
           <div v-if="approval.submit">
             <span class="spinner-border spinner-border-sm" role="status" aria-hidden="true"></span>
             <span class="bott">Loading</span>
           </div>
           <span v-else class="bott">Cetak Surat Jalan</span>
         </button>
-        <button v-if="approval.status == 4 || approval.status == 5" type="button" class="btn btn-danger" :class="{ disabled: approval.submit }"
-          @click="PrintSuratJalan(true)">
+        <button v-if="approval.status == 4 || approval.status == 5" type="button" class="btn btn-danger"
+          :class="{ disabled: approval.submit }" @click="PrintSuratJalan(true)">
           <div v-if="approval.submit">
             <span class="spinner-border spinner-border-sm" role="status" aria-hidden="true"></span>
             <span class="bott">Loading</span>
@@ -192,6 +214,11 @@ export default {
   },
   data() {
     return {
+      lampirkan: false,
+      lamiran: {
+        description: "",
+        attachment: null,
+      },
       table: [
         { title: "Nama Pelanggan", data: "customer.name" },
         {
@@ -294,6 +321,7 @@ export default {
   computed: {
     currentStep() {
       switch (this.approval.status) {
+        case -1:
         case 0:
           return 0;
         case 1:
@@ -415,25 +443,6 @@ export default {
     async handleFile(e) {
       this.form.attachment = e.target.files[0]
     },
-    async submitComments(orderId) {
-      const formData = new FormData()
-      formData.append('description', this.form.description)
-      if (form.attachment) {
-        formData.append('attachment', this.form.attachment)
-      }
-
-      router.post(`/orders/${orderId}/comments`, formData, {
-        forceFormData: true, // wajib agar dikirim sebagai multipart/form-data
-        onSuccess: () => {
-          this.$success('Komentar berhasil dikirim')
-          form.reset()
-        },
-        onError: (errors) => {
-          this.$error()
-          console.error(errors)
-        }
-      })
-    },
     async detailTransaksi(row) {
       this.modalShow = true;
       this.form = row;
@@ -534,7 +543,28 @@ export default {
         default:
           return "Approve";
       }
-    }
+    },
+    submitComments(orderId) {
+      const formData = new FormData();
+      formData.append('description', this.lamiran.description);
+      if (this.lamiran.attachment) {
+        formData.append('attachment', this.lamiran.attachment);
+      }
+
+      router.post(route('order.addAttachment', orderId), formData, {
+        forceFormData: true, // wajib agar dikirim sebagai multipart/form-data
+        onSuccess: () => {
+          this.$success('Komentar berhasil dikirim');
+          this.lamiran.description = '';
+          this.lamiran.attachment = null;
+          this.statusLog(this.approval);
+        },
+        onError: (errors) => {
+          this.$error('Gagal mengirim komentar');
+          console.error(errors);
+        }
+      });
+    },
   },
 };
 </script>

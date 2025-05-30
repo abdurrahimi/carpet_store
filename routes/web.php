@@ -26,7 +26,8 @@ use Inertia\Inertia;
 | contains the "web" middleware group. Now create something great!
 |
 */
-Route::post('/deploy', function (Request $request){
+
+Route::post('/deploy', function (Request $request) {
     return response('Deploy bro', 200);
 });
 
@@ -88,7 +89,7 @@ Route::middleware('auth')->group(function () {
     Route::put('/store/{id}', [StoreController::class, 'update'])->name('store.update');
     Route::delete('/store/{id}', [StoreController::class, 'destroy'])->name('store.delete');
 
-        // stock
+    // stock
     Route::get('/stock', [StockController::class, 'index'])->name('stock.index');
     Route::get('/stock/data', [StockController::class, 'getDataStock'])->name('stock.get');
     Route::post('/stock', [StockController::class, 'store'])->name('stock.store');
@@ -96,13 +97,13 @@ Route::middleware('auth')->group(function () {
 
     Route::get('/penjualan', [PenjualanController::class, 'index'])->name('penjualan.index');
     Route::get('/kasir', [PenjualanController::class, 'kasir'])->name('penjualan.kasir');
-    
+
     //order
     Route::post('/order', [OrderController::class, 'order'])->name('order.create');
     Route::get('/order-status-history', [OrderController::class, 'getStatusHistory'])->name('order.getStatusHistory');
     Route::post('/order-approval/{id}', [OrderController::class, 'approve'])->name('order.approve');
     Route::post('/order-reject/{id}', [OrderController::class, 'reject'])->name('order.reject');
-    Route::post('/order-attachment/{id}', [OrderController::class, 'addAttachment'])->name('order.addAttachment');
+    Route::post('/order-attachment/{id}', [OrderController::class, 'addComments'])->name('order.addAttachment');
     Route::get('/order/detail/{id}', [PenjualanController::class, 'getDetailPenjualan'])->name('order.detail');
 
 
@@ -111,9 +112,9 @@ Route::middleware('auth')->group(function () {
     Route::post('/approval', [ApprovalController::class, 'approvalAction'])->name('approval.action');
 
 
-    Route::get('/temp', function(){
+    Route::get('/temp', function () {
         echo 'Coming Soon';
     })->name('temp');
 });
 
-require __DIR__.'/auth.php';
+require __DIR__ . '/auth.php';

@@ -1,7 +1,8 @@
 <template>
   <div class="container py-5">
     <div class="stepper d-flex justify-content-between position-relative">
-      <div v-if="currentStep !== 99" v-for="(step, index) in steps" :key="index"
+      {{ currentStep }}
+      <div v-if="currentStep < 99" v-for="(step, index) in steps" :key="index"
         class="step text-center position-relative flex-fill">
         <div :class="['circle mx-auto', currentStep >= index ? 'bg-primary text-white' : 'bg-light']">
           {{ index + 1 }}
