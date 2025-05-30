@@ -137,9 +137,18 @@ const metodePembayaran = [
           </thead>
           <tbody>
             <tr v-for="(item, index) in approval.data" :key="index">
-              <td><span style="font-size: 10px; font-style: italic;">{{ $timeFormat(item.created_at) }}</span><br>{{
-                item.detail }}
-                (<i>{{ item.user }}</i>)</td>
+              <td><span style="font-size: 10px; font-style: italic;">{{ $timeFormat(item.created_at) }}</span><br>
+                {{ item.detail }}
+                <ul v-if="item.attachment">
+                  <li>
+                    <a :href="`/storage/${item.attachment}`" class="link text-success font-italic" style="font-size: 12px;" target="_blank">
+                      {{ item.attachment.split('/').pop() }}
+                    </a>
+                  </li>
+                </ul>
+                <br>
+                - (<i>{{ item.user }}</i>)
+              </td>
             </tr>
             <tr>
               <td v-if="lampirkan">
@@ -542,6 +551,13 @@ export default {
           return "Tandai Sudah Diterima";
         default:
           return "Approve";
+      }
+    },
+    handleFileLampiran(e) {
+      if (e.target.files.length > 0) {
+        this.lamiran.attachment = e.target.files[0];
+      } else {
+        this.lamiran.attachment = null;
       }
     },
     submitComments(orderId) {

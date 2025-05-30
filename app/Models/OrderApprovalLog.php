@@ -15,6 +15,7 @@ class OrderApprovalLog extends Model
         'order_id',
         'detail',
         'status',
+        'attachment',
         'created_at',
         'updated_at'
     ];

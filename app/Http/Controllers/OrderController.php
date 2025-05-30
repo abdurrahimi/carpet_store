@@ -310,7 +310,6 @@ class OrderController extends Controller
             return redirect()->route('penjualan.index')->with('success', 'Approval berhasil');
         } catch (Exception $e) {
             DB::rollBack();
-            dd($e);
             Log::error('Failed to approve order: ' . $e->getMessage());
             return response()->json(['message' => 'Approval Gagal.'], 500);
         }
@@ -384,17 +383,17 @@ class OrderController extends Controller
             'attachment' => 'nullable|file|mimes:pdf,jpg,jpeg,png|max:10240', // Maks 10MB
             'description' => 'nullable|string|max:255',
         ]);
-
         try {
-            $order = Order::findOrFail($id);
-
+            Order::findOrFail($id);
             $filename = null;
             if ($request->hasFile('attachment')) {
+                //dd("okok");
                 $attachment = $request->file('attachment');
                 $filename = time() . '_' . $attachment->getClientOriginalName();
-                $attachment->storeAs('attachments', $filename, 'public');
+                $path = $attachment->storeAs('uploads/attachments', $filename, 'public');
+                $filename = $path; // Simpan path lengkap
             }
-
+            //dd($filename);
             // Simpan ke database
             OrderApprovalLog::create([
                 'user_id' => auth()->id(),
@@ -429,6 +428,7 @@ class OrderController extends Controller
                 'status' => $log->status,
                 'detail' => $log->detail,
                 'user' => $log->user->name ?? null,
+                'attachment' => $log->attachment ? asset('storage/' . $log->attachment) : null,
                 'created_at' => Carbon::parse($log->created_at)
                     ->timezone('Asia/Jakarta')
                     ->format('Y-m-d H:i:s'),
