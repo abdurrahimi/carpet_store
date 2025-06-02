@@ -256,7 +256,7 @@ export default {
           title: "Status",
           data: "status",
           render: (row) => {
-            switch (row.status) {
+            switch (parseInt(row.status)) {
               case 0:
                 return <span class="badge badge-info">Pending</span>;
               case 1:
