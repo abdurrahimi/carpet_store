@@ -329,7 +329,7 @@ export default {
   },
   computed: {
     currentStep() {
-      switch (this.approval.status) {
+      switch (parseInt(this.approval.status)) {
         case -1:
         case 0:
           return 0;
