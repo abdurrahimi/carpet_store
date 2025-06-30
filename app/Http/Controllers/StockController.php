@@ -47,6 +47,35 @@ class StockController extends Controller
         ]);
     }
 
+    public function checkStock(Request $request)
+    {
+        return Inertia::render('Stock/Check');
+    }
+
+    public function getStockLists(Request $request)
+    {
+        $query = $request->get('query', '');
+        $data = Product::query()
+            ->with(['stock', 'color'])
+            ->select('id', 'design_name')
+            ->where(DB::raw('lower(design_name)'), 'like', '%' . strtolower($query) . '%')
+            ->limit(10)
+            ->get();
+
+        return response()->json($data);
+    }
+
+    public function getDataStockDetail(Request $request)
+    {
+        $query = $request->get('id', '');
+        $data = Product::query()
+            ->with('stock')
+            ->where('id', $query)
+            ->first();
+
+        return response()->json($data);
+    }
+
     public function getDataStock(Request $request)
     {
         $type = $request->get('type', '');

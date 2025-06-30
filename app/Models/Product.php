@@ -56,6 +56,11 @@ class Product extends Model
         return $this->belongsTo(User::class, 'updated_by');
     }
 
+    public function stock()
+    {
+        return $this->belongsTo(Stock::class, 'id', 'product_id');
+    }
+
     protected static function booted()
     {
         // Set created_by saat create data

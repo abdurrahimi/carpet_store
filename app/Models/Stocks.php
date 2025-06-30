@@ -8,5 +8,5 @@ use Illuminate\Database\Eloquent\Model;
 class Stocks extends Model
 {
     use HasFactory;
-    protected $table = 'stocks';
+    protected $table = 'stock_master';
 }

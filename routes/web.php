@@ -94,6 +94,9 @@ Route::middleware('auth')->group(function () {
     Route::get('/stock/data', [StockController::class, 'getDataStock'])->name('stock.get');
     Route::post('/stock', [StockController::class, 'store'])->name('stock.store');
     Route::delete('/stock/{id}', [StockController::class, 'destroy'])->name('stock.delete');
+    Route::get('/stock/check', [StockController::class, 'checkStock'])->name('stock.check');
+    Route::get('/stock/check/detail', [StockController::class, 'getDataStockDetail'])->name('stock.check.detail');
+    Route::get('/stock/check/data', [StockController::class, 'getStockLists'])->name('stock.check.data');
 
     Route::get('/penjualan', [PenjualanController::class, 'index'])->name('penjualan.index');
     Route::get('/kasir', [PenjualanController::class, 'kasir'])->name('penjualan.kasir');
