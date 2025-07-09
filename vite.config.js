@@ -19,4 +19,5 @@ export default defineConfig({
         }),
         vueJsx()
     ],
+    base: '/admin-panel/',
 });
