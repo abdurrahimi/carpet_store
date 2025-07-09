@@ -68,6 +68,7 @@ const formatCurrency = (value) => {
         <div>
             <label class="form-label">Cari Product</label>
             <div class="row">
+                {{ product }}
                 <input type="text" class="form-control mb-2 col-md-6" placeholder="Ketikkan Nama Product"
                     v-model="query" @keyup="onSearch"> &nbsp; <button class="btn btn-primary mb-2" type="button"
                     @click="searchDetail">
@@ -77,11 +78,27 @@ const formatCurrency = (value) => {
             <div v-if="showPopup && results.length"
                 class="translate-middle bg-white border rounded shadow p-3 col-md-12 z-50">
                 <div class="border-bottom pb-2 mb-3 fw-bold fs-5">Hasil Pencarian</div>
-
+                
                 <ul class="list-group list-group-flush">
                     <li v-for="(product, index) in results" :key="index" @click="selectProduct(product)"
-                        class="list-group-item list-group-item-action" style="cursor: pointer;">
-                        {{ product.design_name }} - {{ product.color?.name ?? '' }} - stock: {{ product.stock }}
+                        class="list-group-item list-group-item-action" :style="{background: index%2 == 0 ? '#f3f3f3': ''}" style="cursor: pointer;">
+                        <b>{{ product.design_name }} <span v-if="product.color"> - {{ product.color?.name ?? '' }}</span></b>
+                        <table class="table table-sm table-bordered">
+                            <tr>
+                                <th class="text-center">30 Meter</th>
+                                <th class="text-center">24 Meter</th>
+                                <th class="text-center">18 Meter</th>
+                                <th class="text-center">12 Meter</th>
+                                <th class="text-center">6 Meter</th>
+                            </tr>
+                            <tr>
+                                <td class="text-center">{{ product.product_stock['30meter'] }}</td>
+                                <td class="text-center">{{ product.product_stock['24meter'] }}</td>
+                                <td class="text-center">{{ product.product_stock['18meter'] }}</td>
+                                <td class="text-center">{{ product.product_stock['12meter'] }}</td>
+                                <td class="text-center">{{ product.product_stock['6meter'] }}</td>
+                            </tr>
+                        </table>
                     </li>
                 </ul>
             </div>

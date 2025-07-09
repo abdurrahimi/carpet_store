@@ -61,6 +61,11 @@ class Product extends Model
         return $this->belongsTo(Stock::class, 'id', 'product_id');
     }
 
+    public function productStock()
+    {
+        return $this->belongsTo(ProductStock::class, 'id', 'product_id');
+    }
+
     protected static function booted()
     {
         // Set created_by saat create data

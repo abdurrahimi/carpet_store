@@ -9,6 +9,7 @@ use Illuminate\Support\Facades\DB;
 use Inertia\Inertia;
 use App\Models\Product;
 use App\Models\ProductCategory;
+use App\Models\ProductStock;
 use Illuminate\Support\Facades\Log;
 use PhpOffice\PhpSpreadsheet\IOFactory;
 use Illuminate\Support\Facades\Storage;
@@ -142,7 +143,7 @@ class ProductController extends Controller
             $product->cost = $request->input('cost', 0);
             $product->save();
 
-            $stock = new Stocks();
+            $stock = new ProductStock();
             $stock->product_id = $product->id;
             $stock->save();
 

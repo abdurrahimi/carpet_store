@@ -56,7 +56,7 @@ class StockController extends Controller
     {
         $query = $request->get('query', '');
         $data = Product::query()
-            ->with(['stock', 'color'])
+            ->with(['productStock', 'color'])
             ->select('id', 'design_name')
             ->where(DB::raw('lower(design_name)'), 'like', '%' . strtolower($query) . '%')
             ->limit(10)
@@ -69,7 +69,7 @@ class StockController extends Controller
     {
         $query = $request->get('id', '');
         $data = Product::query()
-            ->with('stock')
+            ->with('productStock')
             ->where('id', $query)
             ->first();
 
