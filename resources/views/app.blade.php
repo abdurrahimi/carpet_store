@@ -54,6 +54,7 @@
             opacity: 0;
         }
     </style>
+    <base href="/admin-panel/">
 </head>
 
 <body class="font-sans antialiased">
