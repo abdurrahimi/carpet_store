@@ -126,11 +126,11 @@ class StockController extends Controller
             }
 
             if($request->stock_type == 1) {
-                $prefix = $prefix . ' Baru';
+                $prefix .= ' Baru';
             }
 
             if($request->stock_type == 2) {
-                $prefix = $prefix . ' Bekas';
+                $prefix .= ' Bekas';
             }
 
             $approval->detail = $prefix . ' produk '.$product->design_name.' di '.$store->name.' dari supplier '.$supplier->name.' sebanyak '.$request->total.', ditambahkan oleh user '. Auth::user()->name;
