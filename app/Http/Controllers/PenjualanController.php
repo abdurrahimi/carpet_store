@@ -18,7 +18,14 @@ class PenjualanController extends Controller
     {
 
         $pageSize = (int) $request->get('limit', 10);
-        $data = Order::query()->with('store');
+        $data = Order::query()->with([
+            'store' => function ($query) {
+                $query->select('id', 'name');
+            },
+            'customer' => function ($query) {
+                $query->select('id', 'name');
+            }
+        ]);
         $data = $data->orderBy('created_at', 'desc')->paginate($pageSize);
 
         foreach ($data as $key => &$value) {
@@ -56,7 +63,7 @@ class PenjualanController extends Controller
             ->timezone('Asia/Jakarta')
             ->format('Y-m-d H:i:s');
         $penjualan->attachments = json_decode($penjualan->attachments, true);
-        
+
         return response()->json([
             'penjualan' => $penjualan,
         ]);

@@ -12,16 +12,17 @@
             <div class="card-body">
                 <form id="form-kasir" enctype="multipart/form-data" @submit.prevent="submitForm">
                     <table class="table">
-                        <thead></thead>
                         <tbody>
                             <tr>
                                 <td colspan="5">
                                     <div class="form-group">
-                                        <label for="customer" class="form-label">Customer</label>
+                                        <label for="customer" class="form-label">Customer <span
+                                                class="text-danger">*</span></label>
                                         <Multiselect v-model="form.customer" :options="customer" track-by="id"
                                             placeholder="Pilih Customer" label="name" @search-change="getCustomers"
                                             @select="addCustomer" :internal-search="false"
-                                            :class="{ 'is-invalid': $page?.props?.errors?.customer?.id }" />
+                                            :class="{ 'is-invalid': errors['customer.id'] }" />
+                                        <span class="text-danger">{{ errors['customer.id'] ? errors['customer.id'].replace('customer.id', 'Customer') : ''}}</span>
                                     </div>
                                 </td>
                             </tr>
@@ -48,8 +49,8 @@
                                                             </div>
                                                             <!-- Product Selector -->
                                                             <div class="form-group">
-                                                                <label for="product_id"
-                                                                    class="form-label">Produk</label>
+                                                                <label for="product_id" class="form-label">Produk <span
+                                                                        class="text-danger">*</span></label>
                                                                 <Multiselect v-model="form.data[key].product"
                                                                     :options="products" track-by="id"
                                                                     placeholder="Pilih Produk" label="design_name"
@@ -66,7 +67,8 @@
                                                             <!-- Unit Price -->
                                                             <div class="form-group">
                                                                 <label for="unit_price" class="form-label">Unit
-                                                                    Price / 6m </label>
+                                                                    Price / 6m <span
+                                                                        class="text-danger">*</span></label>
                                                                 <span v-if="form.data[key].product">
                                                                     ({{ formatMoney(form.data[key].product.lowest_price)
                                                                     }}
@@ -104,15 +106,16 @@
                                                                                 @click="removeVariant(key, key_variant)"
                                                                                 type="button">x</button>
                                                                             <div class="form-group">
-                                                                                <label
-                                                                                    class="form-label">Panjang</label>
+                                                                                <label class="form-label">Panjang <span
+                                                                                        class="text-danger">*</span></label>
                                                                                 <input type="number"
                                                                                     class="form-control"
                                                                                     v-model="variant.panjang"
                                                                                     :disabled="!form.data[key].product" />
                                                                             </div>
                                                                             <div class="form-group">
-                                                                                <label class="form-label">Jumlah</label>
+                                                                                <label class="form-label">Jumlah <span
+                                                                                        class="text-danger">*</span></label>
                                                                                 <input type="number"
                                                                                     class="form-control"
                                                                                     v-model="variant.jumlah"
@@ -125,7 +128,7 @@
                                                             <!-- Quantity -->
                                                             <div class="form-group">
                                                                 <label for="jumlah" class="form-label">Jumlah
-                                                                    (Meter)</label>
+                                                                    (Meter) <span class="text-danger">*</span></label>
                                                                 <div class="input-group">
                                                                     <input type="number" class="form-control"
                                                                         :disabled="!form.data[key].product"
@@ -285,7 +288,7 @@
                                 <td></td>
                             </tr>
                             <tr>
-                                <td colspan="3">Metode Pembayaran</td>
+                                <td colspan="3">Metode Pembayaran <span class="text-danger">*</span></td>
                                 <td>
                                     <div class="form-group">
                                         <select class="form-control" v-model="form.payment_method">
@@ -435,7 +438,8 @@ export default {
                     panjang: 0,
                     jumlah: 0,
                 },
-            ]
+            ],
+            errors: {}
         };
     },
     mounted() {
@@ -452,9 +456,12 @@ export default {
             formData.append('data', JSON.stringify(this.form));
 
             // append file-file attachment
-            this.form.attachment.forEach(file => {
-                formData.append('attachments[]', file);
-            });
+            if (this.form.attachment) {
+                this.form.attachment.forEach(file => {
+                    formData.append('attachments[]', file);
+                });
+            }
+
             return router.post(this.route('order.create'), formData, {
                 preserveScroll: true,
                 onSuccess: () => {
@@ -465,39 +472,12 @@ export default {
                         only: ["users"],
                     });
                 },
-                onError: () => {
+                onError: (e) => {
+                    this.errors = e
                     this.form.submit = false;
-                    this.$error();
+                    this.$error('Please check the form for errors');
                 },
             });
-
-            return;
-            try {
-                if (this.form.submit) {
-                    return;
-                }
-
-                this.form.submit = true;
-
-                return router.post(this.route('order.create'), this.form, {
-                    preserveScroll: true,
-                    onSuccess: () => {
-                        this.form.submit = false;
-                        $("#modal-add").modal("hide");
-                        this.$success("Data berhasil disimpan");
-                        router.visit(this.$page.url, {
-                            only: ["users"],
-                        });
-                    },
-                    onError: () => {
-                        this.form.submit = false;
-                        this.$error();
-                    },
-                });
-
-            } catch (e) {
-                this.form.submit = false;
-            }
         },
         handleFileUpload(e) {
             const files = e.target.files;

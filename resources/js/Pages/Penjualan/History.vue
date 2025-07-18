@@ -68,7 +68,7 @@ const metodePembayaran = [
             </tr>
             <tr>
               <th>Metode Pengiriman</th>
-              <td>{{ detail?.shipping_method?.name }}</td>
+              <td>{{ detail?.shipping_method }}</td>
             </tr>
             <tr>
               <th>Status</th>
@@ -236,7 +236,7 @@ export default {
           render: (row) => <span>{this.$timeFormat(row.created_at)}</span>
         },
         { title: "Toko", data: "store.name" },
-        { title: "Jumlah", data: "total" },
+        { title: "Jumlah", data: "final_price" },
         {
           title: "Metode Pembayaran",
           data: "payment_method.name",
@@ -251,7 +251,7 @@ export default {
             return <span>{metodePembayaran[row?.payment_method] || "N/A"}</span>;
           }
         },
-        { title: "Metode Pengiriman", data: "shipping_method.name" },
+        { title: "Metode Pengiriman", data: "shipping_method" },
         {
           title: "Status",
           data: "status",

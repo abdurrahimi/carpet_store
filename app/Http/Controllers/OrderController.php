@@ -26,6 +26,7 @@ class OrderController extends Controller
         $request = json_decode($requests->data, true);
         $request = new Request($request);
         $request->validate([
+            'customer.id' => 'required|integer|exists:customers,id',
             'data' => 'required|array|min:1',
             'data.*.product' => 'required|array',
             'data.*.product.id' => 'required|integer',
@@ -47,8 +48,9 @@ class OrderController extends Controller
             'additional.*.name' => 'nullable|string|max:255',
             'additional.*.total' => 'nullable|numeric',
         ]);
-
+        
         DB::beginTransaction();
+        dd($request->all());
         try {
             $product_ids = collect($request->input('data'))
                 ->pluck('product.id')
@@ -67,7 +69,7 @@ class OrderController extends Controller
 
             $totalItemPriceBeforeDisc = 0;
             foreach ($request->data as $produx) {
-                $totalItemPriceBeforeDisc += (int)str_replace('.', '', $produx['unit_price']) * ((int) str_replace('.', '', $produx['qty']) / 6);
+                $totalItemPriceBeforeDisc += (int)str_replace('.', '', $produx['unit_price']) * ((int) str_replace('.', '', $produx['qty']) / 6) - (int)str_replace('.', '', $produx['discount_price'] ?? 0);
             }
 
             $attachments = [];
@@ -84,7 +86,7 @@ class OrderController extends Controller
             //create new temporary order
             $order = new Order();
             $order->customer_id = $request->input('customer.id', 0);
-            $order->discount = $request->input('discount', 0);
+            $order->discount = str_replace('.','',$request->input('discount', 0));
             $order->discount_percentage = $request->input('discount_percentage', 0);;
             $order->total_additional_price = $totalAdditional;
             $order->total_price_before_disc = $totalItemPriceBeforeDisc; //harga sebelum diskon global
@@ -104,6 +106,9 @@ class OrderController extends Controller
             $approval = false;
             foreach ($request->input('data') as $item) {
 
+                $item['unit_price'] = (int) str_replace('.', '', $item['unit_price']);
+                $item['discount_price'] = (int) str_replace('.', '', $item['discount_price'] ?? 0);
+                
                 $productOrigin = $products[$item['product']['id']] ?? null;
                 if (!$productOrigin) {
                     DB::rollBack();
