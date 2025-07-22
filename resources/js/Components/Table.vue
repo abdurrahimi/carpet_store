@@ -63,7 +63,7 @@
                   style="white-space: nowrap"
                 >
 
-                  <component v-if="column.render" :is="column.render(row)"></component>
+                  <component v-if="column.render && typeof column.render === 'function'" :is="column.render(row)"></component>
                   <template v-else>{{ getNestedValue(row, column.data) }}</template>
                 </td>
                 <td

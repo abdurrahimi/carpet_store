@@ -2,6 +2,7 @@
 
 use App\Http\Controllers\ApprovalController;
 use App\Http\Controllers\CategoryController;
+use App\Http\Controllers\CompanyController;
 use App\Http\Controllers\CustomerController;
 use App\Http\Controllers\OrderController;
 use App\Http\Controllers\PenjualanController;
@@ -116,6 +117,13 @@ Route::middleware('auth')->group(function () {
     //Approval
     Route::get('/approval', [ApprovalController::class, 'index'])->name('approval.index');
     Route::post('/approval', [ApprovalController::class, 'approvalAction'])->name('approval.action');
+
+    //Company
+    Route::get('/companies', [CompanyController::class, 'index'])->name('company.index');
+    Route::get('/companies/data', [CompanyController::class, 'getData'])->name('company.data');
+    Route::post('/companies', [CompanyController::class, 'store'])->name('company.store');
+    Route::post('/companies/{id}', [CompanyController::class, 'update'])->name('company.update');
+    Route::delete('/companies', [CompanyController::class, 'delete'])->name('company.delete');
 
 
     Route::get('/temp', function () {
