@@ -525,7 +525,7 @@ export default {
                     const query = new URLSearchParams(url.split('?')[1]);
                     const id = query.get('data'); // "2"
                     
-                    window.open(`/invoice/download/${id}`, '_blank');
+                    window.open(this.route('invoice.download', id), '_blank');
                     router.visit(this.$page.url, {
                         only: ["users"],
                     });

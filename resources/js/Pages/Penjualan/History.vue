@@ -586,8 +586,7 @@ export default {
       });
     },
     invoice(row) {
-      const url = `/invoice/download/${row.id}`;
-      window.open(url, '_blank');
+      window.open(this.route('invoice.download', row.id), '_blank');
     }
   },
 };
