@@ -50,7 +50,6 @@ class OrderController extends Controller
         ]);
         
         DB::beginTransaction();
-        dd($request->all());
         try {
             $product_ids = collect($request->input('data'))
                 ->pluck('product.id')
