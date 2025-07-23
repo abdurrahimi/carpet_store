@@ -62,7 +62,7 @@ class CompanyController extends Controller
                 'bank_name' => $request->bank_name,
                 'bank_account_number' => $request->bank_account_number,
                 'bank_account_holder' => $request->bank_account_holder,
-                'logo' => $logoPath,
+                'logo' => 'storage/'.$logoPath,
                 'code' => $request->code,
                 'email' => $request->email,
             ]);
@@ -95,7 +95,7 @@ class CompanyController extends Controller
             $company = Company::findOrFail($id);
             if ($request->hasFile('logo')) {
                 $logoPath = $request->file('logo')->store('uploads/logos', 'public');
-                $company->logo = $logoPath;
+                $company->logo = 'storage/'.$logoPath;
             }
 
             $company->update([
