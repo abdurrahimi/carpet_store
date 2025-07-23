@@ -40,6 +40,13 @@
                         </div>
 
                         <div class="col-md-6 mb-3">
+                            <label for="code" class="form-label">Kode Perusahaan</label>
+                            <input type="text" id="code" v-model="form.code" class="form-control"
+                                :class="{ 'is-invalid': $page?.props?.errors?.code }" required>
+                            <span class="text-danger">{{ $page?.props?.errors?.code }}</span>
+                        </div>
+
+                        <div class="col-md-6 mb-3">
                             <label for="address" class="form-label">Alamat Perusahaan</label>
                             <textarea type="text" id="address" v-model="form.address" class="form-control"
                                 :class="{ 'is-invalid': $page?.props?.errors?.address }" required></textarea>
@@ -167,6 +174,8 @@ export default {
                 bank_account_number: data.bank_account_number || "",
                 bank_account_holder: data.bank_account_holder || "",
                 logo: null,
+                code: data.code || "",
+                address: data.address || "",
                 preview: data.logo_url || null,
                 submit: false,
             };
