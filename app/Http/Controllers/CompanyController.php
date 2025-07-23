@@ -105,7 +105,6 @@ class CompanyController extends Controller
                 'bank_name' => $request->bank_name,
                 'bank_account_number' => $request->bank_account_number,
                 'bank_account_holder' => $request->bank_account_holder,
-                'address' => $request->address,
                 'code' => $request->code,
                 'email' => $request->email,
             ]);
