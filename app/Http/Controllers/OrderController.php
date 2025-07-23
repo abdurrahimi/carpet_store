@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Constant\DBConstanst;
 use App\Models\Approval;
+use App\Models\Company;
 use App\Models\Order;
 use App\Models\OrderAdditional;
 use App\Models\OrderApprovalComments;
@@ -26,7 +27,7 @@ class OrderController extends Controller
         $request = json_decode($requests->data, true);
         $request = new Request($request);
         $request->validate([
-            'customer.id' => 'required|integer|exists:customers,id',
+            'customer.id' => 'required|integer|exists:customer,id',
             'data' => 'required|array|min:1',
             'data.*.product' => 'required|array',
             'data.*.product.id' => 'required|integer',
@@ -47,6 +48,10 @@ class OrderController extends Controller
             'additional' => 'nullable|array',
             'additional.*.name' => 'nullable|string|max:255',
             'additional.*.total' => 'nullable|numeric',
+            'company.id' => 'required|integer|exists:company,id',
+            'shipping_to' => 'required|string',
+            'shipping_address' => 'required|string',
+            'shipping_phone' => 'required|string'
         ]);
         
         DB::beginTransaction();
@@ -96,6 +101,14 @@ class OrderController extends Controller
             $order->status = DBConstanst::ORDER_STATUS_PENDING;
             $order->payment_method = $request->input('payment_method', 0);
             $order->shipping_method = strtolower($request->input('shipping_method', ''));
+
+            $invoice_no = Company::findOrFail($request->input('company.id'))->increment('last_invoice_no');
+            $number = $invoice_no;
+            $order->invoice_no = str_pad($number, 6, '0', STR_PAD_LEFT);
+            $order->company_id = $request->input('company.id');
+            $order->shipping_to = $request->shipping_to;
+            $order->shipping_address = $request->shipping_address;
+            $order->shipping_phone = $request->shipping_phone;
             $order->save();
 
             $orderId = $order->id;

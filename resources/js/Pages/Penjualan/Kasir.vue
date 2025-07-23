@@ -16,15 +16,50 @@
                             <tr>
                                 <td colspan="5">
                                     <div class="form-group">
-                                        <label for="customer" class="form-label">Customer <span
+                                        <label for="company" class="form-label">Invoice By <span
+                                                class="text-danger">*</span></label>
+                                        <Multiselect v-model="form.company" :options="company" track-by="id"
+                                            placeholder="Pilih Company" label="name" @search-change="getCompany()"
+                                             :internal-search="false"
+                                            :class="{ 'is-invalid': errors['company.id'] }" />
+                                        <span class="text-danger">{{ errors['company.id'] ?
+                                            errors['company.id'].replace('company.id', 'Company') : '' }}</span>
+                                    </div>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td colspan="5">
+                                    <div class="form-group">
+                                        <label for="customer" class="form-label">Invoice To <span
                                                 class="text-danger">*</span></label>
                                         <Multiselect v-model="form.customer" :options="customer" track-by="id"
                                             placeholder="Pilih Customer" label="name" @search-change="getCustomers"
                                             @select="addCustomer" :internal-search="false"
                                             :class="{ 'is-invalid': errors['customer.id'] }" />
-                                        <span class="text-danger">{{ errors['customer.id'] ? errors['customer.id'].replace('customer.id', 'Customer') : ''}}</span>
+                                        <span class="text-danger">{{ errors['customer.id'] ?
+                                            errors['customer.id'].replace('customer.id', 'Customer') : '' }}</span>
                                     </div>
                                 </td>
+                            </tr>
+                            <tr>
+                                <td colspan="5"><input id="shipWithBill" type="checkbox" v-model="isShipWithBill"><label
+                                        for="shipWithBill" class="font-weight-bold">&nbsp;Alamat pengiriman sama dengan
+                                        alamat invoice</label></td>
+                            </tr>
+                            <tr v-if="!isShipWithBill">
+                                <td>
+                                    <label>Penerima</label>
+                                    <input type="text" class="form-control" v-model="form.shipping_to">
+                                </td>
+                                <td>
+                                    <label>Nomor Handphone</label>
+                                    <input type="text" class="form-control" v-model="form.shipping_phone">
+                                </td>
+                                <td colspan="3">
+                                    <label>Alamat</label>
+                                    <textarea class="form-control" v-model="form.shipping_address"></textarea>
+                                </td>
+
                             </tr>
                             <tr>
                                 <td colspan="5">
@@ -394,6 +429,8 @@ export default {
                 { title: "Customer", data: "customer.name" },
                 { title: "Jumlah", data: "final_price" },
             ],
+            company: [],
+            isShipWithBill: true,
             modalTitle: "",
             modalShow: false,
             selectedIds: [],
@@ -413,6 +450,9 @@ export default {
                         ],
                     },
                 ],
+                shipping_to: "",
+                shipping_phone: "",
+                shipping_address: "",
                 customer: null,
                 discount: 0,
                 discount_percentage: 0,
@@ -446,6 +486,7 @@ export default {
         this.resetForm();
         this.getProducts();
         this.getCustomers();
+        this.getCompany();
     },
     methods: {
         async submitForm() {
@@ -593,6 +634,10 @@ export default {
                         ],
                     },
                 ],
+                company: {},
+                shipping_to: "",
+                shipping_phone: "",
+                shipping_address: "",
                 customer: null,
                 discount: 0,
                 discount_percentage: 0,
@@ -651,8 +696,11 @@ export default {
             if (key == 0) return;
             this.form.data.splice(key, 1);
         },
-        addCustomer() {
-            console.log("okok");
+        addCustomer(data) {
+            console.log(data)
+            this.form.shipping_to = data.name
+            this.form.shipping_phone = data.phone
+            this.form.shipping_address = data.address
         },
         pilihData(key) {
             const product = this.form.data[key].product;
@@ -669,6 +717,12 @@ export default {
                 this.customer = res.data;
             });
         },
+        getCompany(search) {
+            axios.get(this.route("company.data", { search: search })).then((res) => {
+                this.company = res.data;
+            });
+        },
+        
     },
 };
 </script>

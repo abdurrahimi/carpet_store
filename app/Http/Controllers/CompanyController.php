@@ -44,6 +44,8 @@ class CompanyController extends Controller
             'bank_account_number' => 'nullable|string|max:100',
             'bank_account_holder' => 'nullable|string|max:100',
             'logo' => 'nullable|image|mimes:jpg,jpeg,png|max:2048',
+            'code' => 'required',
+            'email' => 'nullable|email|max:255',
         ]);
 
         DB::beginTransaction();
@@ -61,6 +63,8 @@ class CompanyController extends Controller
                 'bank_account_number' => $request->bank_account_number,
                 'bank_account_holder' => $request->bank_account_holder,
                 'logo' => $logoPath,
+                'code' => $request->code,
+                'email' => $request->email,
             ]);
 
             DB::commit();
@@ -83,6 +87,7 @@ class CompanyController extends Controller
             'bank_account_holder' => 'nullable|string|max:100',
             'logo' => 'nullable|image|mimes:jpg,jpeg,png|max:2048',
             'email' => 'nullable|email|max:255', // Added email validation
+            'code' => 'required'
         ]);
 
         DB::beginTransaction();
@@ -101,6 +106,8 @@ class CompanyController extends Controller
                 'bank_account_number' => $request->bank_account_number,
                 'bank_account_holder' => $request->bank_account_holder,
                 'address' => $request->address,
+                'code' => $request->code,
+                'email' => $request->email,
             ]);
 
             DB::commit();

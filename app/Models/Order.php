@@ -40,4 +40,9 @@ class Order extends Model
     {
         return $this->hasMany(Product::class, 'id', 'product_id');
     }
+
+    public function company()
+    {
+        return $this->hasOne(Company::class, 'id', 'company_id');
+    }
 }

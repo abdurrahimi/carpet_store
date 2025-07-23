@@ -32,8 +32,7 @@ Route::post('/deploy', function (Request $request) {
     return response('Deploy bro', 200);
 });
 
-Route::get('/invoice/download', [\App\Http\Controllers\InvoiceController::class, 'download']);
-Route::get('/invoice/download2', [\App\Http\Controllers\InvoiceController::class, 'downloadQuotation']);
+Route::get('/invoice/download/{id}', [\App\Http\Controllers\InvoiceController::class, 'download']);
 
 Route::get('/', function () {
     return redirect('/dashboard');
