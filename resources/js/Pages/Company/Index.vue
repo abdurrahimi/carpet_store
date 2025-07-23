@@ -54,6 +54,13 @@
                         </div>
 
                         <div class="col-md-6 mb-3">
+                            <label for="email" class="form-label">Email</label>
+                            <input type="text" id="email" v-model="form.email" class="form-control"
+                                :class="{ 'is-invalid': $page?.props?.errors?.email }">
+                            <span class="text-danger">{{ $page?.props?.errors?.email }}</span>
+                        </div>
+
+                        <div class="col-md-6 mb-3">
                             <label for="bank" class="form-label">Bank</label>
                             <input type="text" id="bank" v-model="form.bank_name" class="form-control"
                                 :class="{ 'is-invalid': $page?.props?.errors?.bank_name }">
@@ -155,6 +162,7 @@ export default {
                 id: data.id || "",
                 name: data.name || "",
                 phone_number: data.phone_number || "",
+                email: data.email || "",
                 bank_name: data.bank_name || "",
                 bank_account_number: data.bank_account_number || "",
                 bank_account_holder: data.bank_account_holder || "",

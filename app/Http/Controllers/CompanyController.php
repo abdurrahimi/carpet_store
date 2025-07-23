@@ -82,6 +82,7 @@ class CompanyController extends Controller
             'bank_account_number' => 'nullable|string|max:100',
             'bank_account_holder' => 'nullable|string|max:100',
             'logo' => 'nullable|image|mimes:jpg,jpeg,png|max:2048',
+            'email' => 'nullable|email|max:255', // Added email validation
         ]);
 
         DB::beginTransaction();
