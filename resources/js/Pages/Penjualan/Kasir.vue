@@ -20,8 +20,7 @@
                                                 class="text-danger">*</span></label>
                                         <Multiselect v-model="form.company" :options="company" track-by="id"
                                             placeholder="Pilih Company" label="name" @search-change="getCompany()"
-                                             :internal-search="false"
-                                            :class="{ 'is-invalid': errors['company.id'] }" />
+                                            :internal-search="false" :class="{ 'is-invalid': errors['company.id'] }" />
                                         <span class="text-danger">{{ errors['company.id'] ?
                                             errors['company.id'].replace('company.id', 'Company') : '' }}</span>
                                     </div>
@@ -46,18 +45,18 @@
                                         for="shipWithBill" class="font-weight-bold">&nbsp;Alamat pengiriman sama dengan
                                         alamat invoice</label></td>
                             </tr>
-                            <tr v-if="!isShipWithBill">
+                            <tr>
                                 <td>
                                     <label>Penerima</label>
-                                    <input type="text" class="form-control" v-model="form.shipping_to">
+                                    <input type="text" class="form-control" v-model="form.shipping_to" :disabled="isShipWithBill">
                                 </td>
                                 <td>
                                     <label>Nomor Handphone</label>
-                                    <input type="text" class="form-control" v-model="form.shipping_phone">
+                                    <input type="text" class="form-control" v-model="form.shipping_phone" :disabled="isShipWithBill">
                                 </td>
                                 <td colspan="3">
                                     <label>Alamat</label>
-                                    <textarea class="form-control" v-model="form.shipping_address"></textarea>
+                                    <textarea class="form-control" v-model="form.shipping_address" :disabled="isShipWithBill"></textarea>
                                 </td>
 
                             </tr>
@@ -367,8 +366,17 @@
                                 <td colspan="3">Kasir</td>
                                 <td>
                                     <div class="form-group">
+
+
                                         <a class="btn btn-primary float-right" @click="submitForm"
-                                            :class="{ disabled: form.submit }">Submit</a>
+                                            :class="{ disabled: form.submit }">
+                                            <template v-if="form.submit">
+                                                <span class="spinner-border spinner-border-sm" role="status"
+                                                    aria-hidden="true"></span>
+                                                <span class="bott">Loading</span>
+                                            </template>
+                                            <span v-else>Submit</span>
+                                        </a>
                                     </div>
                                 </td>
                                 <td></td>
@@ -490,7 +498,10 @@ export default {
     },
     methods: {
         async submitForm() {
-
+            if (this.form.submit) {
+                return;
+            }
+            this.form.submit = true;
             const formData = new FormData();
 
             // append data JSON sebagai string
@@ -505,10 +516,16 @@ export default {
 
             return router.post(this.route('order.create'), formData, {
                 preserveScroll: true,
-                onSuccess: () => {
+                onSuccess: (data) => {
+
                     this.form.submit = false;
                     $("#modal-add").modal("hide");
                     this.$success("Data berhasil disimpan");
+                    const url = this.$page.url; // Misal: "/users?page=2&sort=asc"
+                    const query = new URLSearchParams(url.split('?')[1]);
+                    const id = query.get('data'); // "2"
+                    
+                    window.open(`/invoice/download/${id}`, '_blank');
                     router.visit(this.$page.url, {
                         only: ["users"],
                     });
@@ -722,7 +739,7 @@ export default {
                 this.company = res.data;
             });
         },
-        
+
     },
 };
 </script>

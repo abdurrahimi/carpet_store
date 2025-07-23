@@ -33,6 +33,9 @@ const metodePembayaran = [
       </div>
       <Table :columns="table" :rows="penjualan" @update:selectedRows="handleSelectedRows">
         <template #actions="{ row }">
+          <button @click="invoice(row)" class="btn btn-success btn-sm" title="Status Log">
+            <i class="fa fa-print"></i>&nbsp;
+            Invoice</button>&nbsp;
           <button @click="statusLog(row)" class="btn btn-info btn-sm" title="Status Log">
             <i class="fa fa-history"></i>&nbsp;
             Status Log</button>&nbsp;
@@ -229,6 +232,7 @@ export default {
         attachment: null,
       },
       table: [
+        { title: "No. Invoice", data: "invoice_no" },
         { title: "Nama Pelanggan", data: "customer.name" },
         {
           title: "Tanggal",
@@ -581,6 +585,10 @@ export default {
         }
       });
     },
+    invoice(row) {
+      const url = `/invoice/download/${row.id}`;
+      window.open(url, '_blank');
+    }
   },
 };
 </script>

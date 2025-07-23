@@ -102,9 +102,10 @@ class OrderController extends Controller
             $order->payment_method = $request->input('payment_method', 0);
             $order->shipping_method = strtolower($request->input('shipping_method', ''));
 
-            $invoice_no = Company::findOrFail($request->input('company.id'))->increment('last_invoice_no');
-            $number = $invoice_no;
-            $order->invoice_no = str_pad($number, 6, '0', STR_PAD_LEFT);
+            $company = Company::findOrFail($request->input('company.id'));
+            $number = $company->last_invoice_no + 1;
+            $order->invoice_no = str_pad($number, 6, '0',  STR_PAD_LEFT);
+            $company->increment('last_invoice_no');
             $order->company_id = $request->input('company.id');
             $order->shipping_to = $request->shipping_to;
             $order->shipping_address = $request->shipping_address;
@@ -182,7 +183,7 @@ class OrderController extends Controller
 
 
             DB::commit();
-            return redirect()->route('penjualan.kasir')->with('success', 'Transaksi berhasil ditambahkan.');
+            return redirect()->route('penjualan.kasir', ['data' => $order])->with('success', 'Transaksi berhasil ditambahkan.');
         } catch (Exception $e) {
             DB::rollBack();
             Log::error('Failed to create order: ', [
