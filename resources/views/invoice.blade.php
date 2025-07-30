@@ -95,6 +95,7 @@
                 <td>
                     <img src="{{ '/'.$order->company->logo ?? 'https://media.istockphoto.com/id/2173059563/vector/coming-soon-image-on-white-background-no-photo-available.jpg?s=612x612&w=0&k=20&c=v0a_B58wPFNDPULSiw_BmPyhSNCyrP_d17i2BPPyDTk=' }}" width="80">
                 </td>
+                <td>{{$order->company->name}}</td>
                 <td class="title">INVOICE</td>
             </tr>
         </table>
@@ -175,7 +176,7 @@
             <tr>
                 <td>
                     <strong>Catatan:</strong><br>
-                    {!! nl2br(e("mantap deh dah bisa")) !!}
+                    {{-- {!! nl2br(e("mantap deh dah bisa")) !!} --}}
                 </td>
                 <td>
                     <table>
