@@ -159,7 +159,7 @@
         <tr>
             <td>
                 <strong>Catatan:</strong><br>
-                {!! nl2br(e("mantap deh dah bisa")) !!}
+               <!--  {!! nl2br(e("mantap deh dah bisa")) !!} -->
             </td>
             <td>
                 <table>
