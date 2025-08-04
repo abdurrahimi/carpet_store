@@ -68,6 +68,7 @@ class UsersController extends Controller
             'leader_id.id' => 'nullable|integer|exists:karyawan,id',
             'password' => 'nullable|string|min:6|max:16',
             'role' => 'required|string|exists:roles,name',
+            'toko_id.id' => 'required|integer|exists:stores,id',
         ]);
 
         DB::beginTransaction();
@@ -90,6 +91,7 @@ class UsersController extends Controller
                 $user->name = $request->name;
                 $user->email = $request->email;
                 $user->password = Hash::make($request->password);
+                $user->store_id = $request->toko_id['id'];
                 $user->save();
                 $user->syncRoles($request->role);
             }

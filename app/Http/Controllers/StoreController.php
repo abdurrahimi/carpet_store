@@ -45,7 +45,8 @@ class StoreController extends Controller
             'manager.id' => 'nullable|integer',
             'name' => 'required|string|max:50',
             'address' => 'nullable|string',
-            'phone' => 'nullable|digits_between:10,20'
+            'phone' => 'nullable|digits_between:10,20',
+            'code' => 'required|string|max:10'
         ]);
 
         try {
@@ -55,6 +56,7 @@ class StoreController extends Controller
             $store->name = $validatedData['name'];
             $store->address = $validatedData['address'] ?? null;
             $store->phone = $validatedData['phone'] ?? null;
+            $store->code = $validatedData['code'];
             $store->created_by = Auth::user()->id;
             $store->updated_by = Auth::user()->id;
             $store->save();
@@ -73,7 +75,8 @@ class StoreController extends Controller
             'manager.id' => 'nullable|integer',
             'name' => 'required|string|max:50',
             'address' => 'nullable|string',
-            'phone' => 'nullable|digits_between:10,20'
+            'phone' => 'nullable|digits_between:10,20',
+            'code' => 'required|string|max:10'
         ]);
 
         try {
@@ -83,7 +86,8 @@ class StoreController extends Controller
             $store->name = $validatedData['name'];
             $store->address = $validatedData['address'] ?? null;
             $store->phone = $validatedData['phone'] ?? null;
-            $store->updated_by = Auth::user()->id;;
+            $store->updated_by = Auth::user()->id;
+            $store->code = $validatedData['code'];
             $store->save();
 
             return redirect()->route('store.index')->with('success', 'Store update successfully.');

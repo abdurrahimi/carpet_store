@@ -87,6 +87,30 @@
                             </div>
                         </div>
                     </div>
+
+                    <!-- Kode -->
+                    <div class="col-md-6 mb-3">
+                        <div class="form-group">
+                            <label for="code">Store Code</label>
+                            <input
+                                type="text"
+                                v-model="form.code"
+                                class="form-control"
+                                id="code"
+                                :class="{
+                                    'is-invalid': $page?.props?.errors?.code,
+                                }"
+                            />
+                            <div
+                                v-if="$page?.props?.errors?.code"
+                                class="invalid-feedback"
+                            >
+                                {{ $page?.props?.errors?.code }}
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Manager / PIC -->
                     <div class="col-md-6 mb-3">
                         <label for="toko_id" class="form-label"
                             >Manager / PIC</label
@@ -218,6 +242,7 @@ export default {
             table: [
                 { title: "Nama Store", data: "name" },
                 { title: "Manajer / PIC", data: "manager.name" },
+                { title: "Store Code", data: "code" },
                 { title: "Alamat", data: "address" },
                 { title: "Nomor Telepon", data: "phone" },
                 {
@@ -338,6 +363,7 @@ export default {
                 address: "",
                 phone: "",
                 store_type: "1",
+                code: "",
                 manager: {},
                 submit: false,
             };
@@ -349,6 +375,7 @@ export default {
             this.form.phone = data.phone;
             this.form.store_type = data.store_type;
             this.form.manager = data.manager;
+            this.form.code = data.code || "";
         },
         async getDataKaryawan(val = "") {
             let { data } = await axios.get(

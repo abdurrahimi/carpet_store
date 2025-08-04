@@ -12,6 +12,7 @@ use App\Models\OrderApprovalLog;
 use App\Models\OrderDetail;
 use App\Models\OrderVariant;
 use App\Models\Product;
+use App\Models\Store;
 use Carbon\Carbon;
 use Exception;
 use Illuminate\Http\Request;
@@ -66,6 +67,13 @@ class OrderController extends Controller
                 ->keyBy('id')
                 ->toArray();
 
+            $store = Store::query()
+                ->where('id', Auth::user()->store_id)
+                ->firstOrFail();
+
+            $company = Company::findOrFail($request->input('company.id'));
+
+
             $totalAdditional = 0;
             foreach ($request->additional as $additional) {
                 $totalAdditional += (int) str_replace('.', '', $additional['total']);
@@ -104,7 +112,7 @@ class OrderController extends Controller
 
             $company = Company::findOrFail($request->input('company.id'));
             $number = $company->last_invoice_no + 1;
-            $order->invoice_no = str_pad($number, 6, '0',  STR_PAD_LEFT);
+            $order->invoice_no = $company->code .'/'. $store->code . '/' . date('my').'/INV/' . str_pad($number, 6, '0',  STR_PAD_LEFT);
             $company->increment('last_invoice_no');
             $order->company_id = $request->input('company.id');
             $order->shipping_to = $request->shipping_to;
