@@ -150,6 +150,7 @@ class OrderController extends Controller
                 $orderDetail->discount_percentage   = $item['discount_percentage'];
                 $orderDetail->unit_selling_price    = $item['unit_price'];
                 $orderDetail->qty                   = $item['qty'];
+                $orderDetail->dimension             = ($item['qty']*100) . ' x ' . ($item['product']['lebar'] ?? '');
                 $orderDetail->order_id              = $orderId;
                 $orderDetail->selling_total_price   = ($item['qty'] / 6) * $item['unit_price'] - $item['discount_price'];
                 $orderDetail->save();

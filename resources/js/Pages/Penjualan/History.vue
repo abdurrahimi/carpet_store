@@ -385,7 +385,7 @@ export default {
             this.$error("Gagal mengupdate status");
           })
           .finally(() => {
-
+            location.reload();
             this.approval.submit = false;
           });
 
@@ -429,6 +429,7 @@ export default {
           .finally(() => {
 
             this.approval.submit = false;
+            location.reload();
           });
 
       } catch (error) {
@@ -587,7 +588,18 @@ export default {
     },
     invoice(row) {
       window.open(this.route('invoice.download', row.id), '_blank');
-    }
+    },
+    PrintSuratJalan(isApproved) {
+      if (this.approval.submit) {
+        return;
+      }
+      this.approval.submit = true;
+
+      window.open(this.route('order.printSuratJalan', {
+        order_id: this.approval.id,
+        is_approved: isApproved,
+      }), '_blank');
+    },
   },
 };
 </script>

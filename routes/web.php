@@ -115,6 +115,7 @@ Route::middleware('auth')->group(function () {
     Route::post('/order-reject/{id}', [OrderController::class, 'reject'])->name('order.reject');
     Route::post('/order-attachment/{id}', [OrderController::class, 'addComments'])->name('order.addAttachment');
     Route::get('/order/detail/{id}', [PenjualanController::class, 'getDetailPenjualan'])->name('order.detail');
+    Route::get('/order/surat-jalan', [PenjualanController::class, 'suratJalan'])->name('order.printSuratJalan');
 
 
     //Approval
@@ -127,6 +128,11 @@ Route::middleware('auth')->group(function () {
     Route::post('/companies', [CompanyController::class, 'store'])->name('company.store');
     Route::post('/companies/{id}', [CompanyController::class, 'update'])->name('company.update');
     Route::delete('/companies', [CompanyController::class, 'delete'])->name('company.delete');
+
+    //LPBB
+    Route::get('/lpbb', [\App\Http\Controllers\LpbbController::class, 'index'])->name('lpbb.index');
+    Route::get('/lpbb/data', [\App\Http\Controllers\LpbbController::class, 'getData'])->name('lpbb.data');
+    Route::post('/lpbb', [\App\Http\Controllers\LpbbController::class, 'store'])->name('lpbb.store');
 
 
     Route::get('/temp', function () {

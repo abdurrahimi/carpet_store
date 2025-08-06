@@ -1,155 +1,187 @@
 <!DOCTYPE html>
 <html lang="id">
 <head>
-  <meta charset="UTF-8">
+  <meta charset="UTF-8" />
   <title>Surat Jalan</title>
   <style>
+    @page {
+      size: A4 landscape;
+      margin: 2cm;
+    }
+
+    @media print {
+      body {
+        width: 297mm;
+        height: 210mm;
+        margin: 0;
+        padding: 0;
+        background: white;
+        -webkit-print-color-adjust: exact;
+      }
+
+      .page {
+        page-break-after: always;
+      }
+    }
+
     body {
-      background: #ccc;
-      display: flex;
-      justify-content: center;
-      padding: 40px 0;
-      margin: 0;
-      font-family: Arial, sans-serif;
-    }
-
-    .a4-page {
-      background: white;
-      width: 210mm;
-      height: 297mm;
-      padding: 20mm;
-      box-shadow: 0 0 10px rgba(0, 0, 0, 0.3);
-      box-sizing: border-box;
+      font-family: 'Segoe UI', sans-serif;
+      background: #fff;
       color: #000;
-    }
-
-    h1.header {
-      text-align: center;
-      font-size: 22px;
-      font-weight: bold;
-      margin-bottom: 20px;
-    }
-
-    .toko-box {
-      border: 1px solid black;
-      border-radius: 10px;
-      padding: 10px;
-      float: right;
-      text-align: right;
-      width: 250px;
-      margin-top: -60px;
-    }
-
-    .toko-box strong {
-      font-size: 16px;
-      color: red;
-    }
-
-    .info {
-      margin-bottom: 10px;
-    }
-
-    .info span {
-      display: inline-block;
-      min-width: 100px;
-    }
-
-    .kepada-box {
-      border: 1px solid black;
-      padding: 10px;
-      width: 300px;
-      float: right;
-      margin-top: 20px;
-      margin-bottom: 40px;
-    }
-
-    .kepada-box p {
       margin: 0;
-      line-height: 1.4;
+      padding: 0;
     }
 
-    table {
+    .page {
+      width: 297mm;
+      min-height: 210mm;
+      padding: 20mm;
+      margin: auto;
+      box-sizing: border-box;
+    }
+
+    .header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      border: 2px solid #000;
+      padding: 16px;
+      border-radius: 12px;
+    }
+
+    .header h1 {
+      font-size: 28px;
+      margin: 0;
+      font-weight: bold;
+    }
+
+    .store-info {
+      text-align: right;
+      font-size: 14px;
+      color: #e63946;
+      font-weight: bold;
+    }
+
+    .top-section {
+      display: flex;
+      justify-content: space-between;
+      margin-top: 20px;
+      gap: 20px;
+    }
+
+    .section {
+      font-size: 14px;
+      flex: 1;
+    }
+
+    .section td {
+      padding: 4px 8px;
+      vertical-align: top;
+    }
+
+    .red {
+      color: #e63946;
+      font-weight: bold;
+    }
+
+    .recipient {
+      border: 1px solid #000;
+      padding: 12px;
+      font-size: 14px;
+      flex: 1;
+    }
+
+    table.data-table {
       width: 100%;
       border-collapse: collapse;
-      margin-top: 20px;
+      margin-top: 40px;
+      font-size: 14px;
     }
 
-    th, td {
-      border: 1px solid black;
-      padding: 8px 10px;
-      text-align: left;
+    table.data-table th,
+    table.data-table td {
+      border: 1px solid #000;
+      padding: 8px;
+      text-align: center;
     }
 
-    th {
-      background-color: #f2f2f2;
+    table.data-table th {
+      background-color: #f0f0f0;
     }
 
     .note {
-      border: 1px solid black;
-      border-radius: 10px;
+      margin-top: 15px;
+      border: 1px solid #000;
+      border-radius: 8px;
       padding: 10px;
-      margin-top: 10px;
-      color: red;
+      font-size: 13px;
+    }
+
+    .note span {
+      color: #e63946;
+      font-weight: bold;
     }
 
     .signatures {
       margin-top: 50px;
+      font-size: 14px;
       display: flex;
       justify-content: space-between;
     }
 
     .signatures div {
       text-align: center;
-      width: 19%;
+      flex: 1;
     }
 
-    .signatures p {
-      margin-bottom: 60px;
+    .signatures div:not(:last-child) {
+      margin-right: 10px;
     }
 
-    /* Print Style */
-    @media print {
-      body {
-        background: white;
-        padding: 0;
-      }
-
-      .a4-page {
-        box-shadow: none;
-        width: auto;
-        height: auto;
-        margin: 0;
-        padding: 0;
-      }
+    .sign-line {
+      margin-top: 50px;
     }
   </style>
 </head>
 <body>
-  <div class="a4-page">
-    <h1 class="header">SURAT JALAN</h1>
-
-    <div class="toko-box">
-      <strong>(NAMA TOKO)</strong><br>
-      (NO TELP TOKO)
+  <div class="page">
+    <div class="header">
+      <h1>SURAT JALAN</h1>
+      <div class="store-info">
+        (NAMA TOKO)<br />
+        (NO TELP TOKO)
+      </div>
     </div>
 
-    <div class="info">
-      <div><span>Tanggal</span>: <span style="color: red;">26 Mei 2025</span></div>
-      <div><span>No. Invoice</span>: <span style="color: red;">112/2505/01853</span></div>
-      <div><span>No. Delivery</span>: <span style="color: red;">112/2505/0214</span></div>
-      <div><span>Sales</span>: <span style="color: red;">Dewi</span></div>
+    <div class="top-section">
+      <table class="section">
+        <tr>
+          <td>Tanggal</td>
+          <td class="red">: {{ $penjualan->created_at }}</td>
+        </tr>
+        <tr>
+          <td>No. Invoice</td>
+          <td class="red">: {{ $penjualan->invoice_no }}</td>
+        </tr>
+        <tr>
+          <td>No. Delivery</td>
+          <td class="red">: </td>
+        </tr>
+        <tr>
+          <td>Sales</td>
+          <td class="red">: </td>
+        </tr>
+      </table>
+
+      <div class="recipient">
+        <strong>Kepada Yth :</strong><br />
+        {{ $penjualan->customer->name }}<br />
+        {{ $penjualan->customer->address }}<br />
+        <span class="red">+62{{ $penjualan->customer->phone }}</span><br />
+      </div>
     </div>
 
-    <div class="kepada-box">
-      <strong>Kepada Yth :</strong>
-      <p>Ibu Rosa<br>
-         TK. ROSA<br>
-         JL. IR H. JUANDA GUMAWANG BK 10<br>
-         BELITANG, OKU TIMUR (DEKAT POLSEK)<br>
-         <span style="color: red;">0813 - 7375 - 8075</span></p>
-    </div>
-
-    <table>
+    <table class="data-table">
       <thead>
         <tr>
           <th>NO</th>
@@ -159,45 +191,38 @@
         </tr>
       </thead>
       <tbody>
-        <tr>
-          <td>1</td>
-          <td>CONCORD</td>
-          <td>170 x 230</td>
-          <td>10</td>
-        </tr>
-        <tr>
-          <td>2</td>
-          <td>ALMAYA</td>
-          <td>230 x 310</td>
-          <td>10</td>
-        </tr>
+        @foreach ($penjualan->orderDetails as $product)
+          <tr>
+            <td>{{ $loop->iteration }}</td>
+            <td>{{ $product->product_name }}</td>
+            <td>{{ $product->dimensi }}</td>
+            <td>{{ $product->qty }}</td>
+          </tr>
+        @endforeach
       </tbody>
     </table>
 
     <div class="note">
-      Note: Kirim dengan Ekspedisi Fajar Indah, total 2 Ball
+      Note:<br />
+      <span><br><br><br><br><br><br></span>
     </div>
 
     <div class="signatures">
       <div>
-        Dibuat oleh,<br><br>
-        (....................)
+        Dibuat oleh,<br /><br />
+        <div class="sign-line">( &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; )</div>
       </div>
       <div>
-        Checker,<br><br>
-        (....................)
+        Checker,<br /><br />
+        <div class="sign-line">( &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; )</div>
       </div>
       <div>
-        Pengirim,<br><br>
-        (....................)
+        Pengirim,<br /><br />
+        <div class="sign-line">( &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; )</div>
       </div>
       <div>
-        Finance,<br><br>
-        (....................)
-      </div>
-      <div>
-        Penerima,<br><br>
-        (....................)
+        Finance,<br /><br />
+        <div class="sign-line">( &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; )</div>
       </div>
     </div>
   </div>

@@ -68,4 +68,20 @@ class PenjualanController extends Controller
             'penjualan' => $penjualan,
         ]);
     }
+
+    public function suratJalan(Request $request)
+    {
+        $id = $request->get('order_id');
+        $penjualan = Order::query()
+            ->with(['orderDetails', 'products', 'orderAdditional', 'customer', 'company'])
+            ->findOrFail($id);
+
+        $penjualan->created_at = Carbon::parse($penjualan->created_at)
+            ->timezone('Asia/Jakarta')
+            ->format('Y-m-d H:i:s');
+
+        return view('surat-jalan', [
+            'penjualan' => $penjualan,
+        ]);
+    }
 }
