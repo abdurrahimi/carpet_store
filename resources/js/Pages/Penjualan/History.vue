@@ -517,7 +517,7 @@ export default {
       this.approval.showReject = false;
       switch (status.toString()) {
         case "0":
-          if (role == "finance" || role == "super_admin") {
+          if (role == "finance" || role == "finance_head" || role == "super_admin") {
             this.approval.showApprove = true;
             this.approval.showReject = true;
           }
@@ -530,14 +530,12 @@ export default {
           return "Setujui Permintaan AR";
         case "1":
         case "2":
-          if (role == "warehouse" || role == "super_admin") {
+          if (role == "warehouse" || role == "warehouse_head" || role == "super_admin") {
             this.approval.showApprove = true;
             this.approval.showReject = true;
           }
           return "Stock Tersedia";
         case "3":
-          console.log("role", role);
-          console.log("status", status);
           if (role == "admin" || role == "super_admin") {
             console.log("showApprove");
             this.approval.showApprove = true;

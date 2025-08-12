@@ -215,7 +215,7 @@ class OrderController extends Controller
 
             switch ($order->status) {
                 case DBConstanst::ORDER_STATUS_PENDING:
-                    if (Auth::user()->role !== 'finance' && Auth::user()->role !== 'super_admin') {
+                    if (Auth::user()->role !== 'finance' && Auth::user()->role !== 'finance_head' && Auth::user()->role !== 'super_admin') {
                         DB::rollBack();
                         return redirect()->route('penjualan.index')->with('error', 'Role Anda tidak memiliki akses untuk melakukan approval pada order ini.');
                     }
@@ -263,7 +263,7 @@ class OrderController extends Controller
                     break;
                 case DBConstanst::ORDER_STATUS_AR_APPROVED:
                 case DBConstanst::ORDER_STATUS_PAYMENT_APPROVED:
-                    if (Auth::user()->role !== 'warehouse' && Auth::user()->role !== 'super_admin') {
+                    if (Auth::user()->role !== 'warehouse' && Auth::user()->role !== 'warehouse_head' && Auth::user()->role !== 'super_admin') {
                         DB::rollBack();
                         return redirect()->route('penjualan.index')->with('error', 'Role Anda tidak memiliki akses untuk melakukan approval pada order ini.');
                     }
@@ -356,7 +356,7 @@ class OrderController extends Controller
 
             // Hanya order dengan status PENDING atau AR_APPROVED yang bisa direject
             if ($order->status == DBConstanst::ORDER_STATUS_PENDING) {
-                if (Auth::user()->role !== 'finance' && Auth::user()->role !== 'admin') {
+                if (Auth::user()->role !== 'finance' && Auth::user()->role !== 'finance_head' && Auth::user()->role !== 'admin') {
                     return redirect()->route('penjualan.index')->with('error', 'Role Anda tidak memiliki akses untuk melakukan approval pada order ini.');
                 }
                 $order->status = DBConstanst::ORDER_STATUS_REJECTED;

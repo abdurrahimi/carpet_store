@@ -169,8 +169,11 @@
               <option value="super_admin">Super Admin</option>
               <option value="admin">Admin</option>
               <option value="owner">Owner</option>
+              <option value="warehouse_head">Warehouse Head</option>
               <option value="warehouse">Warehouse Staff</option>
+              <option value="finance_head">Finance Head</option>
               <option value="finance">Finance Staff</option>
+              <option value="sales_head">Sales Head</option>
               <option value="sales">Sales Staff</option>
             </select>
             <span class="text-danger">{{
