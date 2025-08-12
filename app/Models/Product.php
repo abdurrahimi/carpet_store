@@ -10,7 +10,7 @@ class Product extends Model
 {
     use SoftDeletes;
 
-    protected $table = 'products';
+    protected $table = 'product';
 
     protected $fillable = [
         'sku',

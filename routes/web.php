@@ -133,6 +133,7 @@ Route::middleware('auth')->group(function () {
     Route::get('/lpbb', [\App\Http\Controllers\LpbbController::class, 'index'])->name('lpbb.index');
     Route::get('/lpbb/data', [\App\Http\Controllers\LpbbController::class, 'getData'])->name('lpbb.data');
     Route::post('/lpbb', [\App\Http\Controllers\LpbbController::class, 'store'])->name('lpbb.store');
+    Route::get('/lpbb/create', [\App\Http\Controllers\LpbbController::class, 'create'])->name('lpbb.create');
 
 
     Route::get('/temp', function () {
