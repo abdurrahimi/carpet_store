@@ -123,7 +123,7 @@ const metodePembayaran = [
               <td>{{ item.qty }} meter</td>
               <td>{{ formatMoney(item.unit_selling_price) }}</td>
               <td>{{ item.discount }}</td>
-              <td>{{ formatMoney(item.unit_selling_price) }}</td>
+              <td>{{ formatMoney(item.selling_total_price) }}</td>
             </tr>
           </tbody>
         </table>

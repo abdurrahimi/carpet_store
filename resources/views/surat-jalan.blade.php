@@ -148,8 +148,8 @@
     <div class="header">
       <h1>SURAT JALAN</h1>
       <div class="store-info">
-        (NAMA TOKO)<br />
-        (NO TELP TOKO)
+        {{ $penjualan->store->name ?? ''}}<br />
+        {{ $penjualan->store->phone ?? ''}}
       </div>
     </div>
 

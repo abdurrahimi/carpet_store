@@ -179,7 +179,7 @@ class OrderController extends Controller
                 $orderAdditional = new OrderAdditional();
                 $orderAdditional->order_id = $orderId;
                 $orderAdditional->detail = $additional['name'];
-                $orderAdditional->price = $additional['total'];
+                $orderAdditional->price = str_replace('.', '', $additional['total']);
                 $orderAdditional->save();
             }
 

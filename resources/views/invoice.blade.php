@@ -1,5 +1,6 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
     <meta charset="UTF-8">
     <title>Invoice</title>
@@ -28,7 +29,8 @@
             margin-bottom: 15px;
         }
 
-        th, td {
+        th,
+        td {
             border: 1px solid #000;
             padding: 5px;
             text-align: left;
@@ -81,13 +83,15 @@
                 margin: 20mm;
             }
 
-            body::before, body::after {
+            body::before,
+            body::after {
                 display: none !important;
                 content: none !important;
             }
         }
     </style>
 </head>
+
 <body onload="window.print()">
     <div class="a4-sheet">
         <table class="no-border">
@@ -160,7 +164,7 @@
                 </tr>
                 @endforeach
 
-                @foreach ($order->orderAdditional as $item)   
+                @foreach ($order->orderAdditional as $item)
                 <tr>
                     <td>{{ $item->detail }}</td>
                     <td class="text-center">{{ $item->qty }}</td>
@@ -180,9 +184,18 @@
                 </td>
                 <td>
                     <table>
-                        <tr><td>Sub Total</td><td class="text-right">{{ number_format($order->total_price_before_disc, 0, ',', '.') }}</td></tr>
-                        <tr><td>Discount</td><td class="text-right">{{ number_format($order->discount, 0, ',', '.') }}</td></tr>
-                        <tr class="bold"><td>Total Due</td><td class="text-right highlight">Rp. {{ number_format($order->final_price, 0, ',', '.') }}</td></tr>
+                        <tr>
+                            <td>Sub Total</td>
+                            <td class="text-right">{{ number_format($order->total_price_before_disc, 0, ',', '.') }}</td>
+                        </tr>
+                        <tr>
+                            <td>Discount</td>
+                            <td class="text-right">{{ number_format($order->discount, 0, ',', '.') }}</td>
+                        </tr>
+                        <tr class="bold">
+                            <td>Total Due</td>
+                            <td class="text-right highlight">Rp. {{ number_format($order->final_price, 0, ',', '.') }}</td>
+                        </tr>
                     </table>
                 </td>
             </tr>
@@ -203,4 +216,5 @@
         </p>
     </div>
 </body>
+
 </html>

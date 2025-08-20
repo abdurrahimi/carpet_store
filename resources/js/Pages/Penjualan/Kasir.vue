@@ -48,15 +48,18 @@
                             <tr>
                                 <td>
                                     <label>Penerima</label>
-                                    <input type="text" class="form-control" v-model="form.shipping_to" :disabled="isShipWithBill">
+                                    <input type="text" class="form-control" v-model="form.shipping_to"
+                                        :disabled="isShipWithBill">
                                 </td>
                                 <td>
                                     <label>Nomor Handphone</label>
-                                    <input type="text" class="form-control" v-model="form.shipping_phone" :disabled="isShipWithBill">
+                                    <input type="text" class="form-control" v-model="form.shipping_phone"
+                                        :disabled="isShipWithBill">
                                 </td>
                                 <td colspan="3">
                                     <label>Alamat</label>
-                                    <textarea class="form-control" v-model="form.shipping_address" :disabled="isShipWithBill"></textarea>
+                                    <textarea class="form-control" v-model="form.shipping_address"
+                                        :disabled="isShipWithBill"></textarea>
                                 </td>
 
                             </tr>
@@ -192,7 +195,7 @@
                                                                         </div>
                                                                         <span class="text-danger">{{
                                                                             $page?.props?.errors?.discount_percentage
-                                                                            }}</span>
+                                                                        }}</span>
                                                                     </div>
                                                                 </div>
                                                                 <div class="col-md-4">
@@ -211,7 +214,7 @@
                                                                         </div>
                                                                         <span class="text-danger">{{
                                                                             $page?.props?.errors?.discount_price
-                                                                            }}</span>
+                                                                        }}</span>
                                                                     </div>
                                                                 </div>
                                                                 <div class="col-md-4">
@@ -238,6 +241,14 @@
                                     </div>
                                     <button class="btn btn-primary mb-2 col-md-12" type="button" @click="tambahProduct">
                                         + Tambah Product
+                                    </button>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td colspan="6">
+                                    <button class="btn btn-success btn-sm col-md-12" type="button"
+                                        @click="tambahFee">
+                                        + Tambah Additional Service
                                     </button>
                                 </td>
                             </tr>
@@ -269,7 +280,8 @@
                                     </div>
                                 </td>
                                 <td class="nt align-middle">
-                                    <button v-if="k != 0" class="btn btn-danger btn-sm" @click="removeAdditional(k)">
+                                    <button v-if="k != 0" type="button" class="btn btn-danger btn-sm"
+                                        @click="removeAdditional(k)">
                                         x
                                     </button>
                                     <button v-if="k == 0" class="btn btn-primary btn-sm" type="button"
@@ -464,12 +476,7 @@ export default {
                 customer: null,
                 discount: 0,
                 discount_percentage: 0,
-                additional: [
-                    {
-                        name: "",
-                        total: 0,
-                    },
-                ],
+                additional: [],
                 total: 0,
                 payment_method: 0,
                 shipping_method: "",
@@ -524,7 +531,7 @@ export default {
                     const url = this.$page.url; // Misal: "/users?page=2&sort=asc"
                     const query = new URLSearchParams(url.split('?')[1]);
                     const id = query.get('data'); // "2"
-                    
+
                     window.open(this.route('invoice.download', id), '_blank');
                     router.visit(this.$page.url, {
                         only: ["users"],
@@ -658,12 +665,7 @@ export default {
                 customer: null,
                 discount: 0,
                 discount_percentage: 0,
-                additional: [
-                    {
-                        name: "",
-                        total: 0,
-                    },
-                ],
+                additional: [],
                 total: 0,
                 payment_method: 0,
                 submit: false,
