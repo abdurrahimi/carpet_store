@@ -178,7 +178,7 @@
 
         <table>
             <tr>
-                <td>
+                <td style="width: 70%;">
                     <strong>Catatan:</strong><br>
                     {{-- {!! nl2br(e("mantap deh dah bisa")) !!} --}}
                 </td>
