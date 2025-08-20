@@ -125,8 +125,16 @@ const metodePembayaran = [
               <td>{{ item.discount }}</td>
               <td>{{ formatMoney(item.selling_total_price) }}</td>
             </tr>
+            <tr v-for="(item, index) in detail?.order_additional" :key="index">
+              <td>{{ item.detail }}</td>
+              <td class="text-center">{{ item.qty }}</td>
+              <td></td>
+              <td></td>
+              <td>{{ formatMoney(item.price) }}</td>
+            </tr>
           </tbody>
         </table>
+        
       </div>
     </Modal>
     <Modal :show="modalShowStatus" title="Log Status Transaksi" id="modal-status-index">
@@ -144,7 +152,8 @@ const metodePembayaran = [
                 {{ item.detail }}
                 <ul v-if="item.attachment">
                   <li>
-                    <a :href="`/storage/${item.attachment}`" class="link text-success font-italic" style="font-size: 12px;" target="_blank">
+                    <a :href="`/storage/${item.attachment}`" class="link text-success font-italic"
+                      style="font-size: 12px;" target="_blank">
                       {{ item.attachment.split('/').pop() }}
                     </a>
                   </li>
@@ -170,12 +179,8 @@ const metodePembayaran = [
       </form>
       <template #footer>
         <button v-if="approval.status == 3 || approval.status > 5" type="button" class="btn btn-warning"
-          :class="{ disabled: approval.submit }" @click="PrintSuratJalan(true)">
-          <div v-if="approval.submit">
-            <span class="spinner-border spinner-border-sm" role="status" aria-hidden="true"></span>
-            <span class="bott">Loading</span>
-          </div>
-          <span v-else class="bott">Cetak Surat Jalan</span>
+          @click="PrintSuratJalan(true)">
+          <span class="bott">Cetak Surat Jalan</span>
         </button>
         <button v-if="approval.status == 4 || approval.status == 5" type="button" class="btn btn-danger"
           :class="{ disabled: approval.submit }" @click="PrintSuratJalan(true)">
