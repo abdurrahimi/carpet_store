@@ -68,7 +68,7 @@ class UsersController extends Controller
             'leader_id.id' => 'nullable|integer|exists:karyawan,id',
             'password' => 'nullable|string|min:6|max:16',
             'role' => 'required|string|exists:roles,name',
-            'toko_id.id' => 'required|integer|exists:stores,id',
+            'toko_id.id' => 'required|integer|exists:store,id',
         ]);
 
         DB::beginTransaction();
