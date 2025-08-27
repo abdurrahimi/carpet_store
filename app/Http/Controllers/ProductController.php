@@ -9,6 +9,7 @@ use Illuminate\Support\Facades\DB;
 use Inertia\Inertia;
 use App\Models\Product;
 use App\Models\ProductCategory;
+use App\Models\ProductCategoryColor;
 use App\Models\ProductStock;
 use Illuminate\Support\Facades\Log;
 use PhpOffice\PhpSpreadsheet\IOFactory;
@@ -119,7 +120,10 @@ class ProductController extends Controller
             $product->ori_sku = $request->input('ori_sku');
             $product->category_id = $request->input('category')['id'] ?? null;
             $product->design_name = $request->input('design_name');
-            $product->color_id = $request->input('color')['id'] ?? null;
+            if ($request->input('color')) {
+                $product->color_id = $request->input('color')['id'] ?? null;
+                $product->color = $request->input('color')['name'] ?? null;
+            }
             $product->pattern = $request->input('pattern');
             $product->panjang_per_roll = $request->input('panjang_per_roll');
             $product->tipe = $request->input('tipe');
@@ -196,7 +200,10 @@ class ProductController extends Controller
             $product->ori_sku = $request->input('ori_sku');
             $product->category_id = $request->input('category')['id'] ?? null;
             $product->design_name = $request->input('design_name');
-            $product->color_id = $request->input('color')['id'] ?? null;
+            if ($request->input('color')) {
+                $product->color_id = $request->input('color')['id'] ?? null;
+                $product->color = $request->input('color')['name'] ?? null;
+            }
             $product->pattern = $request->input('pattern');
             $product->panjang_per_roll = $request->input('panjang_per_roll');
             $product->tipe = $request->input('tipe');
@@ -223,6 +230,7 @@ class ProductController extends Controller
             $product->save();
             return redirect()->route('products.index')->with('success', 'Produk berhasil diubah.');
         } catch (\Exception $th) {
+            Log::error('Error updating product: ' . $th->getMessage());
             return redirect()->route('products.index')->with('error', 'Produk gagal diubah, hubungi administrator.');
         }
     }
