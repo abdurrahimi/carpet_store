@@ -14,7 +14,7 @@ import { Link } from "@inertiajs/vue3";
           class="sidebar-brand d-flex align-items-center justify-content-center mt-3 mb-3"
           href="/"
         >
-          <img src="/img/abc.png" alt="Logo" class="sidebar-brand-icon">
+          <img src="public/img/abc.png" alt="Logo" class="sidebar-brand-icon">
         </a>
 
         <!-- Divider -->
