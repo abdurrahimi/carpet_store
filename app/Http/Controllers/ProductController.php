@@ -155,7 +155,7 @@ class ProductController extends Controller
             return redirect()->route('products.index')->with('success', 'Produk berhasil dibuat.');
         } catch (\Exception $th) {
             DB::rollBack();
-            Log::error('Error creating product: ' . $th->getMessage());
+            Log::error('Error creating product: ' . $th->getMessage() . 'trace: ' . $th->getTraceAsString());
             return redirect()->route('products.index')->with('error', 'Produk gagal dibuat, hubungi administrator.');
         }
     }
@@ -230,7 +230,7 @@ class ProductController extends Controller
             $product->save();
             return redirect()->route('products.index')->with('success', 'Produk berhasil diubah.');
         } catch (\Exception $th) {
-            Log::error('Error updating product: ' . $th->getMessage());
+            Log::error('Error updating product: ' . $th->getMessage() . 'trace: ' . $th->getTraceAsString());
             return redirect()->route('products.index')->with('error', 'Produk gagal diubah, hubungi administrator.');
         }
     }
