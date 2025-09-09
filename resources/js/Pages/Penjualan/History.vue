@@ -2,7 +2,6 @@
 import { usePage } from '@inertiajs/vue3';
 
 const page = usePage();
-const role = page.props.auth?.role[0] || 'guest';
 
 const metodePembayaran = [
   'Cash',
@@ -517,43 +516,44 @@ export default {
       }
     },
     handleShowButton(status) {
-      const role = this.$page.props.auth?.role[0] || 'guest';
+      const roles = this.$page.props.auth?.role || [];
+      const hasRole = (...required) => required.some(r => roles.includes(r));
       this.approval.showApprove = false;
       this.approval.showReject = false;
       switch (status.toString()) {
         case "0":
-          if (role == "finance" || role == "finance_head" || role == "super_admin") {
+          if (hasRole('finance', 'finance_head', 'super_admin')) {
             this.approval.showApprove = true;
             this.approval.showReject = true;
           }
           return "Setujui Permintaan";
         case "-1":
-          if (role == "owner" || role == "super_admin") {
+          if (hasRole('owner', 'super_admin')) {
             this.approval.showApprove = true;
             this.approval.showReject = true;
           }
           return "Setujui Permintaan AR";
         case "1":
         case "2":
-          if (role == "warehouse" || role == "warehouse_head" || role == "super_admin") {
+          if (hasRole('warehouse', 'warehouse_head', 'super_admin')) {
             this.approval.showApprove = true;
             this.approval.showReject = true;
           }
           return "Stock Tersedia";
         case "3":
-          if (role == "admin" || role == "super_admin") {
+          if (hasRole('admin', 'super_admin')) {
             console.log("showApprove");
             this.approval.showApprove = true;
           }
           return "Tandai Sedang Dikirim";
         case "4":
-          if (role == "admin" || role == "super_admin") {
+          if (hasRole('admin', 'super_admin')) {
             this.approval.showApprove = true;
           }
           return "Tandai Sedang Proses Supplier";
         case "5":
         case "6":
-          if (role == "admin" || role == "super_admin") {
+          if (hasRole('admin', 'super_admin')) {
             this.approval.showApprove = true;
           }
           return "Tandai Sudah Diterima";
