@@ -14,9 +14,7 @@ class ApprovalService
 {
     public function validateApproval($approvalId)
     {
-        $data = Approval::find($approvalId)->where('status', 0)->first();
-        if(empty($data)) return false;
-        return true;
+        return Approval::where('id', $approvalId)->where('status', 0)->exists();
 
         /* $user = User::find($data->requestor_id);
         $karyawan = Karyawan::find($user->karyawan_id);
